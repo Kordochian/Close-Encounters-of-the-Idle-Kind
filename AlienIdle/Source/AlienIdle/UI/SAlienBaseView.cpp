@@ -435,9 +435,9 @@ FReply SAlienBaseView::OnMouseButtonUp(const FGeometry& MyGeometry, const FPoint
 			FVector2f Offset;
 			GetView(MyGeometry.GetLocalSize(), Scale, Offset);
 			const FVector2f Point = (MyGeometry.AbsoluteToLocal(MouseEvent.GetScreenSpacePosition()) - Offset) / Scale;
-			const FVector2f Tag = CalibrationTagPos(Chamber) + BaseOrigin;
+			const FVector2f TagPos = CalibrationTagPos(Chamber) + BaseOrigin;
 			const float Slack = 6.0f;
-			if (Point.X >= Tag.X - Slack && Point.X <= Tag.X + CalibrationTagSize.X + Slack && Point.Y >= Tag.Y - Slack && Point.Y <= Tag.Y + CalibrationTagSize.Y + Slack)
+			if (Point.X >= TagPos.X - Slack && Point.X <= TagPos.X + CalibrationTagSize.X + Slack && Point.Y >= TagPos.Y - Slack && Point.Y <= TagPos.Y + CalibrationTagSize.Y + Slack)
 			{
 				OnCalibrationClicked();
 			}
@@ -1220,12 +1220,12 @@ int32 SAlienBaseView::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedG
 	const int32 CalibrationChamber = S.GetCalibrationChamber();
 	if (CalibrationChamber != INDEX_NONE && !S.IsCalibrationOpen())
 	{
-		const FVector2f Tag = CalibrationTagPos(CalibrationChamber);
-		const float Pulse = 0.55f + 0.45f * FMath::Abs(FMath::Sin(float(FPlatformTime::Seconds()) * 4.0f));
-		P.Box(Tag.X - 2, Tag.Y - 2, CalibrationTagSize.X + 4, CalibrationTagSize.Y + 4, FLinearColor(0.02f, 0.05f, 0.04f, 0.9f));
-		P.Box(Tag.X, Tag.Y, CalibrationTagSize.X, CalibrationTagSize.Y, FLinearColor(0.15f, 0.9f, 0.6f, Pulse));
-		P.Text(Tag.X + 6, Tag.Y + 1, TEXT("CALIBRATION"), 7, FLinearColor(0.01f, 0.03f, 0.02f));
-		P.Text(Tag.X + 6, Tag.Y + 13, TEXT("AVAILABLE"), 7, FLinearColor(0.01f, 0.03f, 0.02f));
+		const FVector2f TagPos = CalibrationTagPos(CalibrationChamber);
+		const float TagPulse = 0.55f + 0.45f * FMath::Abs(FMath::Sin(float(FPlatformTime::Seconds()) * 4.0f));
+		P.Box(TagPos.X - 2, TagPos.Y - 2, CalibrationTagSize.X + 4, CalibrationTagSize.Y + 4, FLinearColor(0.02f, 0.05f, 0.04f, 0.9f));
+		P.Box(TagPos.X, TagPos.Y, CalibrationTagSize.X, CalibrationTagSize.Y, FLinearColor(0.15f, 0.9f, 0.6f, TagPulse));
+		P.Text(TagPos.X + 6, TagPos.Y + 1, TEXT("CALIBRATION"), 7, FLinearColor(0.01f, 0.03f, 0.02f));
+		P.Text(TagPos.X + 6, TagPos.Y + 13, TEXT("AVAILABLE"), 7, FLinearColor(0.01f, 0.03f, 0.02f));
 	}
 
 	return P.Layer;

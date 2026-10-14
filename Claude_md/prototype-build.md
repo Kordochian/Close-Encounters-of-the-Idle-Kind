@@ -139,7 +139,11 @@ PrintWindow capture works; SendKeys into the window is unreliable.
 ## State after Probe Calibration
 
 Code written 2026-10-14 (5 new tests: CalibrationGradesAndBoost, CalibrationIgnoredCostsNothing,
-CalibrationBalance, CalibrationTechnicians, CalibrationSaves). Build/test result: PENDING.
+CalibrationBalance, CalibrationTechnicians, CalibrationSaves). Verified: build clean (after renaming shadowing
+locals in SAlienBaseView.cpp), all 63 tests pass. CalibrationBalance, 20 min Balanced/Biology: ignoring windows
+9345 research, missing every one 9746, steady/standard 8846, precise 9523; 16 windows, 93 s of lab work skipped.
+The boost is small next to run-to-run divergence (a skipped second reshuffles later random rolls), so research
+totals are noise here; seconds skipped is the real measure. Technician (specialist, untrained): 7%.
 
 ## State after "The Specimens Remember"
 
