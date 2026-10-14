@@ -1,5 +1,6 @@
 #include "UI/SAlienIdleRoot.h"
 #include "UI/SAlienBaseView.h"
+#include "UI/SCalibrationGauge.h"
 #include "AlienIdleSim.h"
 #include "Styling/CoreStyle.h"
 #include "Widgets/Input/SButton.h"
@@ -23,7 +24,7 @@ namespace
 
 	constexpr int32 VisibleLogLines = 6;
 	constexpr int32 VisibleResultLines = 12;
-	constexpr int32 MaxStationsShown = 9;
+	constexpr int32 MaxStationsShown = 12;
 	constexpr int32 MaxCrewShown = 16;
 	constexpr int32 MaxChambersShown = 3;
 
@@ -551,11 +552,21 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 					return FSlateColor(bIdleWithQueue ? WarnColor : TextColor);
 				})
 			]);
+		// Probe Calibration: optional. The window lapses on its own and research carries on regardless.
+		Add(SNew(SBox)
+			.Visibility_Lambda([this, i] { return Sim->GetCalibrationChamber() == i && !Sim->IsCalibrationOpen() ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeButton([this]
+				{
+					return Str(FString::Printf(TEXT("CALIBRATION AVAILABLE (%.0f s): open the probe for a five-second calibration"), Sim->GetCalibrationOfferRemaining()));
+				}, [] { return true; }, [this] { OpenCalibration(); })
+			], FMargin(12, 1, 0, 2));
 	}
 	Add(MakeLine([this]
 	{
 		return Str(FString::Printf(TEXT("Lab speed x%.2f"), Sim->GetLabSpeed()));
 	}, [] { return FSlateColor(MutedColor); }));
+	Add(MakeLine([this] { return Str(Sim->GetCalibrationStatusText()); }, [] { return FSlateColor(MutedColor); }), FMargin(0, 2, 0, 0));
 
 	Add(MakeHeading(NSLOCTEXT("AlienIdle", "LabPriorities", "LAB PRIORITIES")), FMargin(0, 8, 0, 0));
 	Add(MakeLine([] { return Str(TEXT("Routine and extended studies pay research. Discovery projects pay nothing and unlock targets and equipment.")); },
@@ -860,7 +871,7 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 			+ SHorizontalBox::Slot()
 			.FillWidth(1.0f)
 			[
-				SNew(SAlienBaseView).Sim(Sim)
+				SNew(SAlienBaseView).Sim(Sim).OnCalibrationClicked([this] { OpenCalibration(); })
 			]
 			+ SHorizontalBox::Slot()
 			.AutoWidth()
@@ -923,7 +934,183 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 		[
 			MakePromotionPanel()
 		]
+		+ SOverlay::Slot()
+		.HAlign(HAlign_Center)
+		.VAlign(VAlign_Center)
+		[
+			MakeCalibrationPanel()
+		]
 	];
+}
+
+// ---------------------------------------------------------------------------------------------
+// Probe Calibration: a five-second timing challenge. Stop the cursor in the band; the bright core is
+// precise. Running out of time still counts as an attempt. "Standard calibration" skips the timing.
+
+void SAlienIdleRoot::OpenCalibration()
+{
+	if (bShowingCalibration || bShowingReport || bShowingPromotion || !Sim->BeginCalibration())
+	{
+		return;
+	}
+	bShowingCalibration = true;
+	bCalibrationResolved = false;
+	CalibrationResult.Reset();
+	CalibrationChamberShown = Sim->GetCalibrationChamber();
+	CalibrationStartTime = FSlateApplication::Get().GetCurrentTime();
+	if (CalibrationStopButton.IsValid())
+	{
+		FSlateApplication::Get().SetAllUserFocus(CalibrationStopButton, EFocusCause::SetDirectly);
+	}
+}
+
+float SAlienIdleRoot::GetCalibrationCursor() const
+{
+	if (bCalibrationResolved)
+	{
+		return CalibrationStoppedAt;
+	}
+	const double Elapsed = FSlateApplication::Get().GetCurrentTime() - CalibrationStartTime;
+	const float Phase = FMath::Fmod(float(Elapsed) / AlienIdleTuning::CalibrationSweepSeconds, 2.0f);
+	return Phase <= 1.0f ? Phase : 2.0f - Phase;
+}
+
+void SAlienIdleRoot::SubmitCalibration(ECalibrationGrade Grade)
+{
+	if (!bShowingCalibration || bCalibrationResolved)
+	{
+		return;
+	}
+	CalibrationStoppedAt = GetCalibrationCursor();
+	bCalibrationResolved = true;
+	CalibrationResolvedTime = FSlateApplication::Get().GetCurrentTime();
+	Sim->Calibrate(Grade, &CalibrationResult);
+	if (CalibrationCloseButton.IsValid())
+	{
+		FSlateApplication::Get().SetAllUserFocus(CalibrationCloseButton, EFocusCause::SetDirectly);
+	}
+}
+
+void SAlienIdleRoot::CloseCalibration()
+{
+	bShowingCalibration = false;
+	if (LaunchButton.IsValid())
+	{
+		FSlateApplication::Get().SetAllUserFocus(LaunchButton, EFocusCause::SetDirectly);
+	}
+}
+
+void SAlienIdleRoot::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
+{
+	SCompoundWidget::Tick(AllottedGeometry, InCurrentTime, InDeltaTime);
+	if (!bShowingCalibration)
+	{
+		return;
+	}
+	const double Now = FSlateApplication::Get().GetCurrentTime();
+	if (!bCalibrationResolved && Now - CalibrationStartTime >= AlienIdleTuning::CalibrationChallengeSeconds)
+	{
+		SubmitCalibration(ECalibrationGrade::Missed); // out of time: still an attempt
+	}
+	else if (bCalibrationResolved && Now - CalibrationResolvedTime >= 6.0)
+	{
+		CloseCalibration();
+	}
+}
+
+TSharedRef<SWidget> SAlienIdleRoot::MakeCalibrationPanel()
+{
+	auto WhileTiming = [this] { return bCalibrationResolved ? EVisibility::Collapsed : EVisibility::Visible; };
+	auto WhenResolved = [this] { return bCalibrationResolved ? EVisibility::Visible : EVisibility::Collapsed; };
+	return SNew(SBox)
+		.WidthOverride(640.0f)
+		.Visibility_Lambda([this] { return bShowingCalibration ? EVisibility::Visible : EVisibility::Collapsed; })
+		[
+			SNew(SBorder)
+			.BorderImage(FCoreStyle::Get().GetBrush("GenericWhiteBox"))
+			.BorderBackgroundColor(Srgb(0.05f, 0.08f, 0.09f))
+			.Padding(22.0f)
+			[
+				SNew(SVerticalBox)
+				+ SVerticalBox::Slot().AutoHeight()
+				[
+					SNew(STextBlock).Font(Font(18, TEXT("Bold"))).ColorAndOpacity(HeadingColor)
+					.Text_Lambda([this] { return Str(FString::Printf(TEXT("PROBE CALIBRATION: CHAMBER %d"), CalibrationChamberShown + 1)); })
+				]
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 2, 0, 12)
+				[
+					SNew(STextBlock).Font(Font(10)).ColorAndOpacity(MutedColor).AutoWrapText(true)
+					.Text_Lambda([]
+					{
+						return Str(FString::Printf(TEXT("Stop the probe inside the green band: %.0f%% of the experiment's remaining time, %.0f%% in the bright centre. Any attempt gives %.0f%%. Standard calibration needs no timing and gives %.0f%%."),
+							100.0f * FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Steady), 100.0f * FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Precise),
+							100.0f * FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Missed), 100.0f * FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Quick)));
+					})
+				]
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 10)
+				[
+					SNew(SCalibrationGauge)
+					.Cursor_Lambda([this] { return GetCalibrationCursor(); })
+					.Band_Lambda([this] { return Sim->GetCalibrationBand(); })
+					.BandHalfWidth(AlienIdleTuning::CalibrationBandHalfWidth)
+					.CoreHalfWidth(AlienIdleTuning::CalibrationCoreHalfWidth)
+				]
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 12)
+				[
+					SNew(STextBlock).Font(Font(11)).AutoWrapText(true)
+					.Text_Lambda([this]
+					{
+						if (bCalibrationResolved)
+						{
+							return Str(CalibrationResult);
+						}
+						const double Left = AlienIdleTuning::CalibrationChallengeSeconds - (FSlateApplication::Get().GetCurrentTime() - CalibrationStartTime);
+						return Str(FString::Printf(TEXT("%.1f s left. The subject has been asked to hold still."), FMath::Max(0.0, Left)));
+					})
+					.ColorAndOpacity_Lambda([this] { return FSlateColor(bCalibrationResolved ? HeadingColor : TextColor); })
+				]
+				+ SVerticalBox::Slot().AutoHeight()
+				[
+					SNew(SHorizontalBox)
+					+ SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 8, 0)
+					[
+						SNew(SBox).Visibility_Lambda(WhileTiming)
+						[
+							SAssignNew(CalibrationStopButton, SButton)
+							.ContentPadding(FMargin(14, 6))
+							.OnClicked_Lambda([this]
+							{
+								SubmitCalibration(Sim->GradeCalibration(GetCalibrationCursor()));
+								return FReply::Handled();
+							})
+							[
+								SNew(STextBlock).Font(Font(11, TEXT("Bold"))).Text(NSLOCTEXT("AlienIdle", "CalibrationStop", "Stop the probe (Enter / A)"))
+							]
+						]
+					]
+					+ SHorizontalBox::Slot().AutoWidth()
+					[
+						SNew(SBox).Visibility_Lambda(WhileTiming)
+						[
+							MakeButton([] { return Str(TEXT("Standard calibration (no timing)")); }, [] { return true; },
+								[this] { SubmitCalibration(ECalibrationGrade::Quick); })
+						]
+					]
+					+ SHorizontalBox::Slot().AutoWidth()
+					[
+						SNew(SBox).Visibility_Lambda(WhenResolved)
+						[
+							SAssignNew(CalibrationCloseButton, SButton)
+							.ContentPadding(FMargin(14, 6))
+							.OnClicked_Lambda([this] { CloseCalibration(); return FReply::Handled(); })
+							[
+								SNew(STextBlock).Font(Font(11)).Text(NSLOCTEXT("AlienIdle", "CalibrationClose", "Back to work"))
+							]
+						]
+					]
+				]
+			]
+		];
 }
 
 TSharedRef<SWidget> SAlienIdleRoot::MakeAwayReportPanel()

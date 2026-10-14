@@ -35,6 +35,10 @@ namespace
 	const FVector2f BaseOrigin(BaseShift, 0.0f);
 	constexpr float GroundY = 300.0f;
 	constexpr float MountainX = 660.0f;
+
+	/** Probe Calibration tag over a lab chamber, in base-local coordinates (canvas = this + BaseOrigin). */
+	FVector2f CalibrationTagPos(int32 Chamber) { return FVector2f(725.0f + Chamber * 92.0f, 458.0f) + LabOffset; }
+	const FVector2f CalibrationTagSize(80.0f, 28.0f);
 	/** The hunting grounds: three regions per location, region 0 nearest the base. */
 	constexpr float RegionWidth = 220.0f;
 
@@ -296,6 +300,7 @@ namespace
 void SAlienBaseView::Construct(const FArguments& InArgs)
 {
 	Sim = InArgs._Sim;
+	OnCalibrationClicked = InArgs._OnCalibrationClicked;
 	check(Sim.IsValid());
 	for (int32 Radius = 1; Radius <= 30; ++Radius)
 	{
@@ -410,6 +415,8 @@ FReply SAlienBaseView::OnMouseButtonDown(const FGeometry& MyGeometry, const FPoi
 	{
 		bDragging = true;
 		LastDragPosition = MyGeometry.AbsoluteToLocal(MouseEvent.GetScreenSpacePosition());
+		PressPosition = LastDragPosition;
+		bPressMoved = false;
 		return FReply::Handled().CaptureMouse(SharedThis(this));
 	}
 	return FReply::Unhandled();
@@ -420,6 +427,21 @@ FReply SAlienBaseView::OnMouseButtonUp(const FGeometry& MyGeometry, const FPoint
 	if (bDragging)
 	{
 		bDragging = false;
+		const int32 Chamber = Sim->GetCalibrationChamber();
+		if (!bPressMoved && MouseEvent.GetEffectingButton() == EKeys::LeftMouseButton && Chamber != INDEX_NONE && !Sim->IsCalibrationOpen() && OnCalibrationClicked)
+		{
+			// A click on the chamber's calibration tag opens the challenge.
+			float Scale;
+			FVector2f Offset;
+			GetView(MyGeometry.GetLocalSize(), Scale, Offset);
+			const FVector2f Point = (MyGeometry.AbsoluteToLocal(MouseEvent.GetScreenSpacePosition()) - Offset) / Scale;
+			const FVector2f Tag = CalibrationTagPos(Chamber) + BaseOrigin;
+			const float Slack = 6.0f;
+			if (Point.X >= Tag.X - Slack && Point.X <= Tag.X + CalibrationTagSize.X + Slack && Point.Y >= Tag.Y - Slack && Point.Y <= Tag.Y + CalibrationTagSize.Y + Slack)
+			{
+				OnCalibrationClicked();
+			}
+		}
 		return FReply::Handled().ReleaseMouseCapture();
 	}
 	return FReply::Unhandled();
@@ -433,6 +455,7 @@ FReply SAlienBaseView::OnMouseMove(const FGeometry& MyGeometry, const FPointerEv
 	}
 	const FVector2f Size = MyGeometry.GetLocalSize();
 	const FVector2f Position = MyGeometry.AbsoluteToLocal(MouseEvent.GetScreenSpacePosition());
+	bPressMoved |= FVector2f::Distance(Position, PressPosition) > 4.0f;
 	float Scale;
 	FVector2f Offset;
 	GetView(Size, Scale, Offset);
@@ -1173,6 +1196,7 @@ int32 SAlienBaseView::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedG
 		case EStation::Power: Anchor = FVector2f(1235.0f, 437.0f) + GeneratorOffset; break;
 		case EStation::Pressure: Anchor = FVector2f(640.0f, 335.0f); break;
 		case EStation::Boiler: Anchor = FVector2f(600.0f, 335.0f); break;
+		case EStation::Calibration: Anchor = FVector2f(688.0f, 470.0f) + LabOffset; break;
 		default: Anchor = FVector2f(1200.0f, 590.0f) + BreakRoomOffset; break;
 		}
 		int32 Dot = 0;
@@ -1190,6 +1214,18 @@ int32 SAlienBaseView::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedG
 		{
 			P.Text(Anchor.X - 6.0f, Anchor.Y - 7.0f, TEXT("UNSTAFFED"), 7, WarnColor);
 		}
+	}
+
+	// Probe Calibration: a pulsing tag over the chamber with an open window. Clicking it opens the challenge.
+	const int32 CalibrationChamber = S.GetCalibrationChamber();
+	if (CalibrationChamber != INDEX_NONE && !S.IsCalibrationOpen())
+	{
+		const FVector2f Tag = CalibrationTagPos(CalibrationChamber);
+		const float Pulse = 0.55f + 0.45f * FMath::Abs(FMath::Sin(float(FPlatformTime::Seconds()) * 4.0f));
+		P.Box(Tag.X - 2, Tag.Y - 2, CalibrationTagSize.X + 4, CalibrationTagSize.Y + 4, FLinearColor(0.02f, 0.05f, 0.04f, 0.9f));
+		P.Box(Tag.X, Tag.Y, CalibrationTagSize.X, CalibrationTagSize.Y, FLinearColor(0.15f, 0.9f, 0.6f, Pulse));
+		P.Text(Tag.X + 6, Tag.Y + 1, TEXT("CALIBRATION"), 7, FLinearColor(0.01f, 0.03f, 0.02f));
+		P.Text(Tag.X + 6, Tag.Y + 13, TEXT("AVAILABLE"), 7, FLinearColor(0.01f, 0.03f, 0.02f));
 	}
 
 	return P.Layer;

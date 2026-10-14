@@ -47,6 +47,18 @@ enum class EBaseUpgrade : uint8
 	CryoVault,      // Antarctic only: containment that never escapes; preserves twice as fast; draws energy
 	InsulatedLabs,  // any base once Huddle Theory is published: experiments use 30% less energy
 	CryoPods,       // any base once Blubber Economics is published: preserved samples anywhere; draws energy
+	CalibrationDesk, // after a few probe calibrations: a technician post that takes calibration windows you leave
+	Count,
+};
+
+/** Probe Calibration: how well a calibration went. Better grades skip more of the experiment's remaining time. */
+enum class ECalibrationGrade : uint8
+{
+	Missed,     // stopped outside the band, or ran out of time: any attempt still helps
+	Steady,     // inside the band
+	Precise,    // inside the bright core of the band
+	Quick,      // the no-timing button (accessibility): same as a steady stop
+	Technician, // automatic, from the Calibration Desk: weaker than any manual attempt but never sleeps
 	Count,
 };
 
@@ -1058,6 +1070,7 @@ namespace AlienIdleTuning
 		{ TEXT("Cryo Vault"),          70.0, 2.0, 3, 0 },
 		{ TEXT("Insulated Labs"),      200.0, 1.0, 1, 0 },
 		{ TEXT("Cryo Pods"),           180.0, 1.0, 1, 0 },
+		{ TEXT("Calibration Desk"),    150.0, 1.0, 1, 0 },
 	};
 	static_assert(UE_ARRAY_COUNT(BaseUpgrades) == int32(EBaseUpgrade::Count));
 
@@ -1107,9 +1120,33 @@ namespace AlienIdleTuning
 	inline constexpr float StaffMeetingSeconds = 25.0f;
 	inline constexpr float AdoptedSquirrelSeconds = 45.0f;
 
+	// Probe Calibration (AlienIdleCalibration.cpp): now and then a running experiment offers a five-second
+	// timing challenge. Any attempt skips part of the remaining time; ignoring it costs nothing. One window
+	// at a time across all chambers, with a shared cooldown, so cycling labs gives no constant bonus.
+	inline constexpr float CalibrationFirstSeconds = 45.0f;    // first window of a run
+	inline constexpr float CalibrationCooldownSeconds = 60.0f; // after any calibration, manual or automatic
+	inline constexpr float CalibrationRetrySeconds = 30.0f;    // after a window is ignored and lapses
+	inline constexpr float CalibrationOfferSeconds = 30.0f;    // how long a window stays open
+	inline constexpr float CalibrationMinRemaining = 12.0f;    // experiment seconds left before a window is worth offering
+	inline constexpr float CalibrationChallengeSeconds = 5.0f; // the timing challenge; running out counts as a missed attempt
+	inline constexpr float CalibrationSweepSeconds = 0.9f;     // one pass of the cursor across the gauge
+	inline constexpr float CalibrationBandHalfWidth = 0.09f;   // gauge is 0..1
+	inline constexpr float CalibrationCoreHalfWidth = 0.03f;
+	inline constexpr float CalibrationBandMin = 0.2f;          // band centres are placed in [Min, 1 - Min]
+	/** Fraction of the remaining experiment time skipped, by ECalibrationGrade. */
+	inline constexpr float CalibrationFraction[] = { 0.08f, 0.15f, 0.25f, 0.15f, 0.06f };
+	static_assert(UE_ARRAY_COUNT(CalibrationFraction) == int32(ECalibrationGrade::Count));
+	// Calibration Desk: a technician takes windows the player leaves alone for a while.
+	inline constexpr float CalibrationTechnicianDelay = 15.0f;     // seconds the window waits for the player first
+	inline constexpr float CalibrationTechnicianPerBonus = 0.02f;  // extra fraction per point of station bonus
+	inline constexpr float CalibrationTechnicianMax = 0.12f;       // never as good as a careful manual stop (0.15+)
+	inline constexpr int32 CalibrationDeskManual = 3;              // desk unlocks after this many manual calibrations...
+	inline constexpr int32 CalibrationDeskExperiments = 40;        // ...or this many experiments in the run
+	inline constexpr int32 CalibrationRandomSeed = 4242;           // band placement only; never touches the main stream
+
 	// Saving: offline catch-up is capped (GDD default: 8 hours).
 	inline constexpr double OfflineCapSeconds = 8.0 * 60.0 * 60.0;
-	inline constexpr int32 SaveVersion = 10;
+	inline constexpr int32 SaveVersion = 11;
 
 	inline constexpr int32 RandomSeed = 7;
 

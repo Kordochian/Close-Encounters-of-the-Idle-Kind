@@ -66,6 +66,7 @@ enum class EStation : uint8
 	MemoryWipe,
 	Pressure,   // Oceanic: Pressure Control
 	Boiler,     // Antarctic: the Boiler Room
+	Calibration, // the Calibration Desk (optional post, once built): takes probe calibrations the player leaves
 };
 
 /** Antarctic: who gets the heat first. */
@@ -651,6 +652,36 @@ public:
 	void DevAddCaseSubject(int32 Case, int32 Region = -1);
 	void DevSetCaseAppearances(bool bEnabled) { bCaseAppearances = bEnabled; }
 
+	// Probe Calibration (AlienIdleCalibration.cpp): an optional five-second timing challenge on a running
+	// experiment. Any attempt skips part of its remaining time; ignoring the window costs nothing.
+	/** The chamber with an open calibration window, or INDEX_NONE. */
+	int32 GetCalibrationChamber() const { return CalibrationChamber; }
+	/** Seconds before the open window lapses (it waits while the challenge is on screen). */
+	float GetCalibrationOfferRemaining() const;
+	/** Centre of the highlighted band on the 0..1 gauge for the open window. */
+	float GetCalibrationBand() const { return CalibrationBand; }
+	bool IsCalibrationOpen() const { return bCalibrationOpen; }
+	/** The player opened the challenge: holds the window until Calibrate is called. */
+	bool BeginCalibration();
+	/** Grades a stop of the cursor at this gauge position against the open window's band. */
+	ECalibrationGrade GradeCalibration(float Cursor) const;
+	/** Applies a calibration to the open window's experiment. OutResult gets the result line (or why it failed). */
+	bool Calibrate(ECalibrationGrade Grade, FString* OutResult = nullptr);
+	/** One console line: window open, cooldown, or why none is offered. */
+	FString GetCalibrationStatusText() const;
+	int32 GetManualCalibrations() const { return ManualCalibrations; }
+	int32 GetTechnicianCalibrations() const { return TechnicianCalibrations; }
+	/** Experiment seconds skipped by calibrations this run. */
+	float GetCalibrationSecondsSaved() const { return CalibrationSecondsSaved; }
+	/** Fraction of the remaining time a Calibration Desk technician skips (0 when the desk is unstaffed). */
+	float GetTechnicianFraction() const;
+	static float GetCalibrationFraction(ECalibrationGrade Grade);
+	static const TCHAR* GetCalibrationGradeName(ECalibrationGrade Grade);
+	/** Dev/test: opens a window now on this chamber (or the one with the most time left when INDEX_NONE). */
+	bool DevOfferCalibration(int32 Chamber = INDEX_NONE);
+	/** Dev/test: no windows at all. */
+	void DevSetCalibrationEnabled(bool bEnabled) { bCalibrationEnabled = bEnabled; if (!bEnabled) { CalibrationChamber = INDEX_NONE; bCalibrationOpen = false; } }
+
 	// Encyclopedia
 	const TArray<FEncyclopediaEntry>& GetEncyclopedia() const { return Encyclopedia; }
 	static int32 GetEncyclopediaSize();
@@ -776,6 +807,8 @@ private:
 	void StepAchievements();
 	void StepTenure();
 	void StepOverheat();
+	void StepCalibration(float Dt);
+	void OfferCalibration(int32 Chamber);
 	void StepCaseDynamics(float Dt);
 	void MeetCase(FSpecimen& Subject, int32 Ufo);
 	int32 RollCaseAppearance(const TArray<FSpecimen>& Taken);
@@ -918,6 +951,23 @@ private:
 	bool bPeerReviewDone = false;
 	float CaseTrouble[AlienIdleTuning::NumCaseRelations] = {};
 	int32 RunCaseDiscoveries = 0;
+
+	// Probe Calibration (per run)
+	FRandomStream CalibrationRng;
+	int32 CalibrationChamber = INDEX_NONE;
+	/** Until the next window when none is open. */
+	float CalibrationTimer = AlienIdleTuning::CalibrationFirstSeconds;
+	/** Age of the open window; while the challenge is on screen, time since it opened. */
+	float CalibrationOfferAge = 0.0f;
+	float CalibrationBand = 0.5f;
+	/** The challenge is on screen. Not saved: a reload never leaves a window stuck open. */
+	bool bCalibrationOpen = false;
+	bool bCalibrationEnabled = true;
+	bool bAnnouncedCalibration = false;
+	bool bAnnouncedDesk = false;
+	int32 ManualCalibrations = 0;
+	int32 TechnicianCalibrations = 0;
+	float CalibrationSecondsSaved = 0.0f;
 
 	struct FAwaySnapshot
 	{

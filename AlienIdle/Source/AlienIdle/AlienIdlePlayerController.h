@@ -44,6 +44,10 @@ public:
 	UFUNCTION(Exec)
 	void AlienCase(int32 Case = -1);
 
+	/** Dev console: open a probe calibration window now (on the chamber with the most time left) and show the challenge. */
+	UFUNCTION(Exec)
+	void AlienCalibrate();
+
 	/** Dev console: grant research for testing upgrades. */
 	UFUNCTION(Exec)
 	void AlienAddResearch(float Amount);

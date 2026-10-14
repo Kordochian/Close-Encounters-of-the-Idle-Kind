@@ -195,6 +195,7 @@ FAlienIdleSim::FAlienIdleSim()
 {
 	Rng.Initialize(RandomSeed);
 	CaseRng.Initialize(CaseRandomSeed);
+	CalibrationRng.Initialize(CalibrationRandomSeed);
 	Energy = StartEnergy;
 	AddUfo();
 	Chambers.AddDefaulted(1);
@@ -270,6 +271,7 @@ void FAlienIdleSim::Step(float Dt)
 		StepUfo(i, Dt);
 	}
 	StepLab(Dt);
+	StepCalibration(Dt);
 	StepBottlenecks(Dt);
 
 	for (int32 i = 0; i < int32(ESpecimen::Count); ++i)
@@ -1926,7 +1928,8 @@ bool FAlienIdleSim::CanBuyBaseUpgrade(EBaseUpgrade Upgrade, FString* OutReason) 
 	const int32 Level = GetBaseLevel(Upgrade);
 	if (!IsBaseUpgradeAvailable(Upgrade))
 	{
-		return Fail(Upgrade == EBaseUpgrade::SonarArray ? TEXT("needs discovery 'Whale Song Transcripts' (Oceanic)")
+		return Fail(Upgrade == EBaseUpgrade::CalibrationDesk ? FString::Printf(TEXT("after %d probe calibrations by hand or %d experiments"), CalibrationDeskManual, CalibrationDeskExperiments)
+			: Upgrade == EBaseUpgrade::SonarArray ? TEXT("needs discovery 'Whale Song Transcripts' (Oceanic)")
 			: Upgrade == EBaseUpgrade::InkScreens ? TEXT("needs discovery 'Ink Diplomacy' (Oceanic)")
 			: Upgrade == EBaseUpgrade::InsulatedLabs ? TEXT("needs discovery 'Huddle Theory' (Antarctic)")
 			: Upgrade == EBaseUpgrade::CryoPods ? TEXT("needs discovery 'Blubber Economics' (Antarctic)")
@@ -2367,6 +2370,7 @@ FString FAlienIdleSim::GetBaseUpgradeEffectText(EBaseUpgrade Upgrade)
 	case EBaseUpgrade::CryoVault: return TEXT("+4 containment units; escapes halved; uses 0.5 energy/s per level.");
 	case EBaseUpgrade::InsulatedLabs: return TEXT("Experiments use 30% less energy. Labs 5% slower: the scientists keep napping.");
 	case EBaseUpgrade::CryoPods: return TEXT("+3 units; at any base, held specimens become preserved samples (up to +50% research after 2 min). Uses 0.5 energy/s.");
+	case EBaseUpgrade::CalibrationDesk: return TEXT("Opens the Calibration Desk post. A technician there takes calibration windows you leave for 15 s (6% of the remaining time, more with skill, at most 12%). Your own calibrations still do more.");
 	default: return FString();
 	}
 }
@@ -2409,6 +2413,8 @@ FString FAlienIdleSim::GetBaseUpgradeFlavor(EBaseUpgrade Upgrade, int32 NewLevel
 		return TEXT("Labs insulated with penguin-inspired cladding. Energy bills down; afternoon naps up.");
 	case EBaseUpgrade::CryoPods:
 		return TEXT("Cryo Pods installed. The specimens are chilled, the staff are chilled, the budget is not.");
+	case EBaseUpgrade::CalibrationDesk:
+		return TEXT("Calibration Desk installed. Technicians now calibrate the probes by feel, and they feel fine about it.");
 	default:
 		return FString();
 	}
@@ -2477,6 +2483,10 @@ TArray<FAssignment> FAlienIdleSim::GetAllStations() const
 	{
 		Stations.Add({ EStation::Boiler, 0 });
 	}
+	if (GetBaseLevel(EBaseUpgrade::CalibrationDesk) > 0)
+	{
+		Stations.Add({ EStation::Calibration, 0 });
+	}
 	return Stations;
 }
 
@@ -2491,6 +2501,7 @@ FString FAlienIdleSim::GetStationName(const FAssignment& Where) const
 	case EStation::MemoryWipe: return TEXT("Memory-wipe station");
 	case EStation::Pressure: return TEXT("Pressure Control");
 	case EStation::Boiler: return TEXT("Boiler Room");
+	case EStation::Calibration: return TEXT("Calibration Desk");
 	default: return TEXT("Unassigned");
 	}
 }
@@ -2543,6 +2554,7 @@ FString FAlienIdleSim::GetStationStaffingText(const FAssignment& Where) const
 	case EStation::Containment: Effect = FString::Printf(TEXT("+%d units, escapes x%.2f"), FMath::FloorToInt32(Bonus * ContainmentUnitsPerBonus), 1.0f / (1.0f + Bonus)); break;
 	case EStation::Power: Effect = FString::Printf(TEXT("energy +%.0f%%"), 100.0f * PowerOutputPerBonus * Bonus); break;
 	case EStation::MemoryWipe: Effect = FString::Printf(TEXT("-%.1f suspicion per return"), WipeSuspicionPerBonus * Bonus); break;
+	case EStation::Calibration: Effect = FString::Printf(TEXT("takes windows left for %.0f s, skipping %.0f%% of the remaining time"), CalibrationTechnicianDelay, 100.0f * GetTechnicianFraction()); break;
 	default: break;
 	}
 	return FString::Printf(TEXT("%s: %d/%d crew, %s"), *GetStationName(Where), Count, MaxCrewPerStation, *Effect);
@@ -2847,9 +2859,9 @@ void FAlienIdleSim::StepBottlenecks(float Dt)
 
 	for (const FAssignment& Station : GetAllStations())
 	{
-		if (Station.Station == EStation::Containment && Containment.Num() == 0)
+		if ((Station.Station == EStation::Containment && Containment.Num() == 0) || Station.Station == EStation::Calibration)
 		{
-			continue; // an empty habitat needs no warden
+			continue; // an empty habitat needs no warden; the Calibration Desk is optional
 		}
 		// Weight by impact: an idle ship, lab or generator stops work; a missing warden or wipe operator only adds risk.
 		const float Impact = Station.Station == EStation::MemoryWipe ? 0.25f : Station.Station == EStation::Containment ? 0.5f : 1.0f;
@@ -2939,7 +2951,7 @@ FString FAlienIdleSim::GetBottleneckText() const
 	case EBottleneck::Crew:
 		for (const FAssignment& Station : GetAllStations())
 		{
-			if (!IsStationStaffed(Station) && !(Station.Station == EStation::Containment && Containment.Num() == 0))
+			if (!IsStationStaffed(Station) && !(Station.Station == EStation::Containment && Containment.Num() == 0) && Station.Station != EStation::Calibration)
 			{
 				return FString::Printf(TEXT("Crew: %s is unstaffed. Management considers this sustainable."), *GetStationName(Station));
 			}
@@ -2997,7 +3009,7 @@ FString FAlienIdleSim::GetRecommendation() const
 		FString Where = TEXT("the empty post");
 		for (const FAssignment& Station : GetAllStations())
 		{
-			if (!IsStationStaffed(Station) && !(Station.Station == EStation::Containment && Containment.Num() == 0))
+			if (!IsStationStaffed(Station) && !(Station.Station == EStation::Containment && Containment.Num() == 0) && Station.Station != EStation::Calibration)
 			{
 				Where = GetStationName(Station);
 				break;
@@ -5034,6 +5046,8 @@ bool FAlienIdleSim::IsBaseUpgradeAvailable(EBaseUpgrade Upgrade) const
 		return Career.Published[int32(EDiscovery::WhaleSong)];
 	case EBaseUpgrade::InkScreens:
 		return Career.Published[int32(EDiscovery::InkDiplomacy)];
+	case EBaseUpgrade::CalibrationDesk:
+		return ManualCalibrations >= CalibrationDeskManual || TotalExperiments >= CalibrationDeskExperiments || BaseLevels[int32(EBaseUpgrade::CalibrationDesk)] > 0;
 	default:
 		return true;
 	}
