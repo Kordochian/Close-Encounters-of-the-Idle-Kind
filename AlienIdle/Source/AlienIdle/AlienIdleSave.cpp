@@ -244,7 +244,7 @@ void FAlienIdleSim::Serialize(FArchive& Ar)
 
 	Ar << bMiddleManagement << MeetingTimer << MeetingRemaining;
 
-	Ar << Offers << ActiveContract << bHasActiveContract << ContractsCompleted << ContractsGenerated;
+	Ar << Offers << ActiveContract << bHasActiveContract << ContractsCompleted << ContractsGenerated << Unclaimed;
 
 	Ar << Incident << IncidentCooldown << bIncidentsEnabled << Escapes << IncidentCount << ResearchEarned;
 

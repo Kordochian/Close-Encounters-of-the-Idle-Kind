@@ -553,6 +553,12 @@ public:
 	bool AcceptContract(int32 Offer);
 	void AbandonContract();
 	int32 GetContractsCompleted() const { return ContractsCompleted; }
+	/** Finished contracts wait here until their reward is claimed. With auto-accept on, the contract office claims them itself. */
+	const TArray<FContract>& GetUnclaimedContracts() const { return Unclaimed; }
+	double GetUnclaimedReward() const;
+	bool ClaimContract(int32 Index);
+	/** Claims every finished contract; returns how many. */
+	int32 ClaimAllContracts();
 
 	// Incidents
 	const FActiveIncident& GetIncident() const { return Incident; }
@@ -884,6 +890,7 @@ private:
 	bool bHasActiveContract = false;
 	int32 ContractsCompleted = 0;
 	int32 ContractsGenerated = 0;
+	TArray<FContract> Unclaimed;
 
 	FActiveIncident Incident;
 	float IncidentCooldown = AlienIdleTuning::FirstIncidentSeconds;

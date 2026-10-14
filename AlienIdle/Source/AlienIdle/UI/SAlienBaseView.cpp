@@ -39,6 +39,23 @@ namespace
 	/** Probe Calibration tag over a lab chamber, in base-local coordinates (canvas = this + BaseOrigin). */
 	FVector2f CalibrationTagPos(int32 Chamber) { return FVector2f(725.0f + Chamber * 92.0f, 458.0f) + LabOffset; }
 	const FVector2f CalibrationTagSize(80.0f, 28.0f);
+
+	/** Click area of a base station (not a UFO) in base-local coordinates (canvas = this + BaseOrigin). */
+	bool StationBounds(const FAssignment& Station, FBox2f& Out)
+	{
+		auto Rect = [&Out](float X, float Y, float W, float H, const FVector2f& Room) { Out = FBox2f(FVector2f(X, Y) + Room, FVector2f(X + W, Y + H) + Room); return true; };
+		switch (Station.Station)
+		{
+		case EStation::Chamber: return Rect(722.0f + Station.Index * 92.0f, 440.0f, 86.0f, 92.0f, LabOffset);
+		case EStation::Calibration: return Rect(672.0f, 455.0f, 48.0f, 40.0f, LabOffset);
+		case EStation::Containment: return Rect(975.0f, 295.0f, 260.0f, 115.0f, ContainmentOffset);
+		case EStation::Power: return Rect(1040.0f, 420.0f, 220.0f, 110.0f, GeneratorOffset);
+		case EStation::MemoryWipe: return Rect(1100.0f, 560.0f, 160.0f, 80.0f, BreakRoomOffset);
+		case EStation::Pressure: return Rect(610.0f, 315.0f, 80.0f, 40.0f, FVector2f::ZeroVector);
+		case EStation::Boiler: return Rect(570.0f, 315.0f, 80.0f, 40.0f, FVector2f::ZeroVector);
+		default: return false;
+		}
+	}
 	/** The hunting grounds: three regions per location, region 0 nearest the base. */
 	constexpr float RegionWidth = 220.0f;
 
@@ -301,6 +318,8 @@ void SAlienBaseView::Construct(const FArguments& InArgs)
 {
 	Sim = InArgs._Sim;
 	OnCalibrationClicked = InArgs._OnCalibrationClicked;
+	OnStationClicked = InArgs._OnStationClicked;
+	GetSelectedStation = InArgs._GetSelectedStation;
 	check(Sim.IsValid());
 	for (int32 Radius = 1; Radius <= 30; ++Radius)
 	{
@@ -427,24 +446,58 @@ FReply SAlienBaseView::OnMouseButtonUp(const FGeometry& MyGeometry, const FPoint
 	if (bDragging)
 	{
 		bDragging = false;
+		if (bPressMoved || MouseEvent.GetEffectingButton() != EKeys::LeftMouseButton)
+		{
+			return FReply::Handled().ReleaseMouseCapture();
+		}
+		float Scale;
+		FVector2f Offset;
+		GetView(MyGeometry.GetLocalSize(), Scale, Offset);
+		const FVector2f Point = (MyGeometry.AbsoluteToLocal(MouseEvent.GetScreenSpacePosition()) - Offset) / Scale;
 		const int32 Chamber = Sim->GetCalibrationChamber();
-		if (!bPressMoved && MouseEvent.GetEffectingButton() == EKeys::LeftMouseButton && Chamber != INDEX_NONE && !Sim->IsCalibrationOpen() && OnCalibrationClicked)
+		if (Chamber != INDEX_NONE && !Sim->IsCalibrationOpen() && OnCalibrationClicked)
 		{
 			// A click on the chamber's calibration tag opens the challenge.
-			float Scale;
-			FVector2f Offset;
-			GetView(MyGeometry.GetLocalSize(), Scale, Offset);
-			const FVector2f Point = (MyGeometry.AbsoluteToLocal(MouseEvent.GetScreenSpacePosition()) - Offset) / Scale;
 			const FVector2f TagPos = CalibrationTagPos(Chamber) + BaseOrigin;
 			const float Slack = 6.0f;
 			if (Point.X >= TagPos.X - Slack && Point.X <= TagPos.X + CalibrationTagSize.X + Slack && Point.Y >= TagPos.Y - Slack && Point.Y <= TagPos.Y + CalibrationTagSize.Y + Slack)
 			{
 				OnCalibrationClicked();
+				return FReply::Handled().ReleaseMouseCapture();
 			}
+		}
+		// Otherwise a click on a UFO or a station selects it in the console.
+		FAssignment Hit;
+		if (OnStationClicked && HitStation(Point, Hit))
+		{
+			OnStationClicked(Hit);
 		}
 		return FReply::Handled().ReleaseMouseCapture();
 	}
 	return FReply::Unhandled();
+}
+
+bool SAlienBaseView::HitStation(const FVector2f& CanvasPoint, FAssignment& OutStation) const
+{
+	// Ships first: they fly over the rooms.
+	for (int32 u = FMath::Min(UfoBounds.Num(), Sim->GetNumUfos()) - 1; u >= 0; --u)
+	{
+		if (UfoBounds[u].IsInside(CanvasPoint))
+		{
+			OutStation = { EStation::Ufo, u };
+			return true;
+		}
+	}
+	for (const FAssignment& Station : Sim->GetAllStations())
+	{
+		FBox2f Bounds(ForceInit);
+		if (Station.Station != EStation::Ufo && StationBounds(Station, Bounds) && Bounds.ShiftBy(BaseOrigin).IsInside(CanvasPoint))
+		{
+			OutStation = Station;
+			return true;
+		}
+	}
+	return false;
 }
 
 FReply SAlienBaseView::OnMouseMove(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent)
@@ -1049,6 +1102,7 @@ int32 SAlienBaseView::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedG
 	// UFOs fly in canvas coordinates: from the (shifted) hangar out to the hunting grounds.
 	P.Shift = FVector2f::ZeroVector;
 	bool bAnyWaiting = false;
+	UfoBounds.SetNum(S.GetNumUfos());
 	for (int32 u = 0; u < S.GetNumUfos(); ++u)
 	{
 		const FUfo& Ufo = S.GetUfo(u);
@@ -1075,6 +1129,7 @@ int32 SAlienBaseView::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedG
 			Pose = Sprites.PoseUfo(u, Pos, Time, bFlying || Ufo.State == EUfoState::Capturing);
 			Pos = Pose.Pos;
 		}
+		UfoBounds[u] = FBox2f(Pos + FVector2f(-50.0f, -52.0f), Pos + FVector2f(50.0f, 24.0f));
 		auto OnHull = [&](float DX, float DY) { return bSprite ? Pose.ToCanvas(FVector2f(48.0f + DX, 26.0f + DY)) : Pos + FVector2f(DX, DY); };
 		const int32 Thrusters = S.GetShipLevel(u, EShipSystem::Thrusters);
 		const int32 Tractor = S.GetShipLevel(u, EShipSystem::Tractor);
@@ -1213,6 +1268,33 @@ int32 SAlienBaseView::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedG
 		if (Dot == 0)
 		{
 			P.Text(Anchor.X - 6.0f, Anchor.Y - 7.0f, TEXT("UNSTAFFED"), 7, WarnColor);
+		}
+	}
+
+	// The console's selection: a thin bracket around the selected UFO or station.
+	if (GetSelectedStation)
+	{
+		const FAssignment Selected = GetSelectedStation();
+		FBox2f Bounds(ForceInit);
+		bool bFound = false;
+		if (Selected.Station == EStation::Ufo && UfoBounds.IsValidIndex(Selected.Index))
+		{
+			Bounds = UfoBounds[Selected.Index].ShiftBy(-BaseOrigin); // P.Shift is BaseOrigin here
+			bFound = true;
+		}
+		else if (Selected.Station != EStation::Ufo)
+		{
+			bFound = StationBounds(Selected, Bounds);
+		}
+		if (bFound)
+		{
+			const FLinearColor Bracket(0.4f, 1.0f, 0.55f, 0.55f + 0.3f * FMath::Abs(FMath::Sin(Time * 2.0f)));
+			const FVector2f Min = Bounds.Min;
+			const FVector2f Sz = Bounds.GetSize();
+			P.Box(Min.X, Min.Y, Sz.X, 2, Bracket);
+			P.Box(Min.X, Min.Y + Sz.Y - 2, Sz.X, 2, Bracket);
+			P.Box(Min.X, Min.Y, 2, Sz.Y, Bracket);
+			P.Box(Min.X + Sz.X - 2, Min.Y, 2, Sz.Y, Bracket);
 		}
 	}
 

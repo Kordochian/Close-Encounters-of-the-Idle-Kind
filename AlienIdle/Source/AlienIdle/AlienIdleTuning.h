@@ -1146,7 +1146,7 @@ namespace AlienIdleTuning
 
 	// Saving: offline catch-up is capped (GDD default: 8 hours).
 	inline constexpr double OfflineCapSeconds = 8.0 * 60.0 * 60.0;
-	inline constexpr int32 SaveVersion = 11;
+	inline constexpr int32 SaveVersion = 12;
 
 	inline constexpr int32 RandomSeed = 7;
 

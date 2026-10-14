@@ -285,6 +285,8 @@ bool FAlienIdleContractChainTest::RunTest(const FString& Parameters)
 	Sim.DevAddEnergy(1000.0);
 	TestTrue(TEXT("Contract completes"), RunUntil(Sim, [&] { return Sim.GetContractsCompleted() == 1; }));
 	TestFalse(TEXT("No active contract after completion"), Sim.HasActiveContract());
+	TestEqual(TEXT("The reward waits to be claimed"), Sim.GetUnclaimedContracts().Num(), 1);
+	TestEqual(TEXT("Claiming pays it"), Sim.ClaimAllContracts(), 1);
 	const double Value = Sim.GetRegionDef(Sim.GetHomeRegion(ESpecimen::Human)).Value;
 	TestEqual(TEXT("Routine research (times region value) plus contract reward"), Sim.GetResearch() - Before,
 		FMath::RoundToDouble(AlienIdleTuning::Specimen(ESpecimen::Human).Research * Value) + 170.0);
@@ -313,6 +315,12 @@ bool FAlienIdleContractModeTest::RunTest(const FString& Parameters)
 	Sim.Tick(0.1f);
 	TestEqual(TEXT("Contract mode retargets the ship to cows"), Sim.GetUfo(0).TripTarget, ESpecimen::Cow);
 	TestTrue(TEXT("Contract finished without player input"), RunUntil(Sim, [&] { return Sim.GetContractsCompleted() == 1; }, 300.0f));
+	TestEqual(TEXT("Without auto-accept the reward waits to be claimed"), Sim.GetUnclaimedContracts().Num(), 1);
+	const double BeforeClaim = Sim.GetResearch();
+	Sim.SetAutoContracts(true);
+	Sim.Tick(0.1f);
+	TestEqual(TEXT("Auto-accept claims finished contracts"), Sim.GetUnclaimedContracts().Num(), 0);
+	TestTrue(TEXT("The claim paid the reward"), Sim.GetResearch() > BeforeClaim);
 	return true;
 }
 
@@ -563,7 +571,8 @@ namespace
 				}
 			}
 
-			// Contracts: take the first one that fits the strategy.
+			// Contracts: claim what is finished, then take the first offer that fits the strategy.
+			Sim.ClaimAllContracts();
 			if (!Sim.HasActiveContract())
 			{
 				for (int32 o = 0; o < Sim.GetContractOffers().Num(); ++o)

@@ -1788,12 +1788,52 @@ void FAlienIdleSim::CountTowardContract(const FSpecimen& Subject)
 	{
 		ActiveContract.Reward = FMath::RoundToDouble(ActiveContract.Reward * EarthCondition(Condition).ContractReward
 			* (HasCaseDiscovery(CasePell) ? CaseContractMultiplier : 1.0));
-		Research += ActiveContract.Reward;
-		ResearchEarned += ActiveContract.Reward;
 		++ContractsCompleted;
 		bHasActiveContract = false;
-		AddLog(FString::Printf(TEXT("Contract complete: '%s'. Research +%.0f. The Academy thanks you with a form."), *ActiveContract.Title, ActiveContract.Reward));
+		Unclaimed.Add(ActiveContract);
+		if (bAutoContracts && IsAutomationUnlocked())
+		{
+			ClaimContract(Unclaimed.Num() - 1);
+		}
+		else
+		{
+			AddLog(FString::Printf(TEXT("Contract complete: '%s'. %.0f research waiting to be claimed, in triplicate."), *ActiveContract.Title, ActiveContract.Reward));
+		}
 	}
+}
+
+double FAlienIdleSim::GetUnclaimedReward() const
+{
+	double Total = 0.0;
+	for (const FContract& Contract : Unclaimed)
+	{
+		Total += Contract.Reward;
+	}
+	return Total;
+}
+
+bool FAlienIdleSim::ClaimContract(int32 Index)
+{
+	if (!Unclaimed.IsValidIndex(Index))
+	{
+		return false;
+	}
+	const FContract Contract = Unclaimed[Index];
+	Unclaimed.RemoveAt(Index);
+	Research += Contract.Reward;
+	ResearchEarned += Contract.Reward;
+	AddLog(FString::Printf(TEXT("Contract claimed: '%s'. Research +%.0f. The Academy thanks you with a form."), *Contract.Title, Contract.Reward));
+	return true;
+}
+
+int32 FAlienIdleSim::ClaimAllContracts()
+{
+	int32 Claimed = 0;
+	while (ClaimContract(0))
+	{
+		++Claimed;
+	}
+	return Claimed;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -4944,6 +4984,10 @@ FString FAlienIdleSim::GetApproachReading() const
 
 void FAlienIdleSim::StepAutoContract()
 {
+	if (bAutoContracts && IsAutomationUnlocked() && Unclaimed.Num() > 0)
+	{
+		ClaimAllContracts();
+	}
 	if (!bAutoContracts || bHasActiveContract || !IsAutomationUnlocked() || Offers.Num() == 0)
 	{
 		return;

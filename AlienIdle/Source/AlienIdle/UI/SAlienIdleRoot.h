@@ -8,6 +8,17 @@
 class FAlienIdleSim;
 class SButton;
 class SVerticalBox;
+class SWidgetSwitcher;
+
+/** The console's tabs, left to right. */
+enum class EConsoleTab : uint8
+{
+	Operations,
+	Contracts,
+	Thesis,
+	Collaborations,
+	Count,
+};
 
 /** Full-screen layout: the mountain cutaway on the left, the officer's console on the right. */
 class SAlienIdleRoot : public SCompoundWidget
@@ -31,6 +42,8 @@ public:
 	void OpenCalibration();
 
 	virtual void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) override;
+	/** Gamepad shoulder buttons switch tabs (keys bubble up here from the focused control). */
+	virtual FReply OnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent) override;
 
 	/** Called when the player acknowledges the memo. */
 	TFunction<void()> OnAwayReportDismissed;
@@ -40,6 +53,25 @@ private:
 	TSharedRef<SWidget> MakeLine(TFunction<FText()> TextGetter, TFunction<FSlateColor()> ColorGetter = nullptr) const;
 	TSharedRef<SButton> MakeButton(TFunction<FText()> Label, TFunction<bool()> IsHighlighted, TFunction<void()> OnClick) const;
 	TSharedRef<SWidget> MakeStepper(TFunction<FText()> Label, TFunction<void(int32)> OnStep) const;
+	/** A compact upgrade card: title and cost on one line, the next improvement under it, then any blocker. */
+	TSharedRef<SButton> MakeUpgradeCard(TFunction<FString()> Title, TFunction<FString()> Cost, TFunction<FString()> Next,
+		TFunction<FString()> Blocker, TFunction<bool()> CanBuy, TFunction<void()> OnClick) const;
+
+	// Tabs and the Operations selection
+	void SetTab(int32 Tab);
+	/** Short badge text when the tab has an action waiting (finished contract, ready promotion, race offer); empty otherwise. */
+	FString GetTabBadge(int32 Tab) const;
+	void SelectStation(const FAssignment& Station, bool bShowOperations);
+	void StepSelection(int32 Direction);
+	/** Falls back to the first UFO when the selected station no longer exists (promotion, fewer chambers). */
+	void ValidateSelection();
+	FString GetSelectionLabel() const;
+	FString GetSelectionStatus() const;
+	bool IsSelectionBlocked() const;
+	/** 0..1 for the selection's current activity, or negative when there is nothing in progress. */
+	float GetSelectionProgress() const;
+	/** Base upgrades are listed with the station they improve. */
+	bool IsBaseUpgradeShown(EBaseUpgrade Upgrade) const;
 
 	void AddShipUpgradeButton(const TSharedRef<SVerticalBox>& Box, EShipSystem System);
 	void AddBaseUpgradeButton(const TSharedRef<SVerticalBox>& Box, EBaseUpgrade Upgrade);
@@ -59,8 +91,16 @@ private:
 
 	TSharedPtr<FAlienIdleSim> Sim;
 	TSharedPtr<SButton> LaunchButton;
-	/** UFO shown in the fleet section. */
+	/** The UFO or station shown in Operations. SelectedUfo is the last UFO chosen (case-file scans use it too). */
+	FAssignment Selected = { EStation::Ufo, 0 };
 	int32 SelectedUfo = 0;
+	bool bCrewExpanded = false;
+	int32 ActiveTab = 0;
+	TSharedPtr<SWidgetSwitcher> TabSwitcher;
+	TSharedPtr<SButton> TabButtons[int32(EConsoleTab::Count)];
+	/** What a promotion would pay right now, refreshed once a second while the Thesis tab is open. */
+	FPromotionReview CachedReview;
+	double ReviewCacheTime = 0.0;
 
 	FAwayReport AwayReport;
 	bool bShowingReport = false;

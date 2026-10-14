@@ -7,6 +7,8 @@
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Layout/SScrollBox.h"
+#include "Widgets/Layout/SWidgetSwitcher.h"
+#include "Widgets/Notifications/SProgressBar.h"
 #include "Widgets/SOverlay.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Widgets/SBoxPanel.h"
@@ -24,9 +26,8 @@ namespace
 
 	constexpr int32 VisibleLogLines = 6;
 	constexpr int32 VisibleResultLines = 12;
-	constexpr int32 MaxStationsShown = 12;
 	constexpr int32 MaxCrewShown = 16;
-	constexpr int32 MaxChambersShown = 3;
+	constexpr int32 MaxUnclaimedShown = 4;
 
 	const FLinearColor PanelColor = Srgb(0.035f, 0.04f, 0.055f);
 	const FLinearColor ResultsColor = Srgb(0.02f, 0.025f, 0.035f);
@@ -34,6 +35,8 @@ namespace
 	const FLinearColor TextColor = Srgb(0.85f, 0.87f, 0.9f);
 	const FLinearColor MutedColor = Srgb(0.55f, 0.58f, 0.62f);
 	const FLinearColor WarnColor = Srgb(1.0f, 0.65f, 0.35f);
+	const FLinearColor TabColor = Srgb(0.35f, 0.37f, 0.42f);
+	const FLinearColor TabActiveColor = Srgb(0.55f, 0.95f, 0.6f);
 
 	FSlateFontInfo Font(int32 Size, const FName Style = TEXT("Regular"))
 	{
@@ -57,50 +60,474 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 	Sim = InArgs._Sim;
 	check(Sim.IsValid());
 
-	TSharedRef<SVerticalBox> Panel = SNew(SVerticalBox);
-	auto Add = [&Panel](const TSharedRef<SWidget>& Widget, const FMargin& Padding = FMargin(0))
+	// Always visible above the tabs: where we are, what we have, and what is holding us back.
+	TSharedRef<SVerticalBox> Header = SNew(SVerticalBox);
+	auto AddHeader = [&Header](const TSharedRef<SWidget>& Widget, const FMargin& Padding = FMargin(0))
 	{
-		Panel->AddSlot().AutoHeight().Padding(Padding)[Widget];
+		Header->AddSlot().AutoHeight().Padding(Padding)[Widget];
 	};
-
-	// Header and resources
-	Add(SNew(STextBlock).Font(Font(16, TEXT("Bold"))).ColorAndOpacity(HeadingColor)
+	AddHeader(SNew(STextBlock).Font(Font(16, TEXT("Bold"))).ColorAndOpacity(HeadingColor)
 		.Text_Lambda([this] { return Str(FString(AlienIdleTuning::LocationNames[int32(Sim->GetLocation())]).ToUpper()); }));
-	Add(SNew(STextBlock).Font(Font(10)).ColorAndOpacity(MutedColor)
+	AddHeader(SNew(STextBlock).Font(Font(10)).ColorAndOpacity(MutedColor)
 		.Text_Lambda([this]
 		{
 			return Str(FString::Printf(TEXT("Research Officer Console, %s grade. Run %d, Research Grants %d."),
 				*Sim->GetRankName(), Sim->GetCareer().Run, Sim->GetCareer().Grants));
-		}), FMargin(0, 0, 0, 10));
-
-	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Resources", "RESOURCES")));
-	Add(MakeLine([this]
+		}), FMargin(0, 0, 0, 4));
+	AddHeader(MakeLine([this]
 	{
 		return Str(FString::Printf(TEXT("Energy %.0f / %.0f  (+%.0f/s)     Research %.0f"), Sim->GetEnergy(), Sim->GetEnergyCap(), Sim->GetEnergyPerSecond(), Sim->GetResearch()));
 	}));
-	Add(MakeLine([this]
+	AddHeader(MakeLine([this] { return Str(Sim->GetBottleneckText()); },
+		[this] { return FSlateColor(Sim->GetCurrentBottleneck() == EBottleneck::None ? MutedColor : WarnColor); }), FMargin(0, 2, 0, 8));
+
+	TSharedRef<SVerticalBox> Operations = SNew(SVerticalBox);
+	TSharedRef<SVerticalBox> Contracts = SNew(SVerticalBox);
+	TSharedRef<SVerticalBox> Thesis = SNew(SVerticalBox);
+	TSharedRef<SVerticalBox> Collaborations = SNew(SVerticalBox);
+	// Each tab's widgets are added to the box that is current; Panel starts on Operations.
+	TSharedRef<SVerticalBox> Panel = Operations;
+	auto Add = [&Panel](const TSharedRef<SWidget>& Widget, const FMargin& Padding = FMargin(0))
 	{
-		FString Line = TEXT("Experiments:");
+		Panel->AddSlot().AutoHeight().Padding(Padding)[Widget];
+	};
+	auto Shown = [](TFunction<bool()> Condition)
+	{
+		return TAttribute<EVisibility>::CreateLambda([Condition = MoveTemp(Condition)] { return Condition() ? EVisibility::Visible : EVisibility::Collapsed; });
+	};
+	auto IsUfo = [this] { return Selected.Station == EStation::Ufo; };
+	auto IsAt = [this](EStation Station) { return [this, Station] { return Selected.Station == Station; }; };
+
+	// =============================================================================================
+	// OPERATIONS: the selected UFO or station, its crew, its orders and its upgrades, then base-wide work.
+
+	// Incidents interrupt everything, so they sit above the selector while they last.
+	Add(SNew(SBox)
+		.Visibility_Lambda([this] { return Sim->GetIncident().Type != EIncident::None ? EVisibility::Visible : EVisibility::Collapsed; })
+		[
+			SNew(SVerticalBox)
+			+ SVerticalBox::Slot().AutoHeight()[ MakeHeading(NSLOCTEXT("AlienIdle", "Incident", "INCIDENT")) ]
+			+ SVerticalBox::Slot().AutoHeight()[ MakeLine([this] { return Str(Sim->GetIncidentText() + TEXT(". Clears by itself.")); }, [] { return FSlateColor(WarnColor); }) ]
+			+ SVerticalBox::Slot().AutoHeight().Padding(0, 2, 0, 8)
+			[
+				MakeButton([this]
+				{
+					FString Reason;
+					return Sim->CanResolveIncident(&Reason)
+						? Str(FString::Printf(TEXT("Intervene now (%.0f research)"), AlienIdleTuning::IncidentResolveCost))
+						: Str(FString::Printf(TEXT("Intervene: %s"), *Reason));
+				}, [this] { return Sim->CanResolveIncident(); }, [this] { Sim->ResolveIncident(); })
+			]
+		]);
+
+	// 1. Selector
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Select", "SELECT")));
+	Add(MakeStepper([this] { return Str(GetSelectionLabel()); }, [this](int32 Direction) { StepSelection(Direction); }));
+	Add(MakeLine([] { return Str(TEXT("Or click a ship or room in the base.")); }, [] { return FSlateColor(MutedColor); }), FMargin(0, 1, 0, 8));
+
+	// 2. Status: current activity, progress and any blocker
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "SelectedStatus", "STATUS")));
+	Add(MakeLine([this] { return Str(GetSelectionStatus()); }, [this] { return FSlateColor(IsSelectionBlocked() ? WarnColor : TextColor); }), FMargin(0, 1));
+	Add(SNew(SBox)
+		.Visibility_Lambda([this] { return GetSelectionProgress() >= 0.0f ? EVisibility::Visible : EVisibility::Collapsed; })
+		.HeightOverride(6.0f)
+		[
+			SNew(SProgressBar)
+			.Percent_Lambda([this] { return TOptional<float>(FMath::Max(0.0f, GetSelectionProgress())); })
+			.FillColorAndOpacity(FSlateColor(HeadingColor))
+		], FMargin(0, 2, 0, 2));
+	Add(SNew(SBox).Visibility(Shown(IsUfo))
+		[
+			MakeLine([this]
+			{
+				const int32 U = SelectedUfo;
+				return Str(FString::Printf(TEXT("Slots %d/%d   Tractor %d   Cargo %d   Flight x%.2f   Suspicion x%.2f"),
+					Sim->GetShipSlotsUsed(U), Sim->GetShipSlots(), Sim->GetTractorStrength(U), Sim->GetCargoCapacity(U),
+					Sim->GetFlightSeconds(U, ESpecimen::Squirrel) / AlienIdleTuning::Specimen(ESpecimen::Squirrel).FlightSeconds, Sim->GetSuspicionMultiplier(U)));
+			}, [] { return FSlateColor(MutedColor); })
+		], FMargin(0, 1));
+	// Probe Calibration: optional. The window lapses on its own and research carries on regardless.
+	Add(SNew(SBox)
+		.Visibility_Lambda([this] { return Selected.Station == EStation::Chamber && Sim->GetCalibrationChamber() == Selected.Index && !Sim->IsCalibrationOpen() ? EVisibility::Visible : EVisibility::Collapsed; })
+		[
+			MakeButton([this]
+			{
+				return Str(FString::Printf(TEXT("CALIBRATION AVAILABLE (%.0f s): open the probe for a five-second calibration"), Sim->GetCalibrationOfferRemaining()));
+			}, [] { return true; }, [this] { OpenCalibration(); })
+		], FMargin(0, 2));
+	// A calibration window on another chamber is worth a pointer from wherever the player is looking.
+	Add(SNew(SBox)
+		.Visibility_Lambda([this]
+		{
+			const int32 Chamber = Sim->GetCalibrationChamber();
+			return Chamber != INDEX_NONE && !Sim->IsCalibrationOpen() && !(Selected.Station == EStation::Chamber && Selected.Index == Chamber) ? EVisibility::Visible : EVisibility::Collapsed;
+		})
+		[
+			MakeButton([this]
+			{
+				return Str(FString::Printf(TEXT("Calibration available on lab chamber %d (%.0f s): open it"), Sim->GetCalibrationChamber() + 1, Sim->GetCalibrationOfferRemaining()));
+			}, [] { return false; }, [this] { OpenCalibration(); })
+		], FMargin(0, 2));
+	Add(SNullWidget::NullWidget, FMargin(0, 0, 0, 8));
+
+	// 3. Crew: the summary always shows; the assignment list folds away
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Crew", "CREW")));
+	Add(MakeLine([this] { return Str(Sim->GetStationStaffingText(Selected)); },
+		[this] { return FSlateColor(Sim->IsStationStaffed(Selected) ? TextColor : WarnColor); }), FMargin(0, 1));
+	Add(MakeButton([this]
+	{
+		int32 Here = 0;
+		for (const FCrewMember& Member : Sim->GetCrew())
+		{
+			Here += Member.Assignment.Station != EStation::None && Member.Assignment == Selected ? 1 : 0;
+		}
+		return Str(FString::Printf(TEXT("%s assignments (%d here, %d of %d crew idle)"), bCrewExpanded ? TEXT("Hide") : TEXT("Show"),
+			Here, Sim->GetIdleCrew(), Sim->GetCrew().Num()));
+	}, [this] { return bCrewExpanded; }, [this] { bCrewExpanded = !bCrewExpanded; }), FMargin(0, 2));
+	{
+		TSharedRef<SVerticalBox> CrewList = SNew(SVerticalBox);
+		CrewList->AddSlot().AutoHeight().Padding(0, 2)
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().FillWidth(1.0f).Padding(0, 0, 4, 0)
+			[
+				MakeButton([this]
+				{
+					FString Reason;
+					return Sim->CanRecruit(&Reason)
+						? Str(FString::Printf(TEXT("Request Additional Personnel (%.0f research)"), Sim->GetRecruitCost()))
+						: Str(FString::Printf(TEXT("Request Additional Personnel: %s"), *Reason));
+				}, [this] { return Sim->CanRecruit(); }, [this] { Sim->Recruit(); })
+			]
+			+ SHorizontalBox::Slot().AutoWidth()
+			[
+				MakeButton([this] { return Str(Sim->IsAutoAssignOn() ? TEXT("Auto-assign: ON") : TEXT("Auto-assign: OFF")); },
+					[this] { return Sim->IsAutoAssignOn(); }, [this] { Sim->SetAutoAssign(!Sim->IsAutoAssignOn()); })
+			]
+		];
+		CrewList->AddSlot().AutoHeight().Padding(0, 1)
+		[
+			MakeLine([this]
+			{
+				return Str(FString::Printf(TEXT("Wanted here: a %s. Anyone can staff a post; specialists add bonuses."),
+					*FString(FAlienIdleSim::GetSpecialtyName(FAlienIdleSim::GetStationSpecialty(Selected.Station))).ToLower()));
+			}, [] { return FSlateColor(MutedColor); })
+		];
+		for (int32 i = 0; i < MaxCrewShown; ++i)
+		{
+			auto IsHere = [this, i]
+			{
+				const TArray<FCrewMember>& Crew = Sim->GetCrew();
+				return Crew.IsValidIndex(i) && Crew[i].Assignment.Station != EStation::None && Crew[i].Assignment == Selected;
+			};
+			CrewList->AddSlot().AutoHeight().Padding(0, 1)
+			[
+				SNew(SHorizontalBox)
+				.Visibility_Lambda([this, i] { return i < Sim->GetCrew().Num() ? EVisibility::Visible : EVisibility::Collapsed; })
+				+ SHorizontalBox::Slot().FillWidth(1.0f).VAlign(VAlign_Center)
+				[
+					MakeLine([this, i]
+					{
+						if (!Sim->GetCrew().IsValidIndex(i))
+						{
+							return FText::GetEmpty();
+						}
+						const FCrewMember& Member = Sim->GetCrew()[i];
+						const FString Level = Member.Training > 0 ? FString::Printf(TEXT(" %d"), Member.Training) : FString();
+						const FString Where = Member.TrainingRemaining > 0.0f ? FString::Printf(TEXT("in a seminar (%.0f s)"), Member.TrainingRemaining)
+							: Sim->GetStationName(Member.Assignment);
+						return Str(FString::Printf(TEXT("%s, %s%s: %s"), *Member.Name, FAlienIdleSim::GetSpecialtyName(Member.Specialty), *Level, *Where));
+					}, [IsHere] { return FSlateColor(IsHere() ? HeadingColor : TextColor); })
+				]
+				+ SHorizontalBox::Slot().AutoWidth().Padding(4, 0, 0, 0)
+				[
+					MakeButton([IsHere] { return Str(IsHere() ? TEXT("Remove") : TEXT("Assign here")); },
+						[this, i, IsHere] { return IsHere() || (Sim->GetCrew().IsValidIndex(i) && Sim->GetCrew()[i].Assignment.Station == EStation::None); },
+						[this, i, IsHere] { Sim->Assign(i, IsHere() ? FAssignment() : Selected); })
+				]
+				+ SHorizontalBox::Slot().AutoWidth().Padding(4, 0, 0, 0)
+				[
+					MakeButton([this, i]
+					{
+						if (!Sim->GetCrew().IsValidIndex(i))
+						{
+							return FText::GetEmpty();
+						}
+						FString Reason;
+						return Sim->CanTrain(i, &Reason) || Reason.Contains(TEXT("needs"))
+							? Str(FString::Printf(TEXT("Train %.0f"), Sim->GetTrainCost(i)))
+							: Str(Reason.Contains(TEXT("fully")) ? TEXT("Trained") : TEXT("Seminar"));
+					}, [this, i] { return Sim->GetCrew().IsValidIndex(i) && Sim->CanTrain(i); }, [this, i] { Sim->Train(i); })
+				]
+			];
+		}
+		Add(SNew(SBox).Visibility_Lambda([this] { return bCrewExpanded ? EVisibility::Visible : EVisibility::Collapsed; })[CrewList], FMargin(0, 0, 0, 2));
+	}
+	Add(SNullWidget::NullWidget, FMargin(0, 0, 0, 8));
+
+	// 4. Dispatch (UFOs) or experiment / production choices (stations)
+	Add(SNew(STextBlock).Font(Font(11, TEXT("Bold"))).ColorAndOpacity(HeadingColor)
+		.Text_Lambda([this]
+		{
+			switch (Selected.Station)
+			{
+			case EStation::Ufo: return Str(TEXT("DISPATCH"));
+			case EStation::Chamber: return Str(TEXT("EXPERIMENTS"));
+			default: return Str(TEXT("PRODUCTION"));
+			}
+		}));
+	{
+		TSharedRef<SVerticalBox> Dispatch = SNew(SVerticalBox);
+		auto AddDispatch = [&Dispatch](const TSharedRef<SWidget>& Widget, const FMargin& Padding = FMargin(0))
+		{
+			Dispatch->AddSlot().AutoHeight().Padding(Padding)[Widget];
+		};
+		AddDispatch(MakeStepper([this]
+		{
+			const int32 R = Sim->GetUfo(SelectedUfo).Region;
+			const AlienIdleTuning::FRegionDef& Def = Sim->GetRegionDef(R);
+			const FRegionState& Region = Sim->GetRegionState(R);
+			const TCHAR* State = Region.bLockedDown ? TEXT("LOCKDOWN") : Sim->IsRegionIndexOnAlert(R) ? TEXT("on alert") : TEXT("calm");
+			return Str(FString::Printf(TEXT("Region: %s (value x%.1f, exposure x%.1f), suspicion %.0f, %s"), Def.Name, Def.Value, Def.Exposure, Region.Suspicion, State));
+		}, [this](int32 Direction)
+		{
+			const FUfo& Ufo = Sim->GetUfo(SelectedUfo);
+			const int32 Num = Sim->GetNumRegions();
+			const int32 Region = ((Ufo.Region + Direction) % Num + Num) % Num;
+			const AlienIdleTuning::FRegionDef& Def = Sim->GetRegionDef(Region);
+			ESpecimen Target = Def.NumSpecimens > 0 ? Def.Specimens[0] : Ufo.Destination;
+			for (int32 k = 0; k < Def.NumSpecimens; ++k)
+			{
+				Target = Def.Specimens[k] == Ufo.Destination ? Ufo.Destination : Target;
+			}
+			Sim->SetDestinationRegion(SelectedUfo, Region, Target);
+		}), FMargin(0, 1));
+		AddDispatch(MakeStepper([this]
+		{
+			const FUfo& Ufo = Sim->GetUfo(SelectedUfo);
+			const FSpecimenDef& Def = AlienIdleTuning::Specimen(Ufo.Destination);
+			return Str(FString::Printf(TEXT("Target: %s (wt %d)%s  %.0f energy"), Def.Plural, Def.Weight,
+				Sim->IsSpecimenUnlocked(Ufo.Destination) ? TEXT("") : TEXT(", locked"), Sim->GetLaunchEnergy(SelectedUfo, Ufo.Destination)));
+		}, [this](int32 Direction)
+		{
+			const FUfo& Ufo = Sim->GetUfo(SelectedUfo);
+			const AlienIdleTuning::FRegionDef& Def = Sim->GetRegionDef(Ufo.Region);
+			if (Def.NumSpecimens == 0)
+			{
+				return;
+			}
+			int32 Current = 0;
+			for (int32 k = 0; k < Def.NumSpecimens; ++k)
+			{
+				Current = Def.Specimens[k] == Ufo.Destination ? k : Current;
+			}
+			const int32 Next = ((Current + Direction) % Def.NumSpecimens + Def.NumSpecimens) % Def.NumSpecimens;
+			Sim->SetDestinationRegion(SelectedUfo, Ufo.Region, Def.Specimens[Next]);
+		}), FMargin(0, 1));
+		AddDispatch(MakeButton([this] { return Str(bShowTargetMath ? TEXT("Why these numbers: hide") : TEXT("Why these numbers: show research bonuses and mission penalties")); },
+			[this] { return bShowTargetMath; }, [this] { bShowTargetMath = !bShowTargetMath; }), FMargin(0, 2, 0, 0));
+		AddDispatch(SNew(SBox)
+			.Visibility_Lambda([this] { return bShowTargetMath ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeLine([this] { return Str(Sim->ExplainTarget(SelectedUfo)); }, [] { return FSlateColor(MutedColor); })
+			], FMargin(0, 1, 0, 2));
+
+		LaunchButton = MakeButton([this] { return GetLaunchLabel(); }, [this] { return Sim->CanLaunch(SelectedUfo); }, [this] { Sim->Launch(SelectedUfo); });
+		AddDispatch(SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().FillWidth(1.0f).Padding(0, 0, 4, 0)
+			[
+				LaunchButton.ToSharedRef()
+			]
+			+ SHorizontalBox::Slot().FillWidth(1.0f)
+			[
+				MakeButton([this]
+				{
+					if (!Sim->IsAutomationUnlocked())
+					{
+						return Str(FString::Printf(TEXT("Auto-repeat: locked (%d/%d experiments)"), Sim->GetTotalExperiments(), AlienIdleTuning::AutomationUnlockExperiments));
+					}
+					return Str(Sim->GetUfo(SelectedUfo).bAutoLaunch ? TEXT("Auto-repeat: ON") : TEXT("Auto-repeat: OFF"));
+				}, [this] { return Sim->IsAutomationUnlocked() && Sim->GetUfo(SelectedUfo).bAutoLaunch; },
+				[this] { Sim->SetAutoLaunch(SelectedUfo, !Sim->GetUfo(SelectedUfo).bAutoLaunch); })
+			], FMargin(0, 4, 0, 2));
+		AddDispatch(MakeButton([this]
+		{
+			if (!Sim->IsAutomationUnlocked())
+			{
+				return Str(TEXT("Contract mode: locked until automation"));
+			}
+			return Str(Sim->GetUfo(SelectedUfo).bFollowContract ? TEXT("Contract mode: ON (picks its own target for the active contract)") : TEXT("Contract mode: OFF"));
+		}, [this] { return Sim->IsAutomationUnlocked() && Sim->GetUfo(SelectedUfo).bFollowContract; },
+			[this] { Sim->SetFollowContract(SelectedUfo, !Sim->GetUfo(SelectedUfo).bFollowContract); }), FMargin(0, 0, 0, 2));
+		AddDispatch(MakeLine([this]
+		{
+			if (Sim->GetShipLevel(SelectedUfo, EShipSystem::Scanner) == 0)
+			{
+				return Str(TEXT("Scanner: none fitted. Humans arrive with whatever job they had."));
+			}
+			const EOccupation Target = Sim->GetScannerTarget(SelectedUfo, ESpecimen::Human);
+			return Str(Target == EOccupation::None ? FString(TEXT("Scanner: no contract or project needs a profession right now."))
+				: FString::Printf(TEXT("Scanner targets: %s (for your contract or project)"), AlienIdleTuning::Occupation(Target).Name));
+		}, [] { return FSlateColor(MutedColor); }), FMargin(0, 1));
+		AddDispatch(SNew(SBox)
+			.Visibility_Lambda([this] { return Sim->GetUfo(SelectedUfo).CaseTarget >= 0 ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeLine([this] { return Str(Sim->GetCaseTargetText(SelectedUfo)); }, [] { return FSlateColor(HeadingColor); })
+			]);
+		AddDispatch(MakeLine([] { return Str(TEXT("Fleet rules (every auto-repeating ship):")); }, [] { return FSlateColor(MutedColor); }), FMargin(0, 6, 0, 1));
+		AddDispatch(MakeButton([this]
+		{
+			return Str(Sim->IsRerouteOn()
+				? TEXT("Reroute around Earth's responses: ON (picks the calmest region with the target)")
+				: TEXT("Reroute around Earth's responses: OFF"));
+		}, [this] { return Sim->IsRerouteOn(); }, [this] { Sim->SetReroute(!Sim->IsRerouteOn()); }), FMargin(0, 0, 0, 2));
+		AddDispatch(MakeButton([this]
+		{
+			return Str(Sim->IsPauseWhenFullOn()
+				? TEXT("Pause collection when containment is full: ON")
+				: TEXT("Pause collection when containment is full: OFF"));
+		}, [this] { return Sim->IsPauseWhenFullOn(); }, [this] { Sim->SetPauseWhenFull(!Sim->IsPauseWhenFullOn()); }));
+		Add(SNew(SBox).Visibility(Shown(IsUfo))[Dispatch], FMargin(0, 1));
+	}
+
+	// Lab chambers: what to study. Priorities are per species and shared by every chamber.
+	{
+		TSharedRef<SVerticalBox> Lab = SNew(SVerticalBox);
+		auto AddLab = [&Lab](const TSharedRef<SWidget>& Widget, const FMargin& Padding = FMargin(0))
+		{
+			Lab->AddSlot().AutoHeight().Padding(Padding)[Widget];
+		};
+		AddLab(MakeLine([this] { return Str(FString::Printf(TEXT("Lab speed x%.2f. Priorities apply to every chamber. Routine and extended studies pay research; discovery projects pay nothing and unlock targets and equipment."), Sim->GetLabSpeed())); },
+			[] { return FSlateColor(MutedColor); }));
 		for (int32 i = 0; i < int32(ESpecimen::Count); ++i)
 		{
-			if (Sim->IsSpecimenUnlocked(ESpecimen(i)))
-			{
-				const FSpecimenDef& Def = AlienIdleTuning::Specimens[i];
-				Line += FString::Printf(TEXT("  %s %d"), Def.Plural, Sim->GetExperimentsCompleted(ESpecimen(i)));
-			}
+			const ESpecimen Type = ESpecimen(i);
+			AddLab(SNew(SBox)
+				.Visibility_Lambda([this, Type] { return Sim->IsSpecimenUnlocked(Type) ? EVisibility::Visible : EVisibility::Collapsed; })
+				[
+					MakeStepper([this, Type]
+					{
+						const int32 Open = Sim->GetExperimentOptions(Type).Num() - 2;
+						return Str(FString::Printf(TEXT("%s: %s%s"), *FString(AlienIdleTuning::Specimen(Type).Plural).Left(1).ToUpper().Append(FString(AlienIdleTuning::Specimen(Type).Plural).Mid(1)),
+							*Sim->DescribeExperiment(Type, Sim->GetExperimentChoice(Type)),
+							Open > 0 && Sim->GetExperimentChoice(Type).Kind != EExperimentKind::Discovery ? *FString::Printf(TEXT("  [%d project%s open]"), Open, Open == 1 ? TEXT("") : TEXT("s")) : TEXT("")));
+					}, [this, Type](int32 Direction) { Sim->CycleExperimentChoice(Type, Direction); })
+				], FMargin(0, 2));
 		}
-		return Str(Line);
-	}, [] { return FSlateColor(MutedColor); }));
-	Add(MakeLine([this]
-	{
-		return Str(FString::Printf(TEXT("Discoveries %d/%d   Encyclopedia %d/%d   Contracts done %d"), Sim->GetDiscoveryCount(), int32(EDiscovery::Count),
-			Sim->GetEncyclopedia().Num(), FAlienIdleSim::GetEncyclopediaSize(), Sim->GetContractsCompleted()));
-	}, [] { return FSlateColor(MutedColor); }), FMargin(0, 0, 0, 10));
+		for (int32 d = 1; d < int32(EDepartment::Count); ++d)
+		{
+			const EDepartment Dept = EDepartment(d);
+			AddLab(SNew(SBox)
+				.Visibility_Lambda([this] { return Sim->GetPrimaryDepartment() != EDepartment::None ? EVisibility::Visible : EVisibility::Collapsed; })
+				[
+					MakeButton([this, Dept]
+					{
+						FString Reason;
+						const bool bCan = Sim->CanBeginSignature(Dept, &Reason);
+						return Str(FString::Printf(TEXT("%sSignature: %s"), bCan ? TEXT("Begin ") : TEXT(""), *Sim->GetSignatureStatusText(Dept)));
+					}, [this, Dept] { return Sim->CanBeginSignature(Dept) || Sim->GetPendingSignature() == Dept; }, [this, Dept] { Sim->BeginSignature(Dept); })
+				], FMargin(0, 2));
+		}
+		AddLab(SNew(SBox)
+			.Visibility_Lambda([this] { return Sim->IsMiddleManagementAvailable() ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeButton([this]
+				{
+					return Str(Sim->IsMiddleManagementOn()
+						? TEXT("Middle Management: ON (labs +20%, mandatory meetings every 2 min)")
+						: TEXT("Middle Management: OFF (promote an alien: labs +20%, but meetings)"));
+				}, [this] { return Sim->IsMiddleManagementOn(); }, [this] { Sim->SetMiddleManagement(!Sim->IsMiddleManagementOn()); })
+			], FMargin(0, 2));
+		AddLab(MakeLine([this] { return Str(Sim->GetCalibrationStatusText()); }, [] { return FSlateColor(MutedColor); }), FMargin(0, 2, 0, 0));
+		Add(SNew(SBox).Visibility(Shown(IsAt(EStation::Chamber)))[Lab], FMargin(0, 1));
+	}
 
-	// Status: what limits progress and what to buy next
-	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Status", "BOTTLENECK")));
-	Add(MakeLine([this] { return Str(Sim->GetBottleneckText()); },
-		[this] { return FSlateColor(Sim->GetCurrentBottleneck() == EBottleneck::None ? TextColor : WarnColor); }));
+	// Freezer mode belongs to the lab and to containment (where the samples wait).
+	Add(SNew(SBox)
+		.Visibility_Lambda([this] { return Sim->IsPreserving() && (Selected.Station == EStation::Chamber || Selected.Station == EStation::Containment) ? EVisibility::Visible : EVisibility::Collapsed; })
+		[
+			MakeButton([this]
+			{
+				return Str(Sim->IsAgingSamples()
+					? TEXT("Freezer mode: ON (routine studies wait until a sample has been preserved a minute: up to +50% research, slower turnover)")
+					: TEXT("Freezer mode: OFF (study specimens as soon as they arrive)"));
+			}, [this] { return Sim->IsAgingSamples(); }, [this] { Sim->SetAgeSamples(!Sim->IsAgingSamples()); })
+		], FMargin(0, 2));
+	Add(SNew(SBox).Visibility(Shown(IsAt(EStation::Containment)))
+		[
+			MakeButton([this]
+			{
+				return Str(Sim->IsPauseWhenFullOn()
+					? TEXT("Pause collection when containment is full: ON (all auto-repeating ships)")
+					: TEXT("Pause collection when containment is full: OFF"));
+			}, [this] { return Sim->IsPauseWhenFullOn(); }, [this] { Sim->SetPauseWhenFull(!Sim->IsPauseWhenFullOn()); })
+		], FMargin(0, 2));
+	Add(SNew(SBox).Visibility(Shown(IsAt(EStation::Boiler)))
+		[
+			MakeButton([this] { return Str(FString::Printf(TEXT("Heat priority: %s (click to change)"), FAlienIdleSim::GetHeatPriorityName(Sim->GetHeatPriority()))); },
+				[] { return false; },
+				[this] { Sim->SetHeatPriority(EHeatPriority((int32(Sim->GetHeatPriority()) + 1) % int32(EHeatPriority::Count))); })
+		], FMargin(0, 2));
+	Add(SNew(SBox)
+		.Visibility_Lambda([this]
+		{
+			const EStation S = Selected.Station;
+			return S == EStation::Power || S == EStation::MemoryWipe || S == EStation::Pressure || S == EStation::Calibration ? EVisibility::Visible : EVisibility::Collapsed;
+		})
+		[
+			MakeLine([] { return Str(TEXT("No choices to make here. Crew and upgrades decide its output.")); }, [] { return FSlateColor(MutedColor); })
+		], FMargin(0, 2));
+	Add(SNullWidget::NullWidget, FMargin(0, 0, 0, 8));
+
+	// 5. Upgrades: compact cards with the cost and the next improvement
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Upgrades", "UPGRADES")));
+	{
+		TSharedRef<SVerticalBox> ShipUpgrades = SNew(SVerticalBox);
+		for (EShipSystem System : { EShipSystem::Tractor, EShipSystem::Cargo, EShipSystem::Stealth, EShipSystem::Scanner, EShipSystem::Thrusters })
+		{
+			AddShipUpgradeButton(ShipUpgrades, System);
+		}
+		ShipUpgrades->AddSlot().AutoHeight().Padding(0, 2)
+		[
+			MakeButton([this]
+			{
+				FString Reason;
+				if (!Sim->CanRefitShip(SelectedUfo, &Reason))
+				{
+					return Str(FString::Printf(TEXT("Refit ship: %s"), *Reason));
+				}
+				return Str(FString::Printf(TEXT("Refit ship: strip all upgrades, refund %.0f research"), Sim->GetRefitRefund(SelectedUfo)));
+			}, [] { return false; }, [this] { Sim->RefitShip(SelectedUfo); })
+		];
+		Add(SNew(SBox).Visibility(Shown(IsUfo))[ShipUpgrades], FMargin(0, 1));
+	}
+	{
+		TSharedRef<SVerticalBox> BaseUpgrades = SNew(SVerticalBox);
+		for (int32 i = 0; i < int32(EBaseUpgrade::Count); ++i)
+		{
+			AddBaseUpgradeButton(BaseUpgrades, EBaseUpgrade(i));
+		}
+		Add(BaseUpgrades, FMargin(0, 0, 0, 2));
+	}
+	Add(SNew(SBox)
+		.Visibility_Lambda([this]
+		{
+			for (int32 i = 0; i < int32(EBaseUpgrade::Count); ++i)
+			{
+				if (IsBaseUpgradeShown(EBaseUpgrade(i)))
+				{
+					return EVisibility::Collapsed;
+				}
+			}
+			return Selected.Station == EStation::Ufo ? EVisibility::Collapsed : EVisibility::Visible;
+		})
+		[
+			MakeLine([] { return Str(TEXT("Nothing to upgrade here yet.")); }, [] { return FSlateColor(MutedColor); })
+		]);
+	Add(SNullWidget::NullWidget, FMargin(0, 0, 0, 14));
+
+	// Base-wide work below the selected station
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "NextSteps", "WHAT TO DO NEXT")));
 	Add(MakeLine([this] { return Str(Sim->GetRecommendation()); }, [] { return FSlateColor(HeadingColor); }), FMargin(0, 2, 0, 2));
 	for (int32 i = 0; i < 6; ++i)
 	{
@@ -115,92 +542,6 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 			]);
 	}
 	Add(SNullWidget::NullWidget, FMargin(0, 0, 0, 8));
-
-	// Build: what kind of operation this is, approach templates and saved presets
-	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Build", "BUILD: APPROACH AND PRESETS")));
-	Add(MakeLine([this] { return Str(Sim->GetApproachReading()); }, [] { return FSlateColor(TextColor); }));
-	Add(MakeButton([this] { return Str(bShowApproachGuide ? TEXT("Approach guide: hide") : TEXT("Approach guide: show the three approaches")); },
-		[this] { return bShowApproachGuide; }, [this] { bShowApproachGuide = !bShowApproachGuide; }), FMargin(0, 2));
-	for (int32 a = 0; a < int32(AlienIdleTuning::EApproach::Count); ++a)
-	{
-		const AlienIdleTuning::FApproachDef& Def = AlienIdleTuning::Approaches[a];
-		const FString Guide = FString::Printf(TEXT("%s: %s%s  Strengths: %s%s  Weaknesses: %s%s  Thesis: %s (%s department)%s  Rival: %s%s  Keep forever: %s"),
-			Def.Name, Def.Pitch, LINE_TERMINATOR, Def.Strengths, LINE_TERMINATOR, Def.Weaknesses, LINE_TERMINATOR,
-			AlienIdleTuning::Thesis(Def.Thesis).Name, AlienIdleTuning::Department(Def.Department).Name, LINE_TERMINATOR,
-			Def.RivalInteraction, LINE_TERMINATOR, Def.PermanentWhy);
-		Add(SNew(SBox)
-			.Visibility_Lambda([this] { return bShowApproachGuide ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				SNew(SVerticalBox)
-				+ SVerticalBox::Slot().AutoHeight()
-				[
-					MakeLine([Guide] { return Str(Guide); }, [] { return FSlateColor(MutedColor); })
-				]
-				+ SVerticalBox::Slot().AutoHeight().Padding(0, 2, 0, 6)
-				[
-					MakeButton([Def] { return Str(FString::Printf(TEXT("Apply the %s template (targets, automation, lab, trade orders)"), Def.Name)); },
-						[] { return false; }, [this, a] { Sim->ApplyApproachTemplate(AlienIdleTuning::EApproach(a)); })
-				]
-			]);
-	}
-	for (int32 Slot = 0; Slot < AlienIdleTuning::PresetSlots; ++Slot)
-	{
-		Add(SNew(SHorizontalBox)
-			+ SHorizontalBox::Slot().FillWidth(1.0f).VAlign(VAlign_Center)
-			[
-				MakeLine([this, Slot] { return Str(Sim->GetPresetSummary(Slot)); }, [this, Slot] { return FSlateColor(Sim->GetCareer().Presets[Slot].bSaved ? TextColor : MutedColor); })
-			]
-			+ SHorizontalBox::Slot().AutoWidth().Padding(4, 0, 0, 0)
-			[
-				MakeButton([] { return Str(TEXT("Save")); }, [] { return false; }, [this, Slot]
-				{
-					bool bClear = false;
-					const AlienIdleTuning::EApproach Style = Sim->ClassifyApproach(&bClear);
-					Sim->SavePreset(Slot, bClear ? FString(AlienIdleTuning::Approach(Style).Name) : FString(TEXT("Mixed operation")));
-				})
-			]
-			+ SHorizontalBox::Slot().AutoWidth().Padding(4, 0, 0, 0)
-			[
-				MakeButton([] { return Str(TEXT("Load")); }, [this, Slot] { return Sim->GetCareer().Presets[Slot].bSaved; }, [this, Slot] { Sim->ApplyPreset(Slot); })
-			], FMargin(0, 1));
-	}
-	Add(SNullWidget::NullWidget, FMargin(0, 0, 0, 10));
-
-	// Thesis
-	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Thesis", "THESIS")));
-	Add(MakeLine([this]
-	{
-		const AlienIdleTuning::FThesisDef& Def = AlienIdleTuning::Thesis(Sim->GetThesis());
-		return Str(FString::Printf(TEXT("%s: %s Rule: %s"), Def.Name, Def.Brief, Def.Rule));
-	}, [] { return FSlateColor(MutedColor); }));
-	Add(MakeLine([this]
-	{
-		const AlienIdleTuning::FEarthConditionDef& Earth = AlienIdleTuning::EarthCondition(Sim->GetEarthCondition());
-		return Str(FString::Printf(TEXT("Earth conditions: %s. %s"), Earth.Name, Earth.Preview));
-	}, [this] { return FSlateColor(Sim->GetEarthCondition() == EEarthCondition::BusinessAsUsual ? MutedColor : WarnColor); }));
-	Add(MakeLine([this] { return Str(TEXT("Academy achievements:") LINE_TERMINATOR + Sim->GetAchievementText()); }, [] { return FSlateColor(MutedColor); }));
-	for (int32 i = 0; i < 6; ++i)
-	{
-		Add(SNew(SBox)
-			.Visibility_Lambda([this, i] { return i < Sim->GetThesisObjectives().Num() ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				MakeLine([this, i]
-				{
-					const TArray<FThesisObjective> Objectives = Sim->GetThesisObjectives();
-					return Objectives.IsValidIndex(i) ? Str(FString::Printf(TEXT("%s %s"), Objectives[i].bDone ? TEXT("[done]") : TEXT("[    ]"), *Objectives[i].Text)) : FText::GetEmpty();
-				}, [this, i]
-				{
-					const TArray<FThesisObjective> Objectives = Sim->GetThesisObjectives();
-					return FSlateColor(Objectives.IsValidIndex(i) && Objectives[i].bDone ? HeadingColor : TextColor);
-				})
-			]);
-	}
-	Add(MakeButton([this]
-	{
-		FString Reason;
-		return Sim->CanSubmitThesis(&Reason) ? Str(TEXT("Submit thesis to the Galactic Academy (review first)"))
-			: Str(FString::Printf(TEXT("Submit thesis: %s"), *Reason));
-	}, [this] { return Sim->CanSubmitThesis(); }, [this] { if (Sim->CanSubmitThesis()) { OpenPromotion(); } }), FMargin(0, 2, 0, 10));
 
 	// Research department
 	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Department", "RESEARCH DEPARTMENT")));
@@ -233,406 +574,21 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 		Add(SNew(SBox)
 			.Visibility_Lambda([this] { return Sim->GetPrimaryDepartment() != EDepartment::None ? EVisibility::Visible : EVisibility::Collapsed; })
 			[
-				MakeButton([this, Project]
+				MakeUpgradeCard([Project]
 				{
 					const FDeptProjectDef& Def = AlienIdleTuning::DeptProject(Project);
-					const TCHAR* DeptName = AlienIdleTuning::Department(Def.Department).Name;
-					if (Sim->IsProjectDone(Project))
-					{
-						return Str(FString::Printf(TEXT("%s: %s (done)%s%s"), DeptName, Def.Name, LINE_TERMINATOR, Def.Effect));
-					}
+					return FString::Printf(TEXT("%s: %s"), AlienIdleTuning::Department(Def.Department).Name, Def.Name);
+				}, [this, Project]
+				{
+					return Sim->IsProjectDone(Project) ? FString(TEXT("done")) : FString::Printf(TEXT("%.0f research"), Sim->GetProjectCost(Project));
+				}, [Project] { return FString(AlienIdleTuning::DeptProject(Project).Effect); }, [this, Project]
+				{
 					FString Reason;
-					const bool bCan = Sim->CanBuyProject(Project, &Reason);
-					return Str(FString::Printf(TEXT("%s: %s  %.0f research%s%s%s"), DeptName, Def.Name, Sim->GetProjectCost(Project), LINE_TERMINATOR, Def.Effect,
-						bCan ? TEXT("") : *FString::Printf(TEXT("%sUnavailable: %s"), LINE_TERMINATOR, *Reason)));
+					return Sim->IsProjectDone(Project) || Sim->CanBuyProject(Project, &Reason) ? FString() : Reason;
 				}, [this, Project] { return Sim->CanBuyProject(Project); }, [this, Project] { Sim->BuyProject(Project); })
-			], FMargin(0, 2));
-	}
-	for (int32 d = 1; d < int32(EDepartment::Count); ++d)
-	{
-		const EDepartment Dept = EDepartment(d);
-		Add(SNew(SBox)
-			.Visibility_Lambda([this, Dept] { return Sim->GetPrimaryDepartment() != EDepartment::None ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				MakeButton([this, Dept]
-				{
-					FString Reason;
-					const bool bCan = Sim->CanBeginSignature(Dept, &Reason);
-					return Str(FString::Printf(TEXT("%sSignature: %s"), bCan ? TEXT("Begin ") : TEXT(""), *Sim->GetSignatureStatusText(Dept)));
-				}, [this, Dept] { return Sim->CanBeginSignature(Dept) || Sim->GetPendingSignature() == Dept; }, [this, Dept] { Sim->BeginSignature(Dept); })
-			], FMargin(0, 2));
-	}
-	Add(SNullWidget::NullWidget, FMargin(0, 0, 0, 8));
-
-	// Contracts
-	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Contracts", "CONTRACTS")));
-	Add(MakeLine([this]
-	{
-		if (!Sim->HasActiveContract())
-		{
-			return Str(TEXT("No active contract. Accept one below."));
-		}
-		const FContract& Contract = Sim->GetActiveContract();
-		return Str(FString::Printf(TEXT("Active: %s  (%.0f research)%sProgress: %s"), *Contract.Title, Contract.Reward, LINE_TERMINATOR, *Contract.GetProgressText()));
-	}, [this] { return FSlateColor(Sim->HasActiveContract() ? HeadingColor : MutedColor); }));
-	Add(SNew(SBox)
-		.Visibility_Lambda([this] { return Sim->HasActiveContract() ? EVisibility::Visible : EVisibility::Collapsed; })
-		[
-			MakeButton([] { return Str(TEXT("Abandon contract")); }, [] { return false; }, [this] { Sim->AbandonContract(); })
-		], FMargin(0, 2));
-	Add(MakeButton([this]
-	{
-		if (!Sim->IsAutomationUnlocked())
-		{
-			return Str(TEXT("Auto-accept contracts: locked until automation"));
-		}
-		return Str(Sim->IsAutoContractsOn() ? TEXT("Auto-accept contracts: ON (best-paying offer your ships are set up for, also while you are away)")
-			: TEXT("Auto-accept contracts: OFF"));
-	}, [this] { return Sim->IsAutomationUnlocked() && Sim->IsAutoContractsOn(); }, [this] { Sim->SetAutoContracts(!Sim->IsAutoContractsOn()); }), FMargin(0, 0, 0, 2));
-	for (int32 i = 0; i < AlienIdleTuning::ContractOffers; ++i)
-	{
-		Add(MakeButton([this, i]
-		{
-			const TArray<FContract>& Offers = Sim->GetContractOffers();
-			if (!Offers.IsValidIndex(i))
-			{
-				return FText::GetEmpty();
-			}
-			const FContract& Offer = Offers[i];
-			return Str(FString::Printf(TEXT("%s%s  (%.0f research)%s%s"), Sim->HasActiveContract() ? TEXT("") : TEXT("Accept: "), *Offer.Title, Offer.Reward, LINE_TERMINATOR, *Offer.Flavor));
-		}, [this] { return !Sim->HasActiveContract(); }, [this, i] { Sim->AcceptContract(i); }), FMargin(0, 2));
-	}
-	Add(SNullWidget::NullWidget, FMargin(0, 0, 0, 8));
-
-	// Fleet
-	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Fleet", "FLEET")));
-	Add(MakeStepper([this]
-	{
-		SelectedUfo = FMath::Clamp(SelectedUfo, 0, Sim->GetNumUfos() - 1);
-		return Str(FString::Printf(TEXT("UFO %d/%d  '%s'  %s"), SelectedUfo + 1, Sim->GetNumUfos(), *Sim->GetUfo(SelectedUfo).Name, *Sim->GetShipRole(SelectedUfo)));
-	}, [this](int32 Direction)
-	{
-		const int32 Num = Sim->GetNumUfos();
-		SelectedUfo = ((SelectedUfo + Direction) % Num + Num) % Num;
-	}));
-	Add(MakeLine([this] { return Str(Sim->GetUfoStatusText(SelectedUfo)); }, [this]
-	{
-		const EUfoState State = Sim->GetUfo(SelectedUfo).State;
-		return FSlateColor(State == EUfoState::WaitingToUnload || (State == EUfoState::Docked && !Sim->CanLaunch(SelectedUfo)) ? WarnColor : TextColor);
-	}), FMargin(0, 2));
-	Add(MakeStepper([this]
-	{
-		const FUfo& Ufo = Sim->GetUfo(SelectedUfo);
-		const FSpecimenDef& Def = AlienIdleTuning::Specimen(Ufo.Destination);
-		const AlienIdleTuning::FRegionDef& Region = Sim->GetRegionDef(Ufo.Region);
-		return Str(FString::Printf(TEXT("Target: %s in %s (value x%.1f, exposure x%.1f, wt %d)  %.0f energy"), Def.Plural, Region.Name, Region.Value, Region.Exposure,
-			Def.Weight, Sim->GetLaunchEnergy(SelectedUfo, Ufo.Destination)));
-	}, [this](int32 Direction) { Sim->CycleDestination(SelectedUfo, Direction); }));
-	Add(MakeButton([this] { return Str(bShowTargetMath ? TEXT("Why these numbers: hide") : TEXT("Why these numbers: show research bonuses and mission penalties")); },
-		[this] { return bShowTargetMath; }, [this] { bShowTargetMath = !bShowTargetMath; }), FMargin(0, 2, 0, 0));
-	Add(SNew(SBox)
-		.Visibility_Lambda([this] { return bShowTargetMath ? EVisibility::Visible : EVisibility::Collapsed; })
-		[
-			MakeLine([this] { return Str(Sim->ExplainTarget(SelectedUfo)); }, [] { return FSlateColor(MutedColor); })
-		], FMargin(0, 1, 0, 2));
-
-	LaunchButton = MakeButton([this] { return GetLaunchLabel(); }, [this] { return Sim->CanLaunch(SelectedUfo); }, [this] { Sim->Launch(SelectedUfo); });
-	Add(LaunchButton.ToSharedRef(), FMargin(0, 4, 0, 2));
-
-	Add(SNew(SHorizontalBox)
-		+ SHorizontalBox::Slot().FillWidth(1.0f).Padding(0, 0, 4, 0)
-		[
-			MakeButton([this]
-			{
-				if (!Sim->IsAutomationUnlocked())
-				{
-					return Str(FString::Printf(TEXT("Auto-launch: locked (%d/%d experiments)"), Sim->GetTotalExperiments(), AlienIdleTuning::AutomationUnlockExperiments));
-				}
-				return Str(Sim->GetUfo(SelectedUfo).bAutoLaunch ? TEXT("Auto-launch: ON") : TEXT("Auto-launch: OFF"));
-			}, [this] { return Sim->IsAutomationUnlocked() && Sim->GetUfo(SelectedUfo).bAutoLaunch; },
-			[this] { Sim->SetAutoLaunch(SelectedUfo, !Sim->GetUfo(SelectedUfo).bAutoLaunch); })
-		]
-		+ SHorizontalBox::Slot().FillWidth(1.0f)
-		[
-			MakeButton([this]
-			{
-				if (!Sim->IsAutomationUnlocked())
-				{
-					return Str(TEXT("Contract mode: locked"));
-				}
-				return Str(Sim->GetUfo(SelectedUfo).bFollowContract ? TEXT("Contract mode: ON") : TEXT("Contract mode: OFF"));
-			}, [this] { return Sim->IsAutomationUnlocked() && Sim->GetUfo(SelectedUfo).bFollowContract; },
-			[this] { Sim->SetFollowContract(SelectedUfo, !Sim->GetUfo(SelectedUfo).bFollowContract); })
-		], FMargin(0, 0, 0, 4));
-
-	Add(MakeButton([this]
-	{
-		return Str(Sim->IsRerouteOn()
-			? TEXT("Reroute around Earth's responses: ON (auto-launching ships pick the calmest region with their target)")
-			: TEXT("Reroute around Earth's responses: OFF"));
-	}, [this] { return Sim->IsRerouteOn(); }, [this] { Sim->SetReroute(!Sim->IsRerouteOn()); }), FMargin(0, 0, 0, 2));
-	Add(MakeButton([this]
-	{
-		return Str(Sim->IsPauseWhenFullOn()
-			? TEXT("Pause collection when containment is full: ON (all auto-launching ships)")
-			: TEXT("Pause collection when containment is full: OFF"));
-	}, [this] { return Sim->IsPauseWhenFullOn(); }, [this] { Sim->SetPauseWhenFull(!Sim->IsPauseWhenFullOn()); }), FMargin(0, 0, 0, 4));
-
-	Add(MakeLine([this]
-	{
-		return Str(FString::Printf(TEXT("Slots %d/%d   Tractor %d   Cargo %d   Flight x%.2f   Suspicion x%.2f"),
-			Sim->GetShipSlotsUsed(SelectedUfo), Sim->GetShipSlots(), Sim->GetTractorStrength(SelectedUfo), Sim->GetCargoCapacity(SelectedUfo),
-			Sim->GetFlightSeconds(SelectedUfo, ESpecimen::Squirrel) / AlienIdleTuning::Specimen(ESpecimen::Squirrel).FlightSeconds, Sim->GetSuspicionMultiplier(SelectedUfo)));
-	}, [] { return FSlateColor(MutedColor); }));
-
-	Add(MakeLine([this]
-	{
-		if (Sim->GetShipLevel(SelectedUfo, EShipSystem::Scanner) == 0)
-		{
-			return Str(TEXT("Scanner: none fitted. Humans arrive with whatever job they had."));
-		}
-		const EOccupation Target = Sim->GetScannerTarget(SelectedUfo, ESpecimen::Human);
-		return Str(Target == EOccupation::None ? FString(TEXT("Scanner: no contract or project needs a profession right now."))
-			: FString::Printf(TEXT("Scanner targets: %s (for your contract or project)"), AlienIdleTuning::Occupation(Target).Name));
-	}, [] { return FSlateColor(MutedColor); }));
-	Add(SNew(SBox)
-		.Visibility_Lambda([this] { return Sim->GetUfo(SelectedUfo).CaseTarget >= 0 ? EVisibility::Visible : EVisibility::Collapsed; })
-		[
-			MakeLine([this] { return Str(Sim->GetCaseTargetText(SelectedUfo)); }, [] { return FSlateColor(HeadingColor); })
-		]);
-
-	TSharedRef<SVerticalBox> ShipUpgrades = SNew(SVerticalBox);
-	for (EShipSystem System : { EShipSystem::Tractor, EShipSystem::Cargo, EShipSystem::Stealth, EShipSystem::Scanner, EShipSystem::Thrusters })
-	{
-		AddShipUpgradeButton(ShipUpgrades, System);
-	}
-	Add(ShipUpgrades, FMargin(0, 2, 0, 2));
-	Add(MakeButton([this]
-	{
-		FString Reason;
-		if (!Sim->CanRefitShip(SelectedUfo, &Reason))
-		{
-			return Str(FString::Printf(TEXT("Refit ship: %s"), *Reason));
-		}
-		return Str(FString::Printf(TEXT("Refit ship: strip all upgrades, refund %.0f research"), Sim->GetRefitRefund(SelectedUfo)));
-	}, [] { return false; }, [this] { Sim->RefitShip(SelectedUfo); }), FMargin(0, 0, 0, 10));
-
-	// Alien Resources (crew)
-	Add(MakeHeading(NSLOCTEXT("AlienIdle", "AlienResources", "ALIEN RESOURCES")));
-	Add(MakeLine([this]
-	{
-		int32 InSeminar = 0;
-		for (const FCrewMember& Member : Sim->GetCrew())
-		{
-			InSeminar += Member.TrainingRemaining > 0.0f ? 1 : 0;
-		}
-		return Str(FString::Printf(TEXT("Crew %d: %d idle, %d in seminars. Anyone can staff a post; specialists add bonuses."),
-			Sim->GetCrew().Num(), Sim->GetIdleCrew(), InSeminar));
-	}, [] { return FSlateColor(MutedColor); }));
-	Add(SNew(SHorizontalBox)
-		+ SHorizontalBox::Slot().FillWidth(1.0f).Padding(0, 0, 4, 0)
-		[
-			MakeButton([this]
-			{
-				FString Reason;
-				return Sim->CanRecruit(&Reason)
-					? Str(FString::Printf(TEXT("Request Additional Personnel (%.0f research)"), Sim->GetRecruitCost()))
-					: Str(FString::Printf(TEXT("Request Additional Personnel: %s"), *Reason));
-			}, [this] { return Sim->CanRecruit(); }, [this] { Sim->Recruit(); })
-		]
-		+ SHorizontalBox::Slot().AutoWidth()
-		[
-			MakeButton([this] { return Str(Sim->IsAutoAssignOn() ? TEXT("Auto-assign: ON") : TEXT("Auto-assign: OFF")); },
-				[this] { return Sim->IsAutoAssignOn(); }, [this] { Sim->SetAutoAssign(!Sim->IsAutoAssignOn()); })
-		], FMargin(0, 2));
-	for (int32 i = 0; i < MaxStationsShown; ++i)
-	{
-		Add(SNew(SBox)
-			.Visibility_Lambda([this, i] { return i < Sim->GetAllStations().Num() ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				MakeLine([this, i]
-				{
-					const TArray<FAssignment> Stations = Sim->GetAllStations();
-					return Stations.IsValidIndex(i) ? Str(Sim->GetStationStaffingText(Stations[i])) : FText::GetEmpty();
-				}, [this, i]
-				{
-					const TArray<FAssignment> Stations = Sim->GetAllStations();
-					return FSlateColor(Stations.IsValidIndex(i) && !Sim->IsStationStaffed(Stations[i]) ? WarnColor : TextColor);
-				})
-			]);
-	}
-	for (int32 i = 0; i < MaxCrewShown; ++i)
-	{
-		Add(SNew(SBox)
-			.Visibility_Lambda([this, i] { return i < Sim->GetCrew().Num() ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				SNew(SHorizontalBox)
-				+ SHorizontalBox::Slot().FillWidth(1.0f)
-				[
-					MakeStepper([this, i]
-					{
-						if (!Sim->GetCrew().IsValidIndex(i))
-						{
-							return FText::GetEmpty();
-						}
-						const FCrewMember& Member = Sim->GetCrew()[i];
-						const FString Level = Member.Training > 0 ? FString::Printf(TEXT(" %d"), Member.Training) : FString();
-						const FString Where = Member.TrainingRemaining > 0.0f ? FString::Printf(TEXT("in a seminar (%.0f s)"), Member.TrainingRemaining)
-							: Sim->GetStationName(Member.Assignment);
-						return Str(FString::Printf(TEXT("%s, %s%s: %s"), *Member.Name, FAlienIdleSim::GetSpecialtyName(Member.Specialty), *Level, *Where));
-					}, [this, i](int32 Direction)
-					{
-						if (Sim->GetCrew().IsValidIndex(i))
-						{
-							Sim->CycleAssignment(i, Direction);
-						}
-					})
-				]
-				+ SHorizontalBox::Slot().AutoWidth().Padding(4, 0, 0, 0)
-				[
-					MakeButton([this, i]
-					{
-						if (!Sim->GetCrew().IsValidIndex(i))
-						{
-							return FText::GetEmpty();
-						}
-						FString Reason;
-						return Sim->CanTrain(i, &Reason) || Reason.Contains(TEXT("needs"))
-							? Str(FString::Printf(TEXT("Train %.0f"), Sim->GetTrainCost(i)))
-							: Str(Reason.Contains(TEXT("fully")) ? TEXT("Trained") : TEXT("Seminar"));
-					}, [this, i] { return Sim->GetCrew().IsValidIndex(i) && Sim->CanTrain(i); }, [this, i] { Sim->Train(i); })
-				]
 			], FMargin(0, 1));
 	}
 	Add(SNullWidget::NullWidget, FMargin(0, 0, 0, 8));
-
-	// Base
-	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Base", "BASE")));
-	Add(MakeLine([this]
-	{
-		return Str(FString::Printf(TEXT("Containment: %d / %d units, %d specimens waiting"), Sim->GetContainmentUnitsUsed(), Sim->GetContainmentCapacity(), Sim->GetContainment().Num()));
-	}));
-	Add(SNew(SBox)
-		.Visibility_Lambda([this] { return Sim->HasHull() ? EVisibility::Visible : EVisibility::Collapsed; })
-		[
-			MakeLine([this] { return Str(Sim->GetHullText()); }, [this]
-			{
-				return FSlateColor(Sim->GetHullPressure() >= AlienIdleTuning::HullCreakPressure ? WarnColor : TextColor);
-			})
-		], FMargin(0, 2));
-	Add(SNew(SBox)
-		.Visibility_Lambda([this] { return Sim->HasHeat() ? EVisibility::Visible : EVisibility::Collapsed; })
-		[
-			SNew(SVerticalBox)
-			+ SVerticalBox::Slot().AutoHeight()
-			[
-				MakeLine([this] { return Str(Sim->GetHeatText()); }, [this]
-				{
-					return FSlateColor(Sim->GetLabWarmth() < 0.8f || Sim->GetHangarWarmth() < 0.8f ? WarnColor : TextColor);
-				})
-			]
-			+ SVerticalBox::Slot().AutoHeight().Padding(0, 2)
-			[
-				MakeButton([this] { return Str(FString::Printf(TEXT("Heat priority: %s (click to change)"), FAlienIdleSim::GetHeatPriorityName(Sim->GetHeatPriority()))); },
-					[] { return false; },
-					[this] { Sim->SetHeatPriority(EHeatPriority((int32(Sim->GetHeatPriority()) + 1) % int32(EHeatPriority::Count))); })
-			]
-		], FMargin(0, 2));
-	for (int32 i = 0; i < MaxChambersShown; ++i)
-	{
-		Add(SNew(SBox)
-			.Visibility_Lambda([this, i] { return i < Sim->GetChambers().Num() ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				MakeLine([this, i]
-				{
-					return i < Sim->GetChambers().Num() ? Str(FString::Printf(TEXT("Chamber %d: %s"), i + 1, *Sim->GetChamberStatusText(i))) : FText::GetEmpty();
-				}, [this, i]
-				{
-					const bool bIdleWithQueue = i < Sim->GetChambers().Num() && !Sim->GetChambers()[i].bRunning && Sim->GetContainment().Num() > 0;
-					return FSlateColor(bIdleWithQueue ? WarnColor : TextColor);
-				})
-			]);
-		// Probe Calibration: optional. The window lapses on its own and research carries on regardless.
-		Add(SNew(SBox)
-			.Visibility_Lambda([this, i] { return Sim->GetCalibrationChamber() == i && !Sim->IsCalibrationOpen() ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				MakeButton([this]
-				{
-					return Str(FString::Printf(TEXT("CALIBRATION AVAILABLE (%.0f s): open the probe for a five-second calibration"), Sim->GetCalibrationOfferRemaining()));
-				}, [] { return true; }, [this] { OpenCalibration(); })
-			], FMargin(12, 1, 0, 2));
-	}
-	Add(MakeLine([this]
-	{
-		return Str(FString::Printf(TEXT("Lab speed x%.2f"), Sim->GetLabSpeed()));
-	}, [] { return FSlateColor(MutedColor); }));
-	Add(MakeLine([this] { return Str(Sim->GetCalibrationStatusText()); }, [] { return FSlateColor(MutedColor); }), FMargin(0, 2, 0, 0));
-
-	Add(MakeHeading(NSLOCTEXT("AlienIdle", "LabPriorities", "LAB PRIORITIES")), FMargin(0, 8, 0, 0));
-	Add(MakeLine([] { return Str(TEXT("Routine and extended studies pay research. Discovery projects pay nothing and unlock targets and equipment.")); },
-		[] { return FSlateColor(MutedColor); }));
-	for (int32 i = 0; i < int32(ESpecimen::Count); ++i)
-	{
-		const ESpecimen Type = ESpecimen(i);
-		Add(SNew(SBox)
-			.Visibility_Lambda([this, Type] { return Sim->IsSpecimenUnlocked(Type) ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				MakeStepper([this, Type]
-				{
-					const int32 Open = Sim->GetExperimentOptions(Type).Num() - 2;
-					return Str(FString::Printf(TEXT("%s: %s%s"), *FString(AlienIdleTuning::Specimen(Type).Plural).Left(1).ToUpper().Append(FString(AlienIdleTuning::Specimen(Type).Plural).Mid(1)),
-						*Sim->DescribeExperiment(Type, Sim->GetExperimentChoice(Type)),
-						Open > 0 && Sim->GetExperimentChoice(Type).Kind != EExperimentKind::Discovery ? *FString::Printf(TEXT("  [%d project%s open]"), Open, Open == 1 ? TEXT("") : TEXT("s")) : TEXT("")));
-				}, [this, Type](int32 Direction) { Sim->CycleExperimentChoice(Type, Direction); })
-			], FMargin(0, 2));
-	}
-	Add(SNew(SBox)
-		.Visibility_Lambda([this] { return Sim->IsMiddleManagementAvailable() ? EVisibility::Visible : EVisibility::Collapsed; })
-		[
-			MakeButton([this]
-			{
-				return Str(Sim->IsMiddleManagementOn()
-					? TEXT("Middle Management: ON (labs +20%, mandatory meetings every 2 min)")
-					: TEXT("Middle Management: OFF (promote an alien: labs +20%, but meetings)"));
-			}, [this] { return Sim->IsMiddleManagementOn(); }, [this] { Sim->SetMiddleManagement(!Sim->IsMiddleManagementOn()); })
-		], FMargin(0, 2, 0, 8));
-
-	Add(SNew(SBox)
-		.Visibility_Lambda([this] { return Sim->IsPreserving() ? EVisibility::Visible : EVisibility::Collapsed; })
-		[
-			MakeButton([this]
-			{
-				return Str(Sim->IsAgingSamples()
-					? TEXT("Freezer mode: ON (routine studies wait until a sample has been preserved a minute: up to +50% research, slower turnover)")
-					: TEXT("Freezer mode: OFF (study specimens as soon as they arrive)"));
-			}, [this] { return Sim->IsAgingSamples(); }, [this] { Sim->SetAgeSamples(!Sim->IsAgingSamples()); })
-		], FMargin(0, 2, 0, 8));
-
-	TSharedRef<SVerticalBox> BaseUpgrades = SNew(SVerticalBox);
-	for (int32 i = 0; i < int32(EBaseUpgrade::Count); ++i)
-	{
-		AddBaseUpgradeButton(BaseUpgrades, EBaseUpgrade(i));
-	}
-	Add(BaseUpgrades, FMargin(0, 4, 0, 10));
-
-	// Incident
-	Add(SNew(SBox)
-		.Visibility_Lambda([this] { return Sim->GetIncident().Type != EIncident::None ? EVisibility::Visible : EVisibility::Collapsed; })
-		[
-			SNew(SVerticalBox)
-			+ SVerticalBox::Slot().AutoHeight()[ MakeHeading(NSLOCTEXT("AlienIdle", "Incident", "INCIDENT")) ]
-			+ SVerticalBox::Slot().AutoHeight()[ MakeLine([this] { return Str(Sim->GetIncidentText() + TEXT(". Clears by itself.")); }, [] { return FSlateColor(WarnColor); }) ]
-			+ SVerticalBox::Slot().AutoHeight().Padding(0, 2, 0, 8)
-			[
-				MakeButton([this]
-				{
-					FString Reason;
-					return Sim->CanResolveIncident(&Reason)
-						? Str(FString::Printf(TEXT("Intervene now (%.0f research)"), AlienIdleTuning::IncidentResolveCost))
-						: Str(FString::Printf(TEXT("Intervene: %s"), *Reason));
-				}, [this] { return Sim->CanResolveIncident(); }, [this] { Sim->ResolveIncident(); })
-			]
-		]);
 
 	// Regions and Earth's responses
 	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Regions", "REGIONS AND EARTH'S RESPONSES")));
@@ -680,82 +636,6 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 					}, [this, r, Response] { return Sim->CanCounter(r, Response); }, [this, r, Response] { Sim->Counter(r, Response); })
 				], FMargin(12, 1, 0, 1));
 		}
-	}
-
-	// Rivals
-	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Rivals", "RIVALS ON THIS ASSIGNMENT")), FMargin(0, 10, 0, 1));
-	for (int32 r = 0; r < int32(ERival::Count); ++r)
-	{
-		const ERival Type = ERival(r);
-		Add(SNew(SBox)
-			.Visibility_Lambda([this, Type] { return Sim->IsRivalActive(Type) ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				MakeLine([this, Type]
-				{
-					const AlienIdleTuning::FRivalDef& Def = AlienIdleTuning::RivalDef(Type);
-					return Str(FString::Printf(TEXT("%s: %s%sNow: %s%sYour options: %s"), Def.Name, Def.Behavior, LINE_TERMINATOR, *Sim->GetRivalEventText(Type), LINE_TERMINATOR, Def.Response));
-				}, [this, Type]
-				{
-					const FRivalState& R = Sim->GetRival();
-					const bool bBusy = Type == ERival::EfficiencyBureau ? (R.bSweeping || R.bAnnounced)
-						: Type == ERival::CelebrityStudies ? (R.Celebrity.bActive || R.Celebrity.bAnnounced) : (R.Breach.bActive || R.Breach.bAnnounced);
-					return FSlateColor(bBusy ? WarnColor : TextColor);
-				})
-			], FMargin(0, 2));
-	}
-	Add(MakeLine([this] { return Str(Sim->GetJointText()); }, [] { return FSlateColor(TextColor); }), FMargin(0, 4, 0, 1));
-	Add(SNew(SBox)
-		.Visibility_Lambda([this] { return Sim->GetJointRival() != ERival::Count ? EVisibility::Visible : EVisibility::Collapsed; })
-		[
-			MakeButton([this]
-			{
-				return Str(Sim->GetRival().bContribute ? TEXT("[on]  Contributing specimens to the joint experiment")
-					: TEXT("[off] Contribute specimens to the joint experiment"));
-			}, [this] { return Sim->GetRival().bContribute; }, [this] { Sim->SetContribute(!Sim->GetRival().bContribute); })
-		], FMargin(0, 1));
-	Add(MakeLine([this] { return Str(Sim->GetReputationText()); }, [] { return FSlateColor(MutedColor); }), FMargin(0, 2));
-	Add(MakeLine([this] { return Str(Sim->GetRaceText()); }, [this] { return FSlateColor(Sim->GetRival().bRaceActive ? HeadingColor : TextColor); }), FMargin(0, 2));
-	Add(SNew(SHorizontalBox)
-		.Visibility_Lambda([this] { return Sim->GetRival().bRaceOffered ? EVisibility::Visible : EVisibility::Collapsed; })
-		+ SHorizontalBox::Slot().FillWidth(1.0f).Padding(0, 0, 4, 0)
-		[
-			MakeButton([] { return Str(TEXT("Accept the race")); }, [] { return true; }, [this] { Sim->AcceptRace(); })
-		]
-		+ SHorizontalBox::Slot().FillWidth(1.0f)
-		[
-			MakeButton([] { return Str(TEXT("Decline")); }, [] { return false; }, [this] { Sim->DeclineRace(); })
-		], FMargin(0, 2));
-	Add(MakeLine([this]
-	{
-		return Str(FString::Printf(TEXT("Standing trade orders (never expire). Trades this run: %d, income %.0f research. Lifetime trades: %d."),
-			Sim->GetRival().TradesThisRun, Sim->GetRival().TradeIncome, Sim->GetCareer().Trades));
-	}, [] { return FSlateColor(MutedColor); }), FMargin(0, 4, 0, 1));
-	for (int32 k = 0; k < 3; ++k)
-	{
-		const ESpecimen Type = ESpecimen(k);
-		Add(SNew(SBox)
-			.Visibility_Lambda([this, Type] { return Sim->IsSpecimenUnlocked(Type) ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				MakeButton([this, Type]
-				{
-					return Str(FString::Printf(TEXT("%s Sell surplus %s when containment is 75%% full (%.0f%% of their routine research)"),
-						Sim->GetRival().Sell[int32(Type)] ? TEXT("[on] ") : TEXT("[off]"), AlienIdleTuning::Specimen(Type).Plural, 100.0 * Sim->GetSellFraction()));
-				}, [this, Type] { return Sim->GetRival().Sell[int32(Type)]; }, [this, Type] { Sim->SetSellOrder(Type, !Sim->GetRival().Sell[int32(Type)]); })
-			], FMargin(0, 1));
-	}
-	for (int32 k = 0; k < 2; ++k)
-	{
-		const ESpecimen Type = ESpecimen(k);
-		Add(SNew(SBox)
-			.Visibility_Lambda([this, Type] { return Sim->IsSpecimenUnlocked(Type) ? EVisibility::Visible : EVisibility::Collapsed; })
-			[
-				MakeButton([this, Type]
-				{
-					return Str(FString::Printf(TEXT("%s Buy a %s every %.0f s for %.0f research while there is room"),
-						Sim->GetRival().Buy[int32(Type)] ? TEXT("[on] ") : TEXT("[off]"), AlienIdleTuning::Specimen(Type).Name,
-						AlienIdleTuning::TradeBuyIntervalSeconds, Sim->GetBuyCost(Type)));
-				}, [this, Type] { return Sim->GetRival().Buy[int32(Type)]; }, [this, Type] { Sim->SetBuyOrder(Type, !Sim->GetRival().Buy[int32(Type)]); })
-			], FMargin(0, 1));
 	}
 
 	// Case files: recurring subjects, their relationships and research chains (kept through promotions)
@@ -842,7 +722,337 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 			.ColorAndOpacity_Lambda([i] { return FSlateColor(i == 0 ? TextColor : MutedColor); }), FMargin(0, 0, 0, 4));
 	}
 	Add(SNew(STextBlock).Font(Font(9)).ColorAndOpacity(MutedColor).AutoWrapText(true)
-		.Text(NSLOCTEXT("AlienIdle", "Controls", "Mouse, keyboard or gamepad. Arrows / D-pad to move, Enter / A to press. Mouse wheel zooms the map, drag to pan, double-click to reset.")), FMargin(0, 6, 0, 0));
+		.Text(NSLOCTEXT("AlienIdle", "Controls", "Mouse, keyboard or gamepad. Arrows / D-pad to move, Enter / A to press, shoulder buttons switch tabs. Mouse wheel zooms the map, drag to pan, click a ship or room to select it, double-click to reset.")), FMargin(0, 6, 0, 0));
+
+	// =============================================================================================
+	// CONTRACTS: finished (claim), active, offers.
+	Panel = Contracts;
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Finished", "FINISHED: CLAIM REWARDS")));
+	Add(MakeLine([this]
+	{
+		const int32 Waiting = Sim->GetUnclaimedContracts().Num();
+		return Waiting == 0 ? Str(FString::Printf(TEXT("Nothing waiting. Contracts done this run: %d."), Sim->GetContractsCompleted()))
+			: Str(FString::Printf(TEXT("%d finished contract%s, %.0f research waiting. Contracts done this run: %d."), Waiting, Waiting == 1 ? TEXT("") : TEXT("s"),
+				Sim->GetUnclaimedReward(), Sim->GetContractsCompleted()));
+	}, [this] { return FSlateColor(Sim->GetUnclaimedContracts().Num() > 0 ? HeadingColor : MutedColor); }));
+	for (int32 i = 0; i < MaxUnclaimedShown; ++i)
+	{
+		Add(SNew(SBox)
+			.Visibility_Lambda([this, i] { return Sim->GetUnclaimedContracts().IsValidIndex(i) ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeButton([this, i]
+				{
+					const TArray<FContract>& Done = Sim->GetUnclaimedContracts();
+					return Done.IsValidIndex(i) ? Str(FString::Printf(TEXT("Claim: %s  (+%.0f research)"), *Done[i].Title, Done[i].Reward)) : FText::GetEmpty();
+				}, [] { return true; }, [this, i] { Sim->ClaimContract(i); })
+			], FMargin(0, 2));
+	}
+	Add(SNew(SBox)
+		.Visibility_Lambda([this] { return Sim->GetUnclaimedContracts().Num() > 1 ? EVisibility::Visible : EVisibility::Collapsed; })
+		[
+			MakeButton([] { return Str(TEXT("Claim all")); }, [] { return true; }, [this] { Sim->ClaimAllContracts(); })
+		], FMargin(0, 2));
+	Add(SNullWidget::NullWidget, FMargin(0, 0, 0, 8));
+
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Active", "ACCEPTED")));
+	Add(MakeLine([this]
+	{
+		if (!Sim->HasActiveContract())
+		{
+			return Str(TEXT("No accepted contract. Pick one below."));
+		}
+		const FContract& Contract = Sim->GetActiveContract();
+		return Str(FString::Printf(TEXT("%s  (%.0f research)%s%s%sProgress: %s"), *Contract.Title, Contract.Reward, LINE_TERMINATOR, *Contract.Flavor, LINE_TERMINATOR, *Contract.GetProgressText()));
+	}, [this] { return FSlateColor(Sim->HasActiveContract() ? HeadingColor : MutedColor); }));
+	Add(SNew(SBox)
+		.Visibility_Lambda([this] { return Sim->HasActiveContract() ? EVisibility::Visible : EVisibility::Collapsed; })
+		[
+			MakeButton([] { return Str(TEXT("Abandon contract")); }, [] { return false; }, [this] { Sim->AbandonContract(); })
+		], FMargin(0, 2));
+	Add(MakeButton([this]
+	{
+		if (!Sim->IsAutomationUnlocked())
+		{
+			return Str(TEXT("Auto-accept contracts: locked until automation"));
+		}
+		return Str(Sim->IsAutoContractsOn() ? TEXT("Auto-accept contracts: ON (signs the best-paying offer your ships are set up for and claims finished ones, also while you are away)")
+			: TEXT("Auto-accept contracts: OFF"));
+	}, [this] { return Sim->IsAutomationUnlocked() && Sim->IsAutoContractsOn(); }, [this] { Sim->SetAutoContracts(!Sim->IsAutoContractsOn()); }), FMargin(0, 2, 0, 8));
+
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Offers", "AVAILABLE")));
+	for (int32 i = 0; i < AlienIdleTuning::ContractOffers; ++i)
+	{
+		Add(SNew(SBox)
+			.Visibility_Lambda([this, i] { return Sim->GetContractOffers().IsValidIndex(i) ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeButton([this, i]
+				{
+					const TArray<FContract>& Offers = Sim->GetContractOffers();
+					if (!Offers.IsValidIndex(i))
+					{
+						return FText::GetEmpty();
+					}
+					const FContract& Offer = Offers[i];
+					return Str(FString::Printf(TEXT("%s%s  (%.0f research)%s%s"), Sim->HasActiveContract() ? TEXT("") : TEXT("Accept: "), *Offer.Title, Offer.Reward, LINE_TERMINATOR, *Offer.Flavor));
+				}, [this] { return !Sim->HasActiveContract(); }, [this, i] { Sim->AcceptContract(i); })
+			], FMargin(0, 2));
+	}
+	Add(SNew(SBox)
+		.Visibility_Lambda([this] { return Sim->HasActiveContract() ? EVisibility::Visible : EVisibility::Collapsed; })
+		[
+			MakeLine([] { return Str(TEXT("One contract at a time. Finish or abandon the accepted one to sign another.")); }, [] { return FSlateColor(MutedColor); })
+		], FMargin(0, 2));
+
+	// =============================================================================================
+	// THESIS: objectives, what a promotion would pay, and the promotion itself.
+	Panel = Thesis;
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Thesis", "THESIS")));
+	Add(MakeLine([this]
+	{
+		const AlienIdleTuning::FThesisDef& Def = AlienIdleTuning::Thesis(Sim->GetThesis());
+		return Str(FString::Printf(TEXT("%s: %s Rule: %s"), Def.Name, Def.Brief, Def.Rule));
+	}, [] { return FSlateColor(MutedColor); }));
+	Add(MakeLine([this]
+	{
+		const AlienIdleTuning::FEarthConditionDef& Earth = AlienIdleTuning::EarthCondition(Sim->GetEarthCondition());
+		return Str(FString::Printf(TEXT("Earth conditions: %s. %s"), Earth.Name, Earth.Preview));
+	}, [this] { return FSlateColor(Sim->GetEarthCondition() == EEarthCondition::BusinessAsUsual ? MutedColor : WarnColor); }), FMargin(0, 2, 0, 6));
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Objectives", "OBJECTIVES")));
+	for (int32 i = 0; i < 6; ++i)
+	{
+		Add(SNew(SBox)
+			.Visibility_Lambda([this, i] { return i < Sim->GetThesisObjectives().Num() ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeLine([this, i]
+				{
+					const TArray<FThesisObjective> Objectives = Sim->GetThesisObjectives();
+					return Objectives.IsValidIndex(i) ? Str(FString::Printf(TEXT("%s %s"), Objectives[i].bDone ? TEXT("[done]") : TEXT("[    ]"), *Objectives[i].Text)) : FText::GetEmpty();
+				}, [this, i]
+				{
+					const TArray<FThesisObjective> Objectives = Sim->GetThesisObjectives();
+					return FSlateColor(Objectives.IsValidIndex(i) && Objectives[i].bDone ? HeadingColor : TextColor);
+				})
+			]);
+	}
+	Add(MakeLine([this]
+	{
+		FString Line = TEXT("Experiments:");
+		for (int32 i = 0; i < int32(ESpecimen::Count); ++i)
+		{
+			if (Sim->IsSpecimenUnlocked(ESpecimen(i)))
+			{
+				Line += FString::Printf(TEXT("  %s %d"), AlienIdleTuning::Specimens[i].Plural, Sim->GetExperimentsCompleted(ESpecimen(i)));
+			}
+		}
+		return Str(Line + FString::Printf(TEXT("%sDiscoveries %d/%d   Encyclopedia %d/%d   Contracts done %d"), LINE_TERMINATOR, Sim->GetDiscoveryCount(), int32(EDiscovery::Count),
+			Sim->GetEncyclopedia().Num(), FAlienIdleSim::GetEncyclopediaSize(), Sim->GetContractsCompleted()));
+	}, [] { return FSlateColor(MutedColor); }), FMargin(0, 4, 0, 8));
+
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Prestige", "PRESTIGE REWARDS IF SUBMITTED NOW")));
+	Add(MakeLine([this]
+	{
+		return Str(FString::Printf(TEXT("%d Research Grants. Rank: %s -> %s."), CachedReview.Grants, *CachedReview.RankBefore, *CachedReview.RankAfter));
+	}, [] { return FSlateColor(HeadingColor); }));
+	for (int32 i = 0; i < 8; ++i)
+	{
+		Add(SNew(SBox)
+			.Visibility_Lambda([this, i] { return CachedReview.GrantLines.IsValidIndex(i) ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeLine([this, i] { return CachedReview.GrantLines.IsValidIndex(i) ? Str(TEXT("  - ") + CachedReview.GrantLines[i]) : FText::GetEmpty(); }, [] { return FSlateColor(MutedColor); })
+			]);
+	}
+	Add(MakeLine([this] { return Str(TEXT("Academy achievements:") LINE_TERMINATOR + Sim->GetAchievementText()); }, [] { return FSlateColor(MutedColor); }), FMargin(0, 4, 0, 0));
+	Add(MakeButton([this]
+	{
+		FString Reason;
+		return Sim->CanSubmitThesis(&Reason) ? Str(TEXT("Submit thesis to the Galactic Academy (review first)"))
+			: Str(FString::Printf(TEXT("Submit thesis: %s"), *Reason));
+	}, [this] { return Sim->CanSubmitThesis(); }, [this] { if (Sim->CanSubmitThesis()) { OpenPromotion(); } }), FMargin(0, 6, 0, 12));
+
+	// Build: what kind of operation this is, approach templates and saved presets (each approach has its own thesis)
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Build", "BUILD: APPROACH AND PRESETS")));
+	Add(MakeLine([this] { return Str(Sim->GetApproachReading()); }, [] { return FSlateColor(TextColor); }));
+	Add(MakeButton([this] { return Str(bShowApproachGuide ? TEXT("Approach guide: hide") : TEXT("Approach guide: show the three approaches")); },
+		[this] { return bShowApproachGuide; }, [this] { bShowApproachGuide = !bShowApproachGuide; }), FMargin(0, 2));
+	for (int32 a = 0; a < int32(AlienIdleTuning::EApproach::Count); ++a)
+	{
+		const AlienIdleTuning::FApproachDef& Def = AlienIdleTuning::Approaches[a];
+		const FString Guide = FString::Printf(TEXT("%s: %s%s  Strengths: %s%s  Weaknesses: %s%s  Thesis: %s (%s department)%s  Rival: %s%s  Keep forever: %s"),
+			Def.Name, Def.Pitch, LINE_TERMINATOR, Def.Strengths, LINE_TERMINATOR, Def.Weaknesses, LINE_TERMINATOR,
+			AlienIdleTuning::Thesis(Def.Thesis).Name, AlienIdleTuning::Department(Def.Department).Name, LINE_TERMINATOR,
+			Def.RivalInteraction, LINE_TERMINATOR, Def.PermanentWhy);
+		Add(SNew(SBox)
+			.Visibility_Lambda([this] { return bShowApproachGuide ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				SNew(SVerticalBox)
+				+ SVerticalBox::Slot().AutoHeight()
+				[
+					MakeLine([Guide] { return Str(Guide); }, [] { return FSlateColor(MutedColor); })
+				]
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 2, 0, 6)
+				[
+					MakeButton([Def] { return Str(FString::Printf(TEXT("Apply the %s template (targets, automation, lab, trade orders)"), Def.Name)); },
+						[] { return false; }, [this, a] { Sim->ApplyApproachTemplate(AlienIdleTuning::EApproach(a)); })
+				]
+			]);
+	}
+	for (int32 Slot = 0; Slot < AlienIdleTuning::PresetSlots; ++Slot)
+	{
+		Add(SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().FillWidth(1.0f).VAlign(VAlign_Center)
+			[
+				MakeLine([this, Slot] { return Str(Sim->GetPresetSummary(Slot)); }, [this, Slot] { return FSlateColor(Sim->GetCareer().Presets[Slot].bSaved ? TextColor : MutedColor); })
+			]
+			+ SHorizontalBox::Slot().AutoWidth().Padding(4, 0, 0, 0)
+			[
+				MakeButton([] { return Str(TEXT("Save")); }, [] { return false; }, [this, Slot]
+				{
+					bool bClear = false;
+					const AlienIdleTuning::EApproach Style = Sim->ClassifyApproach(&bClear);
+					Sim->SavePreset(Slot, bClear ? FString(AlienIdleTuning::Approach(Style).Name) : FString(TEXT("Mixed operation")));
+				})
+			]
+			+ SHorizontalBox::Slot().AutoWidth().Padding(4, 0, 0, 0)
+			[
+				MakeButton([] { return Str(TEXT("Load")); }, [this, Slot] { return Sim->GetCareer().Presets[Slot].bSaved; }, [this, Slot] { Sim->ApplyPreset(Slot); })
+			], FMargin(0, 1));
+	}
+
+	// =============================================================================================
+	// COLLABORATIONS: rivals, joint experiments, races, trades and contributions.
+	Panel = Collaborations;
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Rivals", "RIVALS ON THIS ASSIGNMENT")), FMargin(0, 0, 0, 1));
+	for (int32 r = 0; r < int32(ERival::Count); ++r)
+	{
+		const ERival Type = ERival(r);
+		Add(SNew(SBox)
+			.Visibility_Lambda([this, Type] { return Sim->IsRivalActive(Type) ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeLine([this, Type]
+				{
+					const AlienIdleTuning::FRivalDef& Def = AlienIdleTuning::RivalDef(Type);
+					return Str(FString::Printf(TEXT("%s: %s%sNow: %s%sYour options: %s"), Def.Name, Def.Behavior, LINE_TERMINATOR, *Sim->GetRivalEventText(Type), LINE_TERMINATOR, Def.Response));
+				}, [this, Type]
+				{
+					const FRivalState& R = Sim->GetRival();
+					const bool bBusy = Type == ERival::EfficiencyBureau ? (R.bSweeping || R.bAnnounced)
+						: Type == ERival::CelebrityStudies ? (R.Celebrity.bActive || R.Celebrity.bAnnounced) : (R.Breach.bActive || R.Breach.bAnnounced);
+					return FSlateColor(bBusy ? WarnColor : TextColor);
+				})
+			], FMargin(0, 2));
+	}
+	Add(MakeLine([this] { return Str(Sim->GetReputationText()); }, [] { return FSlateColor(MutedColor); }), FMargin(0, 2, 0, 8));
+
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Joint", "JOINT EXPERIMENTS AND CONTRIBUTIONS")));
+	Add(MakeLine([this] { return Str(Sim->GetJointText()); }, [] { return FSlateColor(TextColor); }), FMargin(0, 1));
+	Add(SNew(SBox)
+		.Visibility_Lambda([this] { return Sim->GetJointRival() != ERival::Count ? EVisibility::Visible : EVisibility::Collapsed; })
+		[
+			MakeButton([this]
+			{
+				return Str(Sim->GetRival().bContribute ? TEXT("[on]  Contributing specimens to the joint experiment")
+					: TEXT("[off] Contribute specimens to the joint experiment"));
+			}, [this] { return Sim->GetRival().bContribute; }, [this] { Sim->SetContribute(!Sim->GetRival().bContribute); })
+		], FMargin(0, 1, 0, 8));
+
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Race", "RACES")));
+	Add(MakeLine([this] { return Str(Sim->GetRaceText()); }, [this] { return FSlateColor(Sim->GetRival().bRaceActive || Sim->GetRival().bRaceOffered ? HeadingColor : TextColor); }), FMargin(0, 1));
+	Add(SNew(SHorizontalBox)
+		.Visibility_Lambda([this] { return Sim->GetRival().bRaceOffered ? EVisibility::Visible : EVisibility::Collapsed; })
+		+ SHorizontalBox::Slot().FillWidth(1.0f).Padding(0, 0, 4, 0)
+		[
+			MakeButton([] { return Str(TEXT("Accept the race")); }, [] { return true; }, [this] { Sim->AcceptRace(); })
+		]
+		+ SHorizontalBox::Slot().FillWidth(1.0f)
+		[
+			MakeButton([] { return Str(TEXT("Decline")); }, [] { return false; }, [this] { Sim->DeclineRace(); })
+		], FMargin(0, 2, 0, 8));
+
+	Add(MakeHeading(NSLOCTEXT("AlienIdle", "Trades", "TRADES")));
+	Add(MakeLine([this]
+	{
+		return Str(FString::Printf(TEXT("Standing trade orders (never expire). Trades this run: %d, income %.0f research. Lifetime trades: %d."),
+			Sim->GetRival().TradesThisRun, Sim->GetRival().TradeIncome, Sim->GetCareer().Trades));
+	}, [] { return FSlateColor(MutedColor); }), FMargin(0, 1));
+	for (int32 k = 0; k < 3; ++k)
+	{
+		const ESpecimen Type = ESpecimen(k);
+		Add(SNew(SBox)
+			.Visibility_Lambda([this, Type] { return Sim->IsSpecimenUnlocked(Type) ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeButton([this, Type]
+				{
+					return Str(FString::Printf(TEXT("%s Sell surplus %s when containment is 75%% full (%.0f%% of their routine research)"),
+						Sim->GetRival().Sell[int32(Type)] ? TEXT("[on] ") : TEXT("[off]"), AlienIdleTuning::Specimen(Type).Plural, 100.0 * Sim->GetSellFraction()));
+				}, [this, Type] { return Sim->GetRival().Sell[int32(Type)]; }, [this, Type] { Sim->SetSellOrder(Type, !Sim->GetRival().Sell[int32(Type)]); })
+			], FMargin(0, 1));
+	}
+	for (int32 k = 0; k < 2; ++k)
+	{
+		const ESpecimen Type = ESpecimen(k);
+		Add(SNew(SBox)
+			.Visibility_Lambda([this, Type] { return Sim->IsSpecimenUnlocked(Type) ? EVisibility::Visible : EVisibility::Collapsed; })
+			[
+				MakeButton([this, Type]
+				{
+					return Str(FString::Printf(TEXT("%s Buy a %s every %.0f s for %.0f research while there is room"),
+						Sim->GetRival().Buy[int32(Type)] ? TEXT("[on] ") : TEXT("[off]"), AlienIdleTuning::Specimen(Type).Name,
+						AlienIdleTuning::TradeBuyIntervalSeconds, Sim->GetBuyCost(Type)));
+				}, [this, Type] { return Sim->GetRival().Buy[int32(Type)]; }, [this, Type] { Sim->SetBuyOrder(Type, !Sim->GetRival().Buy[int32(Type)]); })
+			], FMargin(0, 1));
+	}
+
+	// =============================================================================================
+	// Tabs: one scroll box per tab inside a switcher, so each keeps its own scroll position.
+	TSharedRef<SHorizontalBox> TabBar = SNew(SHorizontalBox);
+	TabSwitcher = SNew(SWidgetSwitcher);
+	const TSharedRef<SVerticalBox> TabPanels[] = { Operations, Contracts, Thesis, Collaborations };
+	static const TCHAR* TabNames[] = { TEXT("Operations"), TEXT("Contracts"), TEXT("Thesis"), TEXT("Collaborations") };
+	for (int32 t = 0; t < int32(EConsoleTab::Count); ++t)
+	{
+		TabSwitcher->AddSlot()
+		[
+			SNew(SScrollBox)
+			.ScrollWhenFocusChanges(EScrollWhenFocusChanges::AnimatedScroll)
+			+ SScrollBox::Slot().Padding(0, 0, 10, 0)
+			[
+				TabPanels[t]
+			]
+		];
+		TabBar->AddSlot().FillWidth(1.0f).Padding(t == 0 ? 0.0f : 2.0f, 0, 0, 0)
+		[
+			SAssignNew(TabButtons[t], SButton)
+			.ContentPadding(FMargin(4, 5))
+			.HAlign(HAlign_Center)
+			.ButtonColorAndOpacity_Lambda([this, t] { return FSlateColor(ActiveTab == t ? TabActiveColor : TabColor); })
+			.OnClicked_Lambda([this, t] { SetTab(t); return FReply::Handled(); })
+			[
+				SNew(SHorizontalBox)
+				+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
+				[
+					SNew(STextBlock)
+					.Font(Font(9, TEXT("Bold")))
+					.Text(Str(TabNames[t]))
+					.ColorAndOpacity_Lambda([this, t] { return FSlateColor(ActiveTab == t ? HeadingColor : MutedColor); })
+				]
+				+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(3, 0, 0, 0)
+				[
+					SNew(SBorder)
+					.Visibility_Lambda([this, t] { return GetTabBadge(t).IsEmpty() ? EVisibility::Collapsed : EVisibility::Visible; })
+					.BorderImage(FCoreStyle::Get().GetBrush("GenericWhiteBox"))
+					.BorderBackgroundColor(WarnColor)
+					.Padding(FMargin(3, 0))
+					[
+						SNew(STextBlock)
+						.Font(Font(8, TEXT("Bold")))
+						.ColorAndOpacity(PanelColor)
+						.Text_Lambda([this, t] { return Str(GetTabBadge(t)); })
+					]
+				]
+			]
+		];
+	}
+	TabSwitcher->SetActiveWidgetIndex(ActiveTab);
 
 	// Experiment results box along the bottom of the screen, newest first.
 	TSharedRef<SVerticalBox> ResultLines = SNew(SVerticalBox);
@@ -871,7 +1081,10 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 			+ SHorizontalBox::Slot()
 			.FillWidth(1.0f)
 			[
-				SNew(SAlienBaseView).Sim(Sim).OnCalibrationClicked([this] { OpenCalibration(); })
+				SNew(SAlienBaseView).Sim(Sim)
+				.OnCalibrationClicked([this] { OpenCalibration(); })
+				.OnStationClicked([this](const FAssignment& Station) { SelectStation(Station, true); })
+				.GetSelectedStation([this] { return Selected; })
 			]
 			+ SHorizontalBox::Slot()
 			.AutoWidth()
@@ -884,11 +1097,18 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 					.BorderBackgroundColor(PanelColor)
 					.Padding(FMargin(16, 14, 6, 14))
 					[
-						SNew(SScrollBox)
-						.ScrollWhenFocusChanges(EScrollWhenFocusChanges::AnimatedScroll)
-						+ SScrollBox::Slot().Padding(0, 0, 10, 0)
+						SNew(SVerticalBox)
+						+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 10, 0)
 						[
-							Panel
+							Header
+						]
+						+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 10, 8)
+						[
+							TabBar
+						]
+						+ SVerticalBox::Slot().FillHeight(1.0f)
+						[
+							TabSwitcher.ToSharedRef()
 						]
 					]
 				]
@@ -941,6 +1161,218 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 			MakeCalibrationPanel()
 		]
 	];
+}
+
+// ---------------------------------------------------------------------------------------------
+// Console tabs and the Operations selection
+
+void SAlienIdleRoot::SetTab(int32 Tab)
+{
+	ActiveTab = FMath::Clamp(Tab, 0, int32(EConsoleTab::Count) - 1);
+	if (TabSwitcher.IsValid())
+	{
+		TabSwitcher->SetActiveWidgetIndex(ActiveTab);
+	}
+	if (ActiveTab == int32(EConsoleTab::Thesis))
+	{
+		CachedReview = Sim->BuildPromotionReview();
+		ReviewCacheTime = FPlatformTime::Seconds();
+	}
+	// Focus follows the tab so a gamepad never sits on a control that is no longer shown.
+	if (TabButtons[ActiveTab].IsValid())
+	{
+		FSlateApplication::Get().SetAllUserFocus(TabButtons[ActiveTab], EFocusCause::Navigation);
+	}
+}
+
+FString SAlienIdleRoot::GetTabBadge(int32 Tab) const
+{
+	switch (EConsoleTab(Tab))
+	{
+	case EConsoleTab::Contracts:
+		return Sim->GetUnclaimedContracts().Num() > 0 ? FString::FromInt(Sim->GetUnclaimedContracts().Num()) : FString();
+	case EConsoleTab::Thesis:
+		return Sim->CanSubmitThesis() ? FString(TEXT("!")) : FString();
+	case EConsoleTab::Collaborations:
+		return Sim->GetRival().bRaceOffered ? FString(TEXT("!")) : FString();
+	default:
+		return FString();
+	}
+}
+
+FReply SAlienIdleRoot::OnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
+{
+	// Unhandled keys bubble up here from the focused control: shoulder buttons switch tabs.
+	const FKey Key = InKeyEvent.GetKey();
+	if (Key == EKeys::Gamepad_LeftShoulder || Key == EKeys::Gamepad_RightShoulder)
+	{
+		const int32 Num = int32(EConsoleTab::Count);
+		SetTab(((ActiveTab + (Key == EKeys::Gamepad_RightShoulder ? 1 : -1)) % Num + Num) % Num);
+		return FReply::Handled();
+	}
+	return SCompoundWidget::OnKeyDown(MyGeometry, InKeyEvent);
+}
+
+void SAlienIdleRoot::SelectStation(const FAssignment& Station, bool bShowOperations)
+{
+	Selected = Station;
+	if (Station.Station == EStation::Ufo)
+	{
+		SelectedUfo = Station.Index;
+	}
+	if (bShowOperations && ActiveTab != int32(EConsoleTab::Operations))
+	{
+		SetTab(int32(EConsoleTab::Operations));
+	}
+}
+
+void SAlienIdleRoot::StepSelection(int32 Direction)
+{
+	const TArray<FAssignment> All = Sim->GetAllStations();
+	if (All.Num() == 0)
+	{
+		return;
+	}
+	int32 Current = All.IndexOfByPredicate([this](const FAssignment& A) { return A.Station == Selected.Station && A == Selected; });
+	Current = Current == INDEX_NONE ? 0 : Current;
+	SelectStation(All[((Current + Direction) % All.Num() + All.Num()) % All.Num()], false);
+}
+
+void SAlienIdleRoot::ValidateSelection()
+{
+	SelectedUfo = FMath::Clamp(SelectedUfo, 0, FMath::Max(0, Sim->GetNumUfos() - 1));
+	const bool bExists = Sim->GetAllStations().ContainsByPredicate([this](const FAssignment& A) { return A.Station == Selected.Station && A == Selected; });
+	if (!bExists)
+	{
+		Selected = { EStation::Ufo, SelectedUfo };
+	}
+}
+
+FString SAlienIdleRoot::GetSelectionLabel() const
+{
+	const TArray<FAssignment> All = Sim->GetAllStations();
+	const int32 Current = All.IndexOfByPredicate([this](const FAssignment& A) { return A.Station == Selected.Station && A == Selected; });
+	const FString Counter = FString::Printf(TEXT("%d/%d  "), Current + 1, All.Num());
+	if (Selected.Station == EStation::Ufo)
+	{
+		return Counter + FString::Printf(TEXT("UFO '%s': %s"), *Sim->GetUfo(SelectedUfo).Name, *Sim->GetShipRole(SelectedUfo));
+	}
+	return Counter + Sim->GetStationName(Selected);
+}
+
+FString SAlienIdleRoot::GetSelectionStatus() const
+{
+	switch (Selected.Station)
+	{
+	case EStation::Ufo:
+		return Sim->GetUfoStatusText(SelectedUfo);
+	case EStation::Chamber:
+		return Sim->GetChambers().IsValidIndex(Selected.Index) ? Sim->GetChamberStatusText(Selected.Index) : FString();
+	case EStation::Containment:
+		return FString::Printf(TEXT("Containment: %d / %d units, %d specimens waiting for a lab."), Sim->GetContainmentUnitsUsed(), Sim->GetContainmentCapacity(), Sim->GetContainment().Num());
+	case EStation::Power:
+		return FString::Printf(TEXT("Generating +%.0f energy/s. Stored %.0f / %.0f."), Sim->GetEnergyPerSecond(), Sim->GetEnergy(), Sim->GetEnergyCap());
+	case EStation::Pressure:
+		return Sim->GetHullText();
+	case EStation::Boiler:
+		return Sim->GetHeatText();
+	case EStation::Calibration:
+		return Sim->GetCalibrationStatusText();
+	case EStation::MemoryWipe:
+		return Sim->IsStationStaffed(Selected) ? FString(TEXT("Returning specimens with fewer memories and less suspicion."))
+			: FString(TEXT("Idle: returned specimens keep their memories (and their suspicion)."));
+	default:
+		return FString();
+	}
+}
+
+bool SAlienIdleRoot::IsSelectionBlocked() const
+{
+	if (!Sim->IsStationStaffed(Selected))
+	{
+		return true;
+	}
+	switch (Selected.Station)
+	{
+	case EStation::Ufo:
+	{
+		const EUfoState State = Sim->GetUfo(SelectedUfo).State;
+		return State == EUfoState::WaitingToUnload || (State == EUfoState::Docked && !Sim->CanLaunch(SelectedUfo));
+	}
+	case EStation::Chamber:
+		return Sim->GetChambers().IsValidIndex(Selected.Index) && !Sim->GetChambers()[Selected.Index].bRunning && Sim->GetContainment().Num() > 0;
+	case EStation::Containment:
+		return Sim->GetContainmentUnitsUsed() >= Sim->GetContainmentCapacity();
+	case EStation::Pressure:
+		return Sim->GetHullPressure() >= AlienIdleTuning::HullCreakPressure;
+	case EStation::Boiler:
+		return Sim->GetLabWarmth() < 0.8f || Sim->GetHangarWarmth() < 0.8f;
+	default:
+		return false;
+	}
+}
+
+float SAlienIdleRoot::GetSelectionProgress() const
+{
+	switch (Selected.Station)
+	{
+	case EStation::Ufo:
+	{
+		const EUfoState State = Sim->GetUfo(SelectedUfo).State;
+		return State == EUfoState::FlyingOut || State == EUfoState::Capturing || State == EUfoState::Returning ? Sim->GetUfoStateProgress(SelectedUfo) : -1.0f;
+	}
+	case EStation::Chamber:
+	{
+		if (!Sim->GetChambers().IsValidIndex(Selected.Index))
+		{
+			return -1.0f;
+		}
+		const FLabChamber& Chamber = Sim->GetChambers()[Selected.Index];
+		return Chamber.bRunning && Chamber.Duration > 0.0f ? FMath::Clamp(Chamber.Time / Chamber.Duration, 0.0f, 1.0f) : -1.0f;
+	}
+	case EStation::Containment:
+		return Sim->GetContainmentCapacity() > 0 ? FMath::Clamp(float(Sim->GetContainmentUnitsUsed()) / Sim->GetContainmentCapacity(), 0.0f, 1.0f) : -1.0f;
+	default:
+		return -1.0f;
+	}
+}
+
+bool SAlienIdleRoot::IsBaseUpgradeShown(EBaseUpgrade Upgrade) const
+{
+	if (!Sim->IsBaseUpgradeAvailable(Upgrade))
+	{
+		return false;
+	}
+	// Each base upgrade appears with the station it improves.
+	switch (Upgrade)
+	{
+	case EBaseUpgrade::Hangar:
+	case EBaseUpgrade::Camouflage:
+	case EBaseUpgrade::SonarArray:
+	case EBaseUpgrade::InkScreens:
+		return Selected.Station == EStation::Ufo;
+	case EBaseUpgrade::Chambers:
+	case EBaseUpgrade::InsulatedLabs:
+		return Selected.Station == EStation::Chamber;
+	case EBaseUpgrade::CalibrationDesk:
+		return Selected.Station == EStation::Chamber || Selected.Station == EStation::Calibration;
+	case EBaseUpgrade::Containment:
+	case EBaseUpgrade::CryoVault:
+	case EBaseUpgrade::CryoPods:
+		return Selected.Station == EStation::Containment;
+	case EBaseUpgrade::DeepTanks:
+		return Selected.Station == EStation::Containment || Selected.Station == EStation::Pressure;
+	case EBaseUpgrade::Power:
+		return Selected.Station == EStation::Power;
+	case EBaseUpgrade::TidalTurbines:
+		return Selected.Station == EStation::Power || Selected.Station == EStation::Pressure;
+	case EBaseUpgrade::GeothermalTaps:
+		return Selected.Station == EStation::Power || Selected.Station == EStation::Boiler;
+	case EBaseUpgrade::Cleanup:
+		return Selected.Station == EStation::MemoryWipe;
+	default:
+		return true;
+	}
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -1003,6 +1435,12 @@ void SAlienIdleRoot::CloseCalibration()
 void SAlienIdleRoot::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
 {
 	SCompoundWidget::Tick(AllottedGeometry, InCurrentTime, InDeltaTime);
+	ValidateSelection();
+	if (ActiveTab == int32(EConsoleTab::Thesis) && FPlatformTime::Seconds() - ReviewCacheTime >= 1.0)
+	{
+		CachedReview = Sim->BuildPromotionReview();
+		ReviewCacheTime = FPlatformTime::Seconds();
+	}
 	if (!bShowingCalibration)
 	{
 		return;
@@ -1181,6 +1619,10 @@ FText SAlienIdleRoot::GetAwayReportText() const
 	FString Text = FString::Printf(TEXT("You were away for %.0f minutes.\n\n"), R.Seconds / 60.0);
 	Text += FString::Printf(TEXT("Specimens captured: %d\nExperiments completed: %d\nResearch earned: %.0f\nContracts completed: %d\n"),
 		R.Captures, R.Experiments, R.ResearchEarned, R.Contracts);
+	if (Sim->GetUnclaimedContracts().Num() > 0)
+	{
+		Text += FString::Printf(TEXT("Contract rewards waiting in the Contracts tab: %.0f research\n"), Sim->GetUnclaimedReward());
+	}
 	Text += R.Discoveries.Num() > 0
 		? FString::Printf(TEXT("Discoveries: %s\n"), *FString::Join(R.Discoveries, TEXT(", ")))
 		: FString(TEXT("Discoveries: none. Nobody chose a project, so nobody was promoted.\n"));
@@ -1215,55 +1657,107 @@ FText SAlienIdleRoot::GetAwayReportText() const
 
 void SAlienIdleRoot::AddShipUpgradeButton(const TSharedRef<SVerticalBox>& Box, EShipSystem System)
 {
-	Box->AddSlot().AutoHeight().Padding(0, 2)
+	Box->AddSlot().AutoHeight().Padding(0, 1)
 	[
-		MakeButton([this, System]
+		MakeUpgradeCard([this, System]
 		{
 			const FUpgradeDef& Def = AlienIdleTuning::ShipSystems[int32(System)];
 			const int32 Level = Sim->GetShipLevel(SelectedUfo, System);
-			FString Reason;
-			const bool bCan = Sim->CanBuyShipUpgrade(SelectedUfo, System, &Reason);
-			FString Title = Level >= Def.MaxLevel
-				? FString::Printf(TEXT("%s %s (max)"), Def.Name, Roman(Level))
-				: FString::Printf(TEXT("%s %s -> %s   %.0f research%s"), Def.Name, Roman(Level), Roman(Level + 1), Sim->GetShipUpgradeCost(SelectedUfo, System),
-					Def.SlotsPerLevel > 1 ? *FString::Printf(TEXT(", %d slots"), Def.SlotsPerLevel) : TEXT(""));
-			FString Text = Title + TEXT("\n") + FAlienIdleSim::GetShipUpgradeEffectText(System);
-			if (!bCan && Level < Def.MaxLevel)
+			return Level >= Def.MaxLevel ? FString::Printf(TEXT("%s %s"), Def.Name, Roman(Level))
+				: FString::Printf(TEXT("%s %s -> %s"), Def.Name, Roman(Level), Roman(Level + 1));
+		}, [this, System]
+		{
+			const FUpgradeDef& Def = AlienIdleTuning::ShipSystems[int32(System)];
+			if (Sim->GetShipLevel(SelectedUfo, System) >= Def.MaxLevel)
 			{
-				Text += TEXT("\nUnavailable: ") + Reason;
+				return FString(TEXT("max"));
 			}
-			return Str(Text);
-		}, [this, System] { return Sim->CanBuyShipUpgrade(SelectedUfo, System); },
-		[this, System] { Sim->BuyShipUpgrade(SelectedUfo, System); })
+			return FString::Printf(TEXT("%.0f research%s"), Sim->GetShipUpgradeCost(SelectedUfo, System),
+				Def.SlotsPerLevel > 1 ? *FString::Printf(TEXT(", %d slots"), Def.SlotsPerLevel) : TEXT(""));
+		}, [System] { return FAlienIdleSim::GetShipUpgradeEffectText(System); }, [this, System]
+		{
+			FString Reason;
+			const bool bMax = Sim->GetShipLevel(SelectedUfo, System) >= AlienIdleTuning::ShipSystems[int32(System)].MaxLevel;
+			return bMax || Sim->CanBuyShipUpgrade(SelectedUfo, System, &Reason) ? FString() : Reason;
+		}, [this, System] { return Sim->CanBuyShipUpgrade(SelectedUfo, System); }, [this, System] { Sim->BuyShipUpgrade(SelectedUfo, System); })
 	];
 }
 
 void SAlienIdleRoot::AddBaseUpgradeButton(const TSharedRef<SVerticalBox>& Box, EBaseUpgrade Upgrade)
 {
-	Box->AddSlot().AutoHeight().Padding(0, 2)
+	Box->AddSlot().AutoHeight().Padding(0, 1)
 	[
 		SNew(SBox)
-		.Visibility_Lambda([this, Upgrade] { return Sim->IsBaseUpgradeAvailable(Upgrade) ? EVisibility::Visible : EVisibility::Collapsed; })
+		.Visibility_Lambda([this, Upgrade] { return IsBaseUpgradeShown(Upgrade) ? EVisibility::Visible : EVisibility::Collapsed; })
 		[
-		MakeButton([this, Upgrade]
-		{
-			const FUpgradeDef& Def = AlienIdleTuning::BaseUpgrades[int32(Upgrade)];
-			const int32 Level = Sim->GetBaseLevel(Upgrade);
-			FString Reason;
-			const bool bCan = Sim->CanBuyBaseUpgrade(Upgrade, &Reason);
-			FString Title = Level >= Def.MaxLevel
-				? FString::Printf(TEXT("%s %s (max)"), Def.Name, Roman(Level))
-				: FString::Printf(TEXT("%s %s -> %s   %.0f research"), Def.Name, Roman(Level), Roman(Level + 1), Sim->GetBaseUpgradeCost(Upgrade));
-			FString Text = Title + TEXT("\n") + FAlienIdleSim::GetBaseUpgradeEffectText(Upgrade);
-			if (!bCan && Level < Def.MaxLevel)
+			MakeUpgradeCard([this, Upgrade]
 			{
-				Text += TEXT("\nUnavailable: ") + Reason;
-			}
-			return Str(Text);
-		}, [this, Upgrade] { return Sim->CanBuyBaseUpgrade(Upgrade); },
-		[this, Upgrade] { Sim->BuyBaseUpgrade(Upgrade); })
+				const FUpgradeDef& Def = AlienIdleTuning::BaseUpgrades[int32(Upgrade)];
+				const int32 Level = Sim->GetBaseLevel(Upgrade);
+				return Level >= Def.MaxLevel ? FString::Printf(TEXT("%s %s"), Def.Name, Roman(Level))
+					: FString::Printf(TEXT("%s %s -> %s"), Def.Name, Roman(Level), Roman(Level + 1));
+			}, [this, Upgrade]
+			{
+				return Sim->GetBaseLevel(Upgrade) >= AlienIdleTuning::BaseUpgrades[int32(Upgrade)].MaxLevel ? FString(TEXT("max"))
+					: FString::Printf(TEXT("%.0f research"), Sim->GetBaseUpgradeCost(Upgrade));
+			}, [Upgrade] { return FAlienIdleSim::GetBaseUpgradeEffectText(Upgrade); }, [this, Upgrade]
+			{
+				FString Reason;
+				const bool bMax = Sim->GetBaseLevel(Upgrade) >= AlienIdleTuning::BaseUpgrades[int32(Upgrade)].MaxLevel;
+				return bMax || Sim->CanBuyBaseUpgrade(Upgrade, &Reason) ? FString() : Reason;
+			}, [this, Upgrade] { return Sim->CanBuyBaseUpgrade(Upgrade); }, [this, Upgrade] { Sim->BuyBaseUpgrade(Upgrade); })
 		]
 	];
+}
+
+TSharedRef<SButton> SAlienIdleRoot::MakeUpgradeCard(TFunction<FString()> Title, TFunction<FString()> Cost, TFunction<FString()> Next,
+	TFunction<FString()> Blocker, TFunction<bool()> CanBuy, TFunction<void()> OnClick) const
+{
+	// One compact card: name and level on the left, cost on the right, the next improvement under it,
+	// and why it cannot be bought (if it cannot) in the warning color.
+	TSharedRef<TFunction<FString()>> BlockerText = MakeShared<TFunction<FString()>>(MoveTemp(Blocker));
+	TSharedRef<TFunction<bool()>> Affordable = MakeShared<TFunction<bool()>>(MoveTemp(CanBuy));
+	return SNew(SButton)
+		.ContentPadding(FMargin(8, 4))
+		.OnClicked_Lambda([OnClick = MoveTemp(OnClick)] { OnClick(); return FReply::Handled(); })
+		[
+			SNew(SVerticalBox)
+			+ SVerticalBox::Slot().AutoHeight()
+			[
+				SNew(SHorizontalBox)
+				+ SHorizontalBox::Slot().FillWidth(1.0f).VAlign(VAlign_Center)
+				[
+					SNew(STextBlock)
+					.Font(Font(10, TEXT("Bold")))
+					.Text_Lambda([Title = MoveTemp(Title)] { return Str(Title()); })
+					.ColorAndOpacity_Lambda([Affordable] { return FSlateColor((*Affordable)() ? HeadingColor : TextColor); })
+				]
+				+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8, 0, 0, 0)
+				[
+					SNew(STextBlock)
+					.Font(Font(10, TEXT("Bold")))
+					.Text_Lambda([Cost = MoveTemp(Cost)] { return Str(Cost()); })
+					.ColorAndOpacity_Lambda([Affordable] { return FSlateColor((*Affordable)() ? HeadingColor : MutedColor); })
+				]
+			]
+			+ SVerticalBox::Slot().AutoHeight()
+			[
+				SNew(STextBlock)
+				.Font(Font(9))
+				.AutoWrapText(true)
+				.ColorAndOpacity(MutedColor)
+				.Text_Lambda([Next = MoveTemp(Next)] { return Str(Next()); })
+			]
+			+ SVerticalBox::Slot().AutoHeight()
+			[
+				SNew(STextBlock)
+				.Font(Font(9))
+				.AutoWrapText(true)
+				.ColorAndOpacity(WarnColor)
+				.Visibility_Lambda([BlockerText] { return (*BlockerText)().IsEmpty() ? EVisibility::Collapsed : EVisibility::Visible; })
+				.Text_Lambda([BlockerText] { return Str(FString::Printf(TEXT("Unavailable: %s"), *(*BlockerText)())); })
+			]
+		];
 }
 
 TSharedRef<SWidget> SAlienIdleRoot::MakeHeading(const FText& Text) const
@@ -1329,9 +1823,9 @@ FText SAlienIdleRoot::GetLaunchLabel() const
 	FString Reason;
 	if (Sim->CanLaunch(SelectedUfo, &Reason))
 	{
-		return Str(FString::Printf(TEXT("Launch '%s'"), *Sim->GetUfo(SelectedUfo).Name));
+		return Str(FString::Printf(TEXT("Dispatch '%s'"), *Sim->GetUfo(SelectedUfo).Name));
 	}
-	return Str(FString::Printf(TEXT("Launch unavailable: %s"), *Reason));
+	return Str(FString::Printf(TEXT("Dispatch: %s"), *Reason));
 }
 
 FText SAlienIdleRoot::GetLogLine(int32 IndexFromNewest) const
@@ -1600,7 +2094,7 @@ TSharedRef<SWidget> SAlienIdleRoot::MakePromotionPanel()
 				if (Sim->Promote(Next, &Reason))
 				{
 					bShowingPromotion = false;
-					SelectedUfo = 0;
+					SelectStation({ EStation::Ufo, 0 }, true);
 					if (LaunchButton.IsValid())
 					{
 						FSlateApplication::Get().SetAllUserFocus(LaunchButton, EFocusCause::SetDirectly);
