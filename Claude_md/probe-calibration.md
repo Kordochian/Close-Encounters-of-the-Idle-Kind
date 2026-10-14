@@ -14,7 +14,7 @@ productive unattended. Three were proposed; **Probe Calibration** is built, the 
 ## How it plays
 
 - Now and then one running experiment (the one with the most time left, at least 12 s) shows a pulsing
-  CALIBRATION AVAILABLE tag in the lab and a button under its chamber line in the console. One window at a
+  CALIBRATION AVAILABLE tag in the lab and a button in Operations when that chamber is selected (and a pointer button from any other selection). One window at a
   time for the whole lab; it lasts 30 s, then lapses with no effect.
 - Clicking opens a 5-second challenge: stop the sweeping cursor in the green band. Precise (bright core)
   skips 25% of the remaining time, steady (band) 15%, a miss or running out of time 8%.

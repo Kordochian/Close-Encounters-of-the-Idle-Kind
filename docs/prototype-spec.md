@@ -107,7 +107,8 @@ active contract (or the chosen human project) needs.
 Three offers on a board; one active at a time; abandon any time. Templates: census (N of one
 animal), comparative zoology (2 squirrels + cow), large mammals (cow + elephant), acquire a
 qualified *occupation*, three different professions, rush job (2 humans). Rewards 40–380 research.
-New targets refresh the oldest offer.
+New targets refresh the oldest offer. A finished contract counts as done at once (thesis objectives)
+but its reward waits in the Contracts tab until claimed; with auto-accept on it is claimed automatically.
 
 ### Automation (unlocks after 3 experiments)
 
@@ -356,7 +357,7 @@ research multipliers (region value, profession, scanners, signature, Sarcasm Org
 support group, patrols, batch) and mission penalties (distance, radar, alert, patrols, investigators,
 sweeps, scanning, cargo loading, exposure, stealth, thesis, Earth condition, celebrity cover).
 **Auto-accept contracts** (unlocks with automation): when idle, signs the best-paying offer the fleet is
-set up for, also while the game is closed. **Department memos** every 5 minutes classify the operation
+set up for, also while the game is closed, and claims finished contracts. **Department memos** every 5 minutes classify the operation
 from its ships and work (e.g. "Your stealth division remains unrecognized. They have filed a complaint.").
 
 Measured (test ApproachCycles: run 1 in the approach's department, promote into its thesis keeping its

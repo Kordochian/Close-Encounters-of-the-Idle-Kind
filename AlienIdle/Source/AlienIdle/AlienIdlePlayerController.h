@@ -48,6 +48,18 @@ public:
 	UFUNCTION(Exec)
 	void AlienCalibrate();
 
+	/** Dev console: show a console tab (0 Operations, 1 Contracts, 2 Thesis, 3 Collaborations). */
+	UFUNCTION(Exec)
+	void AlienTab(int32 Tab = 0);
+
+	/** Dev console: select a station in Operations (EStation: 1 UFO, 2 lab chamber, 3 containment, ...) and its index. */
+	UFUNCTION(Exec)
+	void AlienSelect(int32 Station = 1, int32 Index = 0);
+
+	/** Dev console: give every console tab its badge (thesis ready, a one-cow contract that finishes on the next cow, a race offer). */
+	UFUNCTION(Exec)
+	void AlienBadges();
+
 	/** Dev console: grant research for testing upgrades. */
 	UFUNCTION(Exec)
 	void AlienAddResearch(float Amount);

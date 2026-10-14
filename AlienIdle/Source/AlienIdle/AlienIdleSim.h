@@ -507,6 +507,8 @@ public:
 	const FRivalState& GetRival() const { return Rival; }
 	bool IsRivalActive(ERival Type) const { return Rival.Active[int32(Type)]; }
 	void DevSetRivals(bool bBureau, bool bCelebrity, bool bExperimental) { Rival.Active[0] = bBureau; Rival.Active[1] = bCelebrity; Rival.Active[2] = bExperimental; }
+	/** Offers the next race now (needs an active rival and no race offered or running). */
+	void DevOfferRace() { if (!Rival.bRaceOffered && !Rival.bRaceActive && (Rival.Active[0] || Rival.Active[1] || Rival.Active[2])) { OfferRace(); } }
 	FString GetRivalEventText(ERival Type) const;
 	bool IsCelebrityStunt(int32 Region) const { return Rival.Celebrity.bActive && Rival.Celebrity.Region == Region; }
 	bool IsBreach(int32 Region) const { return Rival.Breach.bActive && Rival.Breach.Region == Region; }
@@ -553,6 +555,12 @@ public:
 	bool AcceptContract(int32 Offer);
 	void AbandonContract();
 	int32 GetContractsCompleted() const { return ContractsCompleted; }
+	/** Finished contracts wait here until their reward is claimed. With auto-accept on, the contract office claims them itself. */
+	const TArray<FContract>& GetUnclaimedContracts() const { return Unclaimed; }
+	double GetUnclaimedReward() const;
+	bool ClaimContract(int32 Index);
+	/** Claims every finished contract; returns how many. */
+	int32 ClaimAllContracts();
 
 	// Incidents
 	const FActiveIncident& GetIncident() const { return Incident; }
@@ -884,6 +892,7 @@ private:
 	bool bHasActiveContract = false;
 	int32 ContractsCompleted = 0;
 	int32 ContractsGenerated = 0;
+	TArray<FContract> Unclaimed;
 
 	FActiveIncident Incident;
 	float IncidentCooldown = AlienIdleTuning::FirstIncidentSeconds;

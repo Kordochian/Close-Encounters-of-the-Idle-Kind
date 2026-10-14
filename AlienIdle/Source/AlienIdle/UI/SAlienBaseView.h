@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Brushes/SlateRoundedBoxBrush.h"
 #include "UI/AlienSprites.h"
+#include "AlienIdleSim.h"
 #include "Widgets/SLeafWidget.h"
 
 class FAlienIdleSim;
@@ -19,6 +20,10 @@ public:
 		SLATE_ARGUMENT(TSharedPtr<FAlienIdleSim>, Sim)
 		/** Clicking the "CALIBRATION AVAILABLE" tag on a lab chamber. */
 		SLATE_ARGUMENT(TFunction<void()>, OnCalibrationClicked)
+		/** Clicking a UFO or a station selects it in the console's Operations tab. */
+		SLATE_ARGUMENT(TFunction<void(const FAssignment&)>, OnStationClicked)
+		/** The console's current selection, outlined in the cutaway. */
+		SLATE_ARGUMENT(TFunction<FAssignment()>, GetSelectedStation)
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& InArgs);
@@ -50,6 +55,12 @@ private:
 	FVector2f PressPosition = FVector2f::ZeroVector;
 	bool bPressMoved = false;
 	TFunction<void()> OnCalibrationClicked;
+	TFunction<void(const FAssignment&)> OnStationClicked;
+	TFunction<FAssignment()> GetSelectedStation;
+	/** Finds the UFO or station under a canvas point. */
+	bool HitStation(const FVector2f& CanvasPoint, FAssignment& OutStation) const;
+	/** Where each UFO was drawn last frame (canvas coordinates), so clicks find ships in flight too. */
+	mutable TArray<FBox2f> UfoBounds;
 
 	TSharedPtr<FAlienIdleSim> Sim;
 	/** Rounded brushes indexed by corner radius - 1; shapes pick the one matching half their short side. */
