@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 210" width="440" height="420" data-canvas-width="220" data-densities="2 4">
+  <!--
+    County Fairgrounds: big top, Ferris wheel, livestock pens (elephants, cows, humans).
+    Hunting region backdrop, drawn at canvas (x0, 100), 220x210; ground line at local y 200 (canvas 300).
+    The game draws the specimens, Earth's responses and labels on top.
+  -->
+  <defs>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f5a3a"/><stop offset="1" stop-color="#1c3a26"/></linearGradient>
+    <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#243a46"/><stop offset="1" stop-color="#1a2a36"/></linearGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8a3a"/><stop offset="1" stop-color="#2f5a26"/></linearGradient>
+    <linearGradient id="walk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8c92"/><stop offset="1" stop-color="#5a5c62"/></linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6a3c"/><stop offset="1" stop-color="#5e3a1c"/></linearGradient>
+    <linearGradient id="barn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a1e16"/><stop offset="0.5" stop-color="#a8302a"/><stop offset="1" stop-color="#6a1810"/></linearGradient>
+    <linearGradient id="bldgR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2a3048"/><stop offset="0.5" stop-color="#3a4262"/><stop offset="1" stop-color="#232838"/></linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fb3d6"/><stop offset="1" stop-color="#2f6a8a"/></linearGradient>
+    <radialGradient id="glowY" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#ffe08a" stop-opacity="0.8"/><stop offset="1" stop-color="#ffe08a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="cone" cx="0" cy="0.5" r="1"><stop offset="0" stop-color="#fff6c4" stop-opacity="0.75"/><stop offset="1" stop-color="#fff6c4" stop-opacity="0"/></radialGradient>
+    <filter id="tex" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" seed="3"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0.05  0 0 0 0 0  1.4 0 0 0 -0.75"/>
+    </filter>
+  </defs>
+  <g id="part-back">
+
+    <path d="M0 165 C 70 158, 150 162, 220 156 L 220 200 L 0 200 Z" fill="url(#hillFar)"/>
+    <g stroke="#14161a" stroke-width="0.6">
+      <path d="M20 200 L 30 150 L 100 150 L 110 200 Z" fill="#e8e2d4"/>
+      <path d="M30 150 L 38 200 M46 150 L 50 200 M62 150 L 63 200 M78 150 L 76 200 M94 150 L 90 200" stroke="#c8241c" stroke-width="5"/>
+      <path d="M26 152 L 65 118 L 104 152 Z" fill="#c8241c"/>
+      <path d="M65 118 V 106" stroke="#5a6068" stroke-width="1"/>
+      <path d="M65 106 l 8 3 l -8 3 Z" fill="#e2b923"/>
+      <path d="M58 200 L 58 182 C 58 176, 72 176, 72 182 L 72 200 Z" fill="#2a1a12"/>
+    </g>
+    <path d="M0 140 Q 30 150, 60 136 Q 90 150, 120 136" fill="none" stroke="#2a2e34" stroke-width="0.5"/>
+    <g fill="#ffe08a"><circle cx="4" cy="145.2" r="1"/><circle cx="12" cy="143.6" r="1"/><circle cx="20" cy="142.0" r="1"/><circle cx="28" cy="140.4" r="1"/><circle cx="36" cy="141.2" r="1"/><circle cx="44" cy="142.8" r="1"/><circle cx="52" cy="144.4" r="1"/><circle cx="60" cy="146.0" r="1"/><circle cx="68" cy="144.4" r="1"/><circle cx="76" cy="142.8" r="1"/><circle cx="84" cy="141.2" r="1"/><circle cx="92" cy="140.4" r="1"/><circle cx="100" cy="142.0" r="1"/><circle cx="108" cy="143.6" r="1"/><circle cx="116" cy="145.2" r="1"/></g>
+    <path d="M150 200 L 172 150 L 194 200 M160 176 H 184" stroke="#6a6e78" stroke-width="1.6" fill="none"/>
+    <g stroke="#14161a" stroke-width="0.6">
+      <path d="M126 200 V 186 M140 200 V 186 M126 190 H 146 M126 196 H 146" stroke="#c9b28a" stroke-width="1.2"/>
+      <rect x="196" y="182" width="22" height="18" fill="#d6b33a"/>
+      <path d="M194 182 L 207 172 L 220 182 Z" fill="#8a2a24"/>
+    </g>
+    <text x="207" y="193" font-family="Arial, sans-serif" font-size="3" font-weight="bold" text-anchor="middle" fill="#2a1a12">FUNNEL</text>
+    <text x="207" y="197" font-family="Arial, sans-serif" font-size="3" font-weight="bold" text-anchor="middle" fill="#2a1a12">CAKE</text>
+    <rect x="0" y="200" width="220" height="10" fill="url(#grass)"/><path d="M0 200 H 220" stroke="#7fbf5a" stroke-width="0.8"/>
+  </g>
+  <g id="part-wheel" stroke="#9aa1a8" stroke-width="0.8" fill="none">
+    <!-- Ferris wheel: rotates about (172, 150) -->
+    <circle cx="172" cy="150" r="26"/><circle cx="172" cy="150" r="3" fill="#5a6068"/>
+    <path d="M172 150 L 198.0 150.0"/><path d="M172 150 L 194.5 163.0"/><path d="M172 150 L 185.0 172.5"/><path d="M172 150 L 172.0 176.0"/><path d="M172 150 L 159.0 172.5"/><path d="M172 150 L 149.5 163.0"/><path d="M172 150 L 146.0 150.0"/><path d="M172 150 L 149.5 137.0"/><path d="M172 150 L 159.0 127.5"/><path d="M172 150 L 172.0 124.0"/><path d="M172 150 L 185.0 127.5"/><path d="M172 150 L 194.5 137.0"/>
+    <rect x="195.0" y="148.0" width="6" height="5" fill="#c8241c" stroke="#14161a" stroke-width="0.4"/><rect x="182.0" y="170.5" width="6" height="5" fill="#2b5a8a" stroke="#14161a" stroke-width="0.4"/><rect x="156.0" y="170.5" width="6" height="5" fill="#e2b923" stroke="#14161a" stroke-width="0.4"/><rect x="143.0" y="148.0" width="6" height="5" fill="#c8241c" stroke="#14161a" stroke-width="0.4"/><rect x="156.0" y="125.5" width="6" height="5" fill="#2b5a8a" stroke="#14161a" stroke-width="0.4"/><rect x="182.0" y="125.5" width="6" height="5" fill="#e2b923" stroke="#14161a" stroke-width="0.4"/>
+    <circle cx="198.0" cy="150.0" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="194.5" cy="163.0" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="185.0" cy="172.5" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="172.0" cy="176.0" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="159.0" cy="172.5" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="149.5" cy="163.0" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="146.0" cy="150.0" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="149.5" cy="137.0" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="159.0" cy="127.5" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="172.0" cy="124.0" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="185.0" cy="127.5" r="0.9" fill="#ffe08a" stroke="none"/><circle cx="194.5" cy="137.0" r="0.9" fill="#ffe08a" stroke="none"/>
+  </g>
+</svg>

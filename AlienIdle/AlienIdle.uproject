@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.8",
+	"Category": "",
+	"Description": "Close Encounters of the Idle Kind - mountain base prototype",
+	"Modules": [
+		{
+			"Name": "AlienIdle",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 210" width="440" height="420" data-canvas-width="220" data-densities="2 4">
+  <!--
+    The Ice Shelf: flat ice, floes and bergs (penguins, seals).
+    Hunting region backdrop, drawn at canvas (x0, 100), 220x210; ground at local y 200.
+  -->
+  <defs>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f5a3a"/><stop offset="1" stop-color="#1c3a26"/></linearGradient>
+    <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#243a46"/><stop offset="1" stop-color="#1a2a36"/></linearGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8a3a"/><stop offset="1" stop-color="#2f5a26"/></linearGradient>
+    <linearGradient id="walk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8c92"/><stop offset="1" stop-color="#5a5c62"/></linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6a3c"/><stop offset="1" stop-color="#5e3a1c"/></linearGradient>
+    <linearGradient id="barn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a1e16"/><stop offset="0.5" stop-color="#a8302a"/><stop offset="1" stop-color="#6a1810"/></linearGradient>
+    <linearGradient id="bldgR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2a3048"/><stop offset="0.5" stop-color="#3a4262"/><stop offset="1" stop-color="#232838"/></linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fb3d6"/><stop offset="1" stop-color="#2f6a8a"/></linearGradient>
+    <radialGradient id="glowY" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#ffe08a" stop-opacity="0.8"/><stop offset="1" stop-color="#ffe08a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="cone" cx="0" cy="0.5" r="1"><stop offset="0" stop-color="#fff6c4" stop-opacity="0.75"/><stop offset="1" stop-color="#fff6c4" stop-opacity="0"/></radialGradient>
+    <filter id="tex" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" seed="3"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0.05  0 0 0 0 0  1.4 0 0 0 -0.75"/>
+    </filter>
+  </defs>
+  <g id="part-back">
+
+    <path d="M0 160 L 30 130 L 50 150 L 70 120 L 100 160 Z M140 170 L 170 140 L 200 170 Z" fill="#c8dcec"/>
+    <path d="M0 184 C 60 180, 140 186, 220 184 L 220 200 L 0 200 Z" fill="#dff0ff"/>
+    <path d="M20 196 h 30 l -4 4 h -22 Z M120 194 h 40 l -6 6 h -30 Z" fill="#2a4a6a"/>
+    <text x="110" y="176" font-family="Arial, sans-serif" font-size="3.6" font-weight="bold" text-anchor="middle" fill="#5a7a9a">nothing for 1,200 km in any direction</text>
+    <rect x="0" y="200" width="220" height="10" fill="#f4faff"/><path d="M0 200 H 220" stroke="#b8d4e8" stroke-width="0.8"/>
+  </g>
+</svg>

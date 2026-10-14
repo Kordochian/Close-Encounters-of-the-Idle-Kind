@@ -1,0 +1,358 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 48" width="256" height="384" data-canvas-width="28">
+  <!--
+    Lab alien: overworked scientist in a stained lab coat with a coffee mug, facing right.
+    Feet rest on y = 47.5, centered on x = 16. The collar sits at y 18 so the game's management tie
+    lands on the shirt.
+    Parts (drawn back to front):
+      part-body    legs, coat, far arm; static
+      part-head    nods about the neck (16, 18)
+      part-blink   eyelids fully closed (shown briefly)
+      part-arm     near arm with mug; lifts about the shoulder (21.5, 21) to sip
+    Department uniforms (the game swaps them in): body_bio / arm_bio (green lab coat),
+    body_human / arm_clipboard (grey suit, clipboard), body_incomp / arm_incomp + hardhat (scorched overalls).
+  -->
+  <defs>
+    <radialGradient id="skin" cx="0.38" cy="0.3" r="0.85">
+      <stop offset="0" stop-color="#c9f3a2"/><stop offset="0.55" stop-color="#93cf6c"/><stop offset="1" stop-color="#5a9a3c"/>
+    </radialGradient>
+    <linearGradient id="coat" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c9d0d4"/><stop offset="0.35" stop-color="#f4f6f7"/><stop offset="1" stop-color="#cfd5d8"/>
+    </linearGradient>
+    <linearGradient id="sleeve" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f6f7"/><stop offset="1" stop-color="#bfc7cb"/>
+    </linearGradient>
+    <radialGradient id="eye" cx="0.35" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#3a3550"/><stop offset="0.5" stop-color="#141420"/><stop offset="1" stop-color="#050508"/>
+    </radialGradient>
+    <linearGradient id="mug" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d9d4c4"/><stop offset="0.4" stop-color="#fbf8ee"/><stop offset="1" stop-color="#c9c3b2"/>
+    </linearGradient>
+    <filter id="mottle" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="4"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.25  0 0 0 0 0.45  0 0 0 0 0.15  1.3 0 0 0 -0.7"/>
+    </filter>
+    <clipPath id="headShape"><path d="M16 0.6 C 23 0.6, 27 4.5, 27 9 C 27 13.5, 22 17, 17 17.4 C 12 17, 6 14, 6 9 C 6 4.5, 9.5 0.6, 16 0.6 Z"/></clipPath>
+    <linearGradient id="coatBio" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5f9a6a"/><stop offset="0.35" stop-color="#9fd8a8"/><stop offset="1" stop-color="#5f9a6a"/>
+    </linearGradient>
+    <linearGradient id="sleeveBio" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9fd8a8"/><stop offset="1" stop-color="#5f9a6a"/>
+    </linearGradient>
+    <linearGradient id="suit" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4a4f58"/><stop offset="0.35" stop-color="#7a808a"/><stop offset="1" stop-color="#4a4f58"/>
+    </linearGradient>
+    <linearGradient id="sleeveSuit" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7a808a"/><stop offset="1" stop-color="#4a4f58"/>
+    </linearGradient>
+    <linearGradient id="overalls" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a8501c"/><stop offset="0.35" stop-color="#e88a3a"/><stop offset="1" stop-color="#a8501c"/>
+    </linearGradient>
+    <linearGradient id="sleeveOveralls" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e88a3a"/><stop offset="1" stop-color="#a8501c"/>
+    </linearGradient>
+  </defs>
+
+  <g id="part-body" stroke="#1c2318" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Legs and shoes (one lace untied) -->
+    <path d="M13.6 39 L 13.4 46" fill="none" stroke-width="2.6"/>
+    <path d="M13.6 39 L 13.4 46" fill="none" stroke="#7fc25b" stroke-width="1.4"/>
+    <path d="M18.4 39 L 18.6 46" fill="none" stroke-width="2.6"/>
+    <path d="M18.4 39 L 18.6 46" fill="none" stroke="#7fc25b" stroke-width="1.4"/>
+    <path d="M13 40 v 5.6 M18 40 v 5.6" fill="none" stroke="#5a9a3c" stroke-width="0.35"/>
+    <path d="M11.4 46 h 3.6 c 0.6 0, 0.8 1.5, 0 1.5 h -3.8 Z" fill="#2b2b33"/>
+    <path d="M17.4 46 h 3.6 c 1.4 0, 1.6 1.5, 0.4 1.5 h -4 Z" fill="#2b2b33"/>
+    <path d="M11.8 46.4 h 2.4 M18 46.4 h 2.6" stroke="#5a5a66" stroke-width="0.3"/>
+    <path d="M19.6 46.2 c 0.6 0.4, 1.4 0.2, 1.8 0.8 M19.6 46.2 c 0.2 0.6, -0.2 1.2, 0.4 1.6" fill="none" stroke="#d8d8de" stroke-width="0.2"/>
+    <!-- Far arm, hanging -->
+    <path d="M10.5 21 C 8.6 25, 8.4 29, 9.2 33" fill="none" stroke-width="2.8"/>
+    <path d="M10.5 21 C 8.6 25, 8.4 29, 9.2 33" fill="none" stroke="url(#sleeve)" stroke-width="1.6"/>
+    <circle cx="9.3" cy="33.6" r="1.1" fill="#7fc25b" stroke-width="0.5"/>
+    <path d="M8.8 34.4 l -0.2 0.6 M9.4 34.6 v 0.6" stroke-width="0.3"/>
+    <!-- Shirt with pocket protector -->
+    <path d="M13.2 18 L 18.8 18 L 18.4 30 L 13.6 30 Z" fill="#a9c6e8"/>
+    <path d="M14.4 19 v 10 M17.6 19 v 10" stroke="#8fb0d6" stroke-width="0.25"/>
+    <!-- Lab coat, open at the front, with folds -->
+    <path d="M10 19 C 11 18, 12.5 17.8, 13.4 18 L 14.6 26 L 14.2 40.5 L 8.6 40.5 C 8.8 33, 9.2 25, 10 19 Z" fill="url(#coat)"/>
+    <path d="M22 19 C 21 18, 19.5 17.8, 18.6 18 L 17.4 26 L 17.8 40.5 L 23.4 40.5 C 23.2 33, 22.8 25, 22 19 Z" fill="url(#coat)"/>
+    <path d="M10.4 28 C 10.8 32, 10.6 36, 10.2 40 M12.6 30 C 12.8 34, 12.8 37, 12.4 40.2 M21.6 28 C 21.2 32, 21.4 36, 21.8 40 M19.4 32 C 19.2 35, 19.2 38, 19.6 40.2" fill="none" stroke="#b5bec3" stroke-width="0.3"/>
+    <path d="M8.7 39.6 h 5.4 M17.9 39.6 h 5.4" stroke="#b5bec3" stroke-width="0.3"/>
+    <!-- Lapels -->
+    <path d="M13.4 18 L 14.6 23.5 L 12.6 21.5 Z M18.6 18 L 17.4 23.5 L 19.4 21.5 Z" fill="#d7dcde" stroke-width="0.5"/>
+    <!-- Pocket with pens, coffee stains, a scorch mark -->
+    <rect x="19" y="27.5" width="3.2" height="3.4" rx="0.3" fill="#e3e7e9" stroke-width="0.5"/>
+    <path d="M19.8 27.5 v -1.8 M21.3 27.5 v -1.4" stroke-width="0.7"/>
+    <path d="M19.8 25.9 v 0.3" stroke="#d13b3b" stroke-width="0.7"/>
+    <path d="M21.3 26.3 v 0.3" stroke="#3b6bd1" stroke-width="0.7"/>
+    <path d="M19.2 30 c 0.6 0.4, 1.4 0.6, 2.2 0.2" fill="none" stroke="#6b8ac8" stroke-width="0.3" opacity="0.7"/>
+    <ellipse cx="11.3" cy="35" rx="1.5" ry="1.1" fill="#b98b5a" stroke="none" opacity="0.75"/>
+    <ellipse cx="11.3" cy="35" rx="1.5" ry="1.1" fill="none" stroke="#8a5f34" stroke-width="0.2" opacity="0.8"/>
+    <ellipse cx="12.4" cy="36.6" rx="0.6" ry="0.5" fill="#b98b5a" stroke="none" opacity="0.75"/>
+    <circle cx="11.8" cy="37.6" r="0.25" fill="#b98b5a" stroke="none" opacity="0.75"/>
+    <path d="M21.4 36.6 c 0.8 -0.6, 1.4 0.2, 1.2 0.9 c -0.6 0.4, -1.4 0, -1.2 -0.9 Z" fill="#3a3a3a" stroke="none" opacity="0.4"/>
+    <!-- Name badge, clipped on crooked -->
+    <g transform="rotate(-12 11.3 25.2)">
+      <rect x="9.8" y="24.2" width="3" height="2" rx="0.3" fill="#f6e27a" stroke-width="0.4"/>
+      <path d="M10.2 25 h 2.2 M10.2 25.6 h 1.4" stroke="#6b5a2e" stroke-width="0.2"/>
+      <circle cx="10.4" cy="24.6" r="0.18" fill="#c13b3b" stroke="none"/>
+    </g>
+    <!-- Buttons -->
+    <circle cx="14.3" cy="31" r="0.3" fill="#c9d0d4" stroke-width="0.2"/><circle cx="14.3" cy="35" r="0.3" fill="#c9d0d4" stroke-width="0.2"/>
+  </g>
+
+  <g id="part-head" stroke="#1c2318" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Neck -->
+    <rect x="14.6" y="14.5" width="2.8" height="4.2" fill="#7fc25b"/>
+    <path d="M14.8 16 h 2.4" stroke="#5a9a3c" stroke-width="0.4"/>
+    <!-- Big head with mottled skin, faint veins, a crease of worry -->
+    <path d="M16 0.6 C 23 0.6, 27 4.5, 27 9 C 27 13.5, 22 17, 17 17.4 C 12 17, 6 14, 6 9 C 6 4.5, 9.5 0.6, 16 0.6 Z" fill="url(#skin)"/>
+    <g clip-path="url(#headShape)" stroke="none">
+      <rect x="5" y="0" width="23" height="18" filter="url(#mottle)" opacity="0.5"/>
+      <path d="M27 9 C 27 13.5, 22 17, 17 17.4 C 21 15, 24.6 12, 25.4 6.4 Z" fill="#3f7a28" opacity="0.4"/>
+      <path d="M9.6 3.6 C 11.6 2, 14.6 1.4, 17.6 1.8" fill="none" stroke="#e9ffd6" stroke-width="0.8" opacity="0.7"/>
+      <path d="M12 3.4 c 0.6 0.8, 1.6 1, 2.2 2 M19.6 3 c -0.4 0.8, -0.2 1.6, -0.8 2.4" fill="none" stroke="#4f8a32" stroke-width="0.2" opacity="0.7"/>
+      <path d="M14.4 5.6 c 1 -0.4, 2.4 -0.4, 3.4 0 M14.8 6.4 c 0.8 -0.3, 1.8 -0.3, 2.6 0" fill="none" stroke="#4f8a32" stroke-width="0.25"/>
+    </g>
+    <path d="M16 0.6 C 23 0.6, 27 4.5, 27 9 C 27 13.5, 22 17, 17 17.4 C 12 17, 6 14, 6 9 C 6 4.5, 9.5 0.6, 16 0.6 Z" fill="none"/>
+    <!-- Eyes: huge, black, glossy, tired -->
+    <path d="M17.6 9.6 C 18.2 7.4, 22.6 6.2, 25 7.6 C 25.2 10.4, 21.6 12.6, 17.6 9.6 Z" fill="url(#eye)"/>
+    <path d="M8.4 7.8 C 10.4 6.6, 13.8 7.4, 14.4 9.4 C 11.8 11.8, 8.8 10.4, 8.4 7.8 Z" fill="url(#eye)"/>
+    <path d="M20.6 8.2 c 0.6 -0.3, 1.2 -0.3, 1.6 0" fill="none" stroke="#ffffff" stroke-width="0.5"/>
+    <circle cx="23.6" cy="9.4" r="0.25" fill="#9fa6c8" stroke="none"/>
+    <path d="M10.6 8.2 c 0.5 -0.2, 1 -0.2, 1.3 0" fill="none" stroke="#ffffff" stroke-width="0.4"/>
+    <!-- a reflection of a monitor in the near eye -->
+    <rect x="21.4" y="9.6" width="1.2" height="0.8" fill="#6fdf9a" stroke="none" opacity="0.6"/>
+    <!-- Heavy half-closed lids -->
+    <path d="M17.4 9.4 C 18 7.2, 22.6 5.9, 25.2 7.4 C 22.8 7.2, 19.6 7.8, 17.4 9.4 Z" fill="#78ba55" stroke-width="0.5"/>
+    <path d="M8.2 7.6 C 10.4 6.3, 13.9 7.1, 14.6 9.2 C 12.4 7.8, 10.2 7.3, 8.2 7.6 Z" fill="#78ba55" stroke-width="0.5"/>
+    <!-- Bags, layered -->
+    <path d="M18.6 11.6 C 20.6 12.6, 23 12.2, 24.4 10.6" fill="none" stroke="#7d5aa6" stroke-width="0.55"/>
+    <path d="M19.2 12.4 C 21 13.2, 22.8 12.9, 24 11.8" fill="none" stroke="#7d5aa6" stroke-width="0.3" opacity="0.7"/>
+    <path d="M9.2 10.8 C 10.6 11.8, 12.6 11.8, 13.8 11" fill="none" stroke="#7d5aa6" stroke-width="0.55"/>
+    <!-- Nostril slits and a flat mouth of resignation -->
+    <path d="M23.6 12.2 l 0.4 0.3 M24.6 12 l 0.3 0.3" stroke-width="0.3"/>
+    <path d="M19.2 14.4 h 3.2" fill="none" stroke-width="0.6"/>
+    <path d="M22.4 14.4 l 0.4 0.3" fill="none" stroke-width="0.35"/>
+  </g>
+
+  <g id="part-blink" stroke="#1c2318" stroke-width="0.5" stroke-linejoin="round">
+    <path d="M17.4 9.6 C 18 7.2, 22.6 5.9, 25.2 7.4 C 25.4 10.4, 21.6 12.8, 17.4 9.6 Z" fill="#78ba55"/>
+    <path d="M8.2 7.6 C 10.4 6.3, 13.9 7.1, 14.6 9.4 C 11.8 12, 8.6 10.5, 8.2 7.6 Z" fill="#78ba55"/>
+    <path d="M18 9.6 C 20.4 10.6, 22.8 10, 24.8 8.4 M8.8 8.6 C 10.6 9.8, 12.6 9.9, 14 9.4" fill="none" stroke-width="0.5"/>
+    <path d="M20 10.3 l -0.2 0.5 M22 10.2 l 0 0.5 M23.8 9.4 l 0.2 0.5" stroke-width="0.25"/>
+  </g>
+
+  <g id="part-arm" stroke="#1c2318" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Sleeve: shoulder down to elbow, forearm forward, a cuff -->
+    <path d="M21.5 21 C 23 24, 23.4 27, 22.8 29.5 L 26 29.5" fill="none" stroke-width="2.9"/>
+    <path d="M21.5 21 C 23 24, 23.4 27, 22.8 29.5 L 26 29.5" fill="none" stroke="url(#sleeve)" stroke-width="1.7"/>
+    <path d="M22.4 24 c 0.4 0.4, 0.5 0.8, 0.4 1.2" fill="none" stroke="#b5bec3" stroke-width="0.25"/>
+    <path d="M24.6 28.6 v 1.8" stroke="#b5bec3" stroke-width="0.35"/>
+    <!-- Mug: WORLD'S OKAYEST SCIENTIST (you'd need to squint) -->
+    <path d="M26 26.4 h 3.6 v 4.4 c 0 0.8, -0.6 1.2, -1.2 1.2 h -1.2 c -0.6 0, -1.2 -0.4, -1.2 -1.2 Z" fill="url(#mug)"/>
+    <path d="M29.6 27.4 c 1.6 0, 1.6 2.6, 0 2.6" fill="none" stroke-width="0.6"/>
+    <ellipse cx="27.8" cy="26.5" rx="1.7" ry="0.35" fill="#4a2c16" stroke-width="0.3"/>
+    <path d="M26.6 26.6 c 0.6 0.15, 1.6 0.15, 2.2 0" fill="none" stroke="#8a5a32" stroke-width="0.15"/>
+    <path d="M26.6 28.4 h 2.4 M26.7 29.1 h 2.2 M26.9 29.8 h 1.6" stroke="#c13b3b" stroke-width="0.22"/>
+    <path d="M28.2 26.8 c 0.2 0.6, 0.1 1, 0.3 1.4" fill="none" stroke="#7a4a26" stroke-width="0.25"/>
+    <!-- Hand -->
+    <circle cx="26" cy="29.6" r="1.1" fill="#7fc25b" stroke-width="0.5"/>
+    <path d="M25.6 30.4 l 0.6 0" stroke-width="0.25"/>
+    <!-- Steam -->
+    <path d="M27 25.4 c -0.6 -0.8, 0.6 -1.4, 0 -2.4 c -0.4 -0.6, 0.2 -1, 0.1 -1.6 M28.6 25.4 c -0.6 -0.8, 0.6 -1.4, 0 -2.4" fill="none" stroke="#e9f0f2" stroke-width="0.35" opacity="0.75"/>
+  </g>
+  <g id="part-body_bio" stroke="#1c2318" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Legs and shoes (one lace untied) -->
+    <path d="M13.6 39 L 13.4 46" fill="none" stroke-width="2.6"/>
+    <path d="M13.6 39 L 13.4 46" fill="none" stroke="#7fc25b" stroke-width="1.4"/>
+    <path d="M18.4 39 L 18.6 46" fill="none" stroke-width="2.6"/>
+    <path d="M18.4 39 L 18.6 46" fill="none" stroke="#7fc25b" stroke-width="1.4"/>
+    <path d="M13 40 v 5.6 M18 40 v 5.6" fill="none" stroke="#5a9a3c" stroke-width="0.35"/>
+    <path d="M11.4 46 h 3.6 c 0.6 0, 0.8 1.5, 0 1.5 h -3.8 Z" fill="#2b2b33"/>
+    <path d="M17.4 46 h 3.6 c 1.4 0, 1.6 1.5, 0.4 1.5 h -4 Z" fill="#2b2b33"/>
+    <path d="M11.8 46.4 h 2.4 M18 46.4 h 2.6" stroke="#5a5a66" stroke-width="0.3"/>
+    <path d="M19.6 46.2 c 0.6 0.4, 1.4 0.2, 1.8 0.8 M19.6 46.2 c 0.2 0.6, -0.2 1.2, 0.4 1.6" fill="none" stroke="#d8d8de" stroke-width="0.2"/>
+    <!-- Far arm, hanging -->
+    <path d="M10.5 21 C 8.6 25, 8.4 29, 9.2 33" fill="none" stroke-width="2.8"/>
+    <path d="M10.5 21 C 8.6 25, 8.4 29, 9.2 33" fill="none" stroke="url(#sleeveBio)" stroke-width="1.6"/>
+    <circle cx="9.3" cy="33.6" r="1.1" fill="#7fc25b" stroke-width="0.5"/>
+    <path d="M8.8 34.4 l -0.2 0.6 M9.4 34.6 v 0.6" stroke-width="0.3"/>
+    <!-- Shirt with pocket protector -->
+    <path d="M13.2 18 L 18.8 18 L 18.4 30 L 13.6 30 Z" fill="#a9c6e8"/>
+    <path d="M14.4 19 v 10 M17.6 19 v 10" stroke="#8fb0d6" stroke-width="0.25"/>
+    <!-- Lab coat, open at the front, with folds -->
+    <path d="M10 19 C 11 18, 12.5 17.8, 13.4 18 L 14.6 26 L 14.2 40.5 L 8.6 40.5 C 8.8 33, 9.2 25, 10 19 Z" fill="url(#coatBio)"/>
+    <path d="M22 19 C 21 18, 19.5 17.8, 18.6 18 L 17.4 26 L 17.8 40.5 L 23.4 40.5 C 23.2 33, 22.8 25, 22 19 Z" fill="url(#coatBio)"/>
+    <path d="M10.4 28 C 10.8 32, 10.6 36, 10.2 40 M12.6 30 C 12.8 34, 12.8 37, 12.4 40.2 M21.6 28 C 21.2 32, 21.4 36, 21.8 40 M19.4 32 C 19.2 35, 19.2 38, 19.6 40.2" fill="none" stroke="#b5bec3" stroke-width="0.3"/>
+    <path d="M8.7 39.6 h 5.4 M17.9 39.6 h 5.4" stroke="#b5bec3" stroke-width="0.3"/>
+    <!-- Lapels -->
+    <path d="M13.4 18 L 14.6 23.5 L 12.6 21.5 Z M18.6 18 L 17.4 23.5 L 19.4 21.5 Z" fill="#d7dcde" stroke-width="0.5"/>
+    <!-- Pocket with pens, coffee stains, a scorch mark -->
+    <rect x="19" y="27.5" width="3.2" height="3.4" rx="0.3" fill="#e3e7e9" stroke-width="0.5"/>
+    <path d="M19.8 27.5 v -1.8 M21.3 27.5 v -1.4" stroke-width="0.7"/>
+    <path d="M19.8 25.9 v 0.3" stroke="#d13b3b" stroke-width="0.7"/>
+    <path d="M21.3 26.3 v 0.3" stroke="#3b6bd1" stroke-width="0.7"/>
+    <path d="M19.2 30 c 0.6 0.4, 1.4 0.6, 2.2 0.2" fill="none" stroke="#6b8ac8" stroke-width="0.3" opacity="0.7"/>
+    <ellipse cx="11.3" cy="35" rx="1.5" ry="1.1" fill="#b98b5a" stroke="none" opacity="0.75"/>
+    <ellipse cx="11.3" cy="35" rx="1.5" ry="1.1" fill="none" stroke="#8a5f34" stroke-width="0.2" opacity="0.8"/>
+    <ellipse cx="12.4" cy="36.6" rx="0.6" ry="0.5" fill="#b98b5a" stroke="none" opacity="0.75"/>
+    <circle cx="11.8" cy="37.6" r="0.25" fill="#b98b5a" stroke="none" opacity="0.75"/>
+    <path d="M21.4 36.6 c 0.8 -0.6, 1.4 0.2, 1.2 0.9 c -0.6 0.4, -1.4 0, -1.2 -0.9 Z" fill="#3a3a3a" stroke="none" opacity="0.4"/>
+    <!-- Name badge, clipped on crooked -->
+    <g transform="rotate(-12 11.3 25.2)">
+      <rect x="9.8" y="24.2" width="3" height="2" rx="0.3" fill="#f6e27a" stroke-width="0.4"/>
+      <path d="M10.2 25 h 2.2 M10.2 25.6 h 1.4" stroke="#6b5a2e" stroke-width="0.2"/>
+      <circle cx="10.4" cy="24.6" r="0.18" fill="#c13b3b" stroke="none"/>
+    </g>
+    <!-- Buttons -->
+    <circle cx="14.3" cy="31" r="0.3" fill="#c9d0d4" stroke-width="0.2"/><circle cx="14.3" cy="35" r="0.3" fill="#c9d0d4" stroke-width="0.2"/>
+  </g>
+  <g id="part-body_human" stroke="#1c2318" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Legs and shoes (one lace untied) -->
+    <path d="M13.6 39 L 13.4 46" fill="none" stroke-width="2.6"/>
+    <path d="M13.6 39 L 13.4 46" fill="none" stroke="#7fc25b" stroke-width="1.4"/>
+    <path d="M18.4 39 L 18.6 46" fill="none" stroke-width="2.6"/>
+    <path d="M18.4 39 L 18.6 46" fill="none" stroke="#7fc25b" stroke-width="1.4"/>
+    <path d="M13 40 v 5.6 M18 40 v 5.6" fill="none" stroke="#5a9a3c" stroke-width="0.35"/>
+    <path d="M11.4 46 h 3.6 c 0.6 0, 0.8 1.5, 0 1.5 h -3.8 Z" fill="#2b2b33"/>
+    <path d="M17.4 46 h 3.6 c 1.4 0, 1.6 1.5, 0.4 1.5 h -4 Z" fill="#2b2b33"/>
+    <path d="M11.8 46.4 h 2.4 M18 46.4 h 2.6" stroke="#5a5a66" stroke-width="0.3"/>
+    <path d="M19.6 46.2 c 0.6 0.4, 1.4 0.2, 1.8 0.8 M19.6 46.2 c 0.2 0.6, -0.2 1.2, 0.4 1.6" fill="none" stroke="#d8d8de" stroke-width="0.2"/>
+    <!-- Far arm, hanging -->
+    <path d="M10.5 21 C 8.6 25, 8.4 29, 9.2 33" fill="none" stroke-width="2.8"/>
+    <path d="M10.5 21 C 8.6 25, 8.4 29, 9.2 33" fill="none" stroke="url(#sleeveSuit)" stroke-width="1.6"/>
+    <circle cx="9.3" cy="33.6" r="1.1" fill="#7fc25b" stroke-width="0.5"/>
+    <path d="M8.8 34.4 l -0.2 0.6 M9.4 34.6 v 0.6" stroke-width="0.3"/>
+    <!-- Shirt with pocket protector -->
+    <path d="M13.2 18 L 18.8 18 L 18.4 30 L 13.6 30 Z" fill="#f2f4f6"/>
+    <path d="M14.4 19 v 10 M17.6 19 v 10" stroke="#8fb0d6" stroke-width="0.25"/>
+    <!-- Lab coat, open at the front, with folds -->
+    <path d="M10 19 C 11 18, 12.5 17.8, 13.4 18 L 14.6 26 L 14.2 40.5 L 8.6 40.5 C 8.8 33, 9.2 25, 10 19 Z" fill="url(#suit)"/>
+    <path d="M22 19 C 21 18, 19.5 17.8, 18.6 18 L 17.4 26 L 17.8 40.5 L 23.4 40.5 C 23.2 33, 22.8 25, 22 19 Z" fill="url(#suit)"/>
+    <path d="M10.4 28 C 10.8 32, 10.6 36, 10.2 40 M12.6 30 C 12.8 34, 12.8 37, 12.4 40.2 M21.6 28 C 21.2 32, 21.4 36, 21.8 40 M19.4 32 C 19.2 35, 19.2 38, 19.6 40.2" fill="none" stroke="#b5bec3" stroke-width="0.3"/>
+    <path d="M8.7 39.6 h 5.4 M17.9 39.6 h 5.4" stroke="#b5bec3" stroke-width="0.3"/>
+    <!-- Lapels -->
+    <path d="M13.4 18 L 14.6 23.5 L 12.6 21.5 Z M18.6 18 L 17.4 23.5 L 19.4 21.5 Z" fill="#d7dcde" stroke-width="0.5"/>
+    <!-- Pocket with pens, coffee stains, a scorch mark -->
+    <rect x="19" y="27.5" width="3.2" height="3.4" rx="0.3" fill="#e3e7e9" stroke-width="0.5"/>
+    <path d="M19.8 27.5 v -1.8 M21.3 27.5 v -1.4" stroke-width="0.7"/>
+    <path d="M19.8 25.9 v 0.3" stroke="#d13b3b" stroke-width="0.7"/>
+    <path d="M21.3 26.3 v 0.3" stroke="#3b6bd1" stroke-width="0.7"/>
+    <path d="M19.2 30 c 0.6 0.4, 1.4 0.6, 2.2 0.2" fill="none" stroke="#6b8ac8" stroke-width="0.3" opacity="0.7"/>
+    <ellipse cx="11.3" cy="35" rx="1.5" ry="1.1" fill="#b98b5a" stroke="none" opacity="0.75"/>
+    <ellipse cx="11.3" cy="35" rx="1.5" ry="1.1" fill="none" stroke="#8a5f34" stroke-width="0.2" opacity="0.8"/>
+    <path d="M21.4 36.6 c 0.8 -0.6, 1.4 0.2, 1.2 0.9 c -0.6 0.4, -1.4 0, -1.2 -0.9 Z" fill="#3a3a3a" stroke="none" opacity="0.4"/>
+    <!-- Name badge, clipped on crooked -->
+    <g transform="rotate(-12 11.3 25.2)">
+      <rect x="9.8" y="24.2" width="3" height="2" rx="0.3" fill="#f6e27a" stroke-width="0.4"/>
+      <path d="M10.2 25 h 2.2 M10.2 25.6 h 1.4" stroke="#6b5a2e" stroke-width="0.2"/>
+      <circle cx="10.4" cy="24.6" r="0.18" fill="#c13b3b" stroke="none"/>
+    </g>
+    <!-- Buttons -->
+    <circle cx="14.3" cy="31" r="0.3" fill="#c9d0d4" stroke-width="0.2"/><circle cx="14.3" cy="35" r="0.3" fill="#c9d0d4" stroke-width="0.2"/>
+  </g>
+  <g id="part-body_incomp" stroke="#1c2318" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Legs and shoes (one lace untied) -->
+    <path d="M13.6 39 L 13.4 46" fill="none" stroke-width="2.6"/>
+    <path d="M13.6 39 L 13.4 46" fill="none" stroke="#7fc25b" stroke-width="1.4"/>
+    <path d="M18.4 39 L 18.6 46" fill="none" stroke-width="2.6"/>
+    <path d="M18.4 39 L 18.6 46" fill="none" stroke="#7fc25b" stroke-width="1.4"/>
+    <path d="M13 40 v 5.6 M18 40 v 5.6" fill="none" stroke="#5a9a3c" stroke-width="0.35"/>
+    <path d="M11.4 46 h 3.6 c 0.6 0, 0.8 1.5, 0 1.5 h -3.8 Z" fill="#2b2b33"/>
+    <path d="M17.4 46 h 3.6 c 1.4 0, 1.6 1.5, 0.4 1.5 h -4 Z" fill="#2b2b33"/>
+    <path d="M11.8 46.4 h 2.4 M18 46.4 h 2.6" stroke="#5a5a66" stroke-width="0.3"/>
+    <path d="M19.6 46.2 c 0.6 0.4, 1.4 0.2, 1.8 0.8 M19.6 46.2 c 0.2 0.6, -0.2 1.2, 0.4 1.6" fill="none" stroke="#d8d8de" stroke-width="0.2"/>
+    <!-- Far arm, hanging -->
+    <path d="M10.5 21 C 8.6 25, 8.4 29, 9.2 33" fill="none" stroke-width="2.8"/>
+    <path d="M10.5 21 C 8.6 25, 8.4 29, 9.2 33" fill="none" stroke="url(#sleeveOveralls)" stroke-width="1.6"/>
+    <circle cx="9.3" cy="33.6" r="1.1" fill="#7fc25b" stroke-width="0.5"/>
+    <path d="M8.8 34.4 l -0.2 0.6 M9.4 34.6 v 0.6" stroke-width="0.3"/>
+    <!-- Shirt with pocket protector -->
+    <path d="M13.2 18 L 18.8 18 L 18.4 30 L 13.6 30 Z" fill="#e88a3a"/>
+    <path d="M14.4 19 v 10 M17.6 19 v 10" stroke="#8fb0d6" stroke-width="0.25"/>
+    <!-- Lab coat, open at the front, with folds -->
+    <path d="M10 19 C 11 18, 12.5 17.8, 13.4 18 L 14.6 26 L 14.2 40.5 L 8.6 40.5 C 8.8 33, 9.2 25, 10 19 Z" fill="url(#overalls)"/>
+    <path d="M22 19 C 21 18, 19.5 17.8, 18.6 18 L 17.4 26 L 17.8 40.5 L 23.4 40.5 C 23.2 33, 22.8 25, 22 19 Z" fill="url(#overalls)"/>
+    <path d="M10.4 28 C 10.8 32, 10.6 36, 10.2 40 M12.6 30 C 12.8 34, 12.8 37, 12.4 40.2 M21.6 28 C 21.2 32, 21.4 36, 21.8 40 M19.4 32 C 19.2 35, 19.2 38, 19.6 40.2" fill="none" stroke="#b5bec3" stroke-width="0.3"/>
+    <path d="M8.7 39.6 h 5.4 M17.9 39.6 h 5.4" stroke="#b5bec3" stroke-width="0.3"/>
+    <!-- Lapels -->
+    <path d="M13.4 18 L 14.6 23.5 L 12.6 21.5 Z M18.6 18 L 17.4 23.5 L 19.4 21.5 Z" fill="#d7dcde" stroke-width="0.5"/>
+    <!-- Pocket with pens, coffee stains, a scorch mark -->
+    <rect x="19" y="27.5" width="3.2" height="3.4" rx="0.3" fill="#e3e7e9" stroke-width="0.5"/>
+    <path d="M19.8 27.5 v -1.8 M21.3 27.5 v -1.4" stroke-width="0.7"/>
+    <path d="M19.8 25.9 v 0.3" stroke="#d13b3b" stroke-width="0.7"/>
+    <path d="M21.3 26.3 v 0.3" stroke="#3b6bd1" stroke-width="0.7"/>
+    <path d="M19.2 30 c 0.6 0.4, 1.4 0.6, 2.2 0.2" fill="none" stroke="#6b8ac8" stroke-width="0.3" opacity="0.7"/>
+    <ellipse cx="11.3" cy="35" rx="1.5" ry="1.1" fill="#b98b5a" stroke="none" opacity="0.75"/>
+    <ellipse cx="11.3" cy="35" rx="1.5" ry="1.1" fill="none" stroke="#8a5f34" stroke-width="0.2" opacity="0.8"/>
+    <ellipse cx="12.4" cy="36.6" rx="0.6" ry="0.5" fill="#b98b5a" stroke="none" opacity="0.75"/>
+    <circle cx="11.8" cy="37.6" r="0.25" fill="#b98b5a" stroke="none" opacity="0.75"/>
+    <path d="M21.4 36.6 c 0.8 -0.6, 1.4 0.2, 1.2 0.9 c -0.6 0.4, -1.4 0, -1.2 -0.9 Z" fill="#3a3a3a" stroke="none" opacity="0.4"/>
+    <!-- Name badge, clipped on crooked -->
+    <g transform="rotate(-12 11.3 25.2)">
+      <rect x="9.8" y="24.2" width="3" height="2" rx="0.3" fill="#f6e27a" stroke-width="0.4"/>
+      <path d="M10.2 25 h 2.2 M10.2 25.6 h 1.4" stroke="#6b5a2e" stroke-width="0.2"/>
+      <circle cx="10.4" cy="24.6" r="0.18" fill="#c13b3b" stroke="none"/>
+    </g>
+    <!-- Buttons -->
+    <circle cx="14.3" cy="31" r="0.3" fill="#c9d0d4" stroke-width="0.2"/><circle cx="14.3" cy="35" r="0.3" fill="#c9d0d4" stroke-width="0.2"/>
+    <!-- scorch marks and a singed hem -->
+    <path d="M9 36 c 1 -2, 3 -2, 3.6 0 c 0.4 2, -2 3, -3.6 2 Z M19 31 c 1.4 -1, 3 0, 3 1.6 c -1 1.4, -3 1, -3 -1.6 Z M14.4 22 c 0.8 -0.6, 1.8 -0.2, 1.8 0.8 c -0.8 0.6, -1.8 0.4, -1.8 -0.8 Z" fill="#2a1a12" stroke="none" opacity="0.75"/>
+    <path d="M8.6 40.5 l 0.8 -1.2 l 0.8 1 l 0.9 -1.4 l 0.8 1.2 l 1 -1 l 0.6 1.4 M17.8 40.5 l 0.8 -1.2 l 0.9 1 l 0.8 -1.3 l 1 1.2 l 0.8 -1 l 0.8 1.3" fill="none" stroke="#2a1a12" stroke-width="0.5"/>
+    <rect x="15" y="27" width="2" height="1.6" fill="#d6b33a" stroke-width="0.3"/>
+  </g>
+  <g id="part-arm_bio" stroke="#1c2318" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Sleeve: shoulder down to elbow, forearm forward, a cuff -->
+    <path d="M21.5 21 C 23 24, 23.4 27, 22.8 29.5 L 26 29.5" fill="none" stroke-width="2.9"/>
+    <path d="M21.5 21 C 23 24, 23.4 27, 22.8 29.5 L 26 29.5" fill="none" stroke="url(#sleeveBio)" stroke-width="1.7"/>
+    <path d="M22.4 24 c 0.4 0.4, 0.5 0.8, 0.4 1.2" fill="none" stroke="#b5bec3" stroke-width="0.25"/>
+    <path d="M24.6 28.6 v 1.8" stroke="#b5bec3" stroke-width="0.35"/>
+    <!-- Mug: WORLD'S OKAYEST SCIENTIST (you'd need to squint) -->
+    <path d="M26 26.4 h 3.6 v 4.4 c 0 0.8, -0.6 1.2, -1.2 1.2 h -1.2 c -0.6 0, -1.2 -0.4, -1.2 -1.2 Z" fill="url(#mug)"/>
+    <path d="M29.6 27.4 c 1.6 0, 1.6 2.6, 0 2.6" fill="none" stroke-width="0.6"/>
+    <ellipse cx="27.8" cy="26.5" rx="1.7" ry="0.35" fill="#4a2c16" stroke-width="0.3"/>
+    <path d="M26.6 26.6 c 0.6 0.15, 1.6 0.15, 2.2 0" fill="none" stroke="#8a5a32" stroke-width="0.15"/>
+    <path d="M26.6 28.4 h 2.4 M26.7 29.1 h 2.2 M26.9 29.8 h 1.6" stroke="#c13b3b" stroke-width="0.22"/>
+    <path d="M28.2 26.8 c 0.2 0.6, 0.1 1, 0.3 1.4" fill="none" stroke="#7a4a26" stroke-width="0.25"/>
+    <!-- Hand -->
+    <circle cx="26" cy="29.6" r="1.1" fill="#7fc25b" stroke-width="0.5"/>
+    <path d="M25.6 30.4 l 0.6 0" stroke-width="0.25"/>
+    <!-- Steam -->
+    <path d="M27 25.4 c -0.6 -0.8, 0.6 -1.4, 0 -2.4 c -0.4 -0.6, 0.2 -1, 0.1 -1.6 M28.6 25.4 c -0.6 -0.8, 0.6 -1.4, 0 -2.4" fill="none" stroke="#e9f0f2" stroke-width="0.35" opacity="0.75"/>
+  </g>
+  <g id="part-arm_incomp" stroke="#1c2318" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Sleeve: shoulder down to elbow, forearm forward, a cuff -->
+    <path d="M21.5 21 C 23 24, 23.4 27, 22.8 29.5 L 26 29.5" fill="none" stroke-width="2.9"/>
+    <path d="M21.5 21 C 23 24, 23.4 27, 22.8 29.5 L 26 29.5" fill="none" stroke="url(#sleeveOveralls)" stroke-width="1.7"/>
+    <path d="M22.4 24 c 0.4 0.4, 0.5 0.8, 0.4 1.2" fill="none" stroke="#b5bec3" stroke-width="0.25"/>
+    <path d="M24.6 28.6 v 1.8" stroke="#b5bec3" stroke-width="0.35"/>
+    <!-- Mug: WORLD'S OKAYEST SCIENTIST (you'd need to squint) -->
+    <path d="M26 26.4 h 3.6 v 4.4 c 0 0.8, -0.6 1.2, -1.2 1.2 h -1.2 c -0.6 0, -1.2 -0.4, -1.2 -1.2 Z" fill="url(#mug)"/>
+    <path d="M29.6 27.4 c 1.6 0, 1.6 2.6, 0 2.6" fill="none" stroke-width="0.6"/>
+    <ellipse cx="27.8" cy="26.5" rx="1.7" ry="0.35" fill="#4a2c16" stroke-width="0.3"/>
+    <path d="M26.6 26.6 c 0.6 0.15, 1.6 0.15, 2.2 0" fill="none" stroke="#8a5a32" stroke-width="0.15"/>
+    <path d="M26.6 28.4 h 2.4 M26.7 29.1 h 2.2 M26.9 29.8 h 1.6" stroke="#c13b3b" stroke-width="0.22"/>
+    <path d="M28.2 26.8 c 0.2 0.6, 0.1 1, 0.3 1.4" fill="none" stroke="#7a4a26" stroke-width="0.25"/>
+    <!-- Hand -->
+    <circle cx="26" cy="29.6" r="1.1" fill="#7fc25b" stroke-width="0.5"/>
+    <path d="M25.6 30.4 l 0.6 0" stroke-width="0.25"/>
+    <!-- Steam -->
+    <path d="M27 25.4 c -0.6 -0.8, 0.6 -1.4, 0 -2.4 c -0.4 -0.6, 0.2 -1, 0.1 -1.6 M28.6 25.4 c -0.6 -0.8, 0.6 -1.4, 0 -2.4" fill="none" stroke="#e9f0f2" stroke-width="0.35" opacity="0.75"/>
+  </g>
+  <g id="part-arm_clipboard" stroke="#1c2318" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M21.5 21 C 23 24, 23.4 27, 22.8 29.5 L 26 29.5" fill="none" stroke-width="2.9"/>
+    <path d="M21.5 21 C 23 24, 23.4 27, 22.8 29.5 L 26 29.5" fill="none" stroke="url(#sleeveSuit)" stroke-width="1.7"/>
+    <!-- Clipboard of observations ("subject is aware of clipboard") -->
+    <rect x="24.6" y="24" width="6" height="8" rx="0.4" fill="#b98b5a"/>
+    <rect x="25.3" y="25.2" width="4.6" height="6.2" fill="#f4f1e6" stroke-width="0.3"/>
+    <rect x="26.4" y="23.4" width="2.4" height="1.2" fill="#8a9098" stroke-width="0.3"/>
+    <path d="M25.8 26.6 h 3.6 M25.8 27.8 h 3.6 M25.8 29 h 2.6 M25.8 30.2 h 3" stroke="#5a6068" stroke-width="0.25"/>
+    <circle cx="26" cy="29.6" r="1.1" fill="#7fc25b" stroke-width="0.5"/>
+  </g>
+  <g id="part-hardhat" stroke="#1c2318" stroke-width="0.6" stroke-linejoin="round">
+    <!-- Hard hat, scorched, sits on the big head -->
+    <path d="M7.4 5.4 C 8 0.6, 24 0.2, 25.6 5 L 27.2 5.4 C 27.4 6.4, 6 6.6, 5.8 5.6 Z" fill="#e2b923"/>
+    <path d="M11 1.8 C 12 0.6, 15 0.2, 17 0.4" fill="none" stroke="#fff3a0" stroke-width="0.6"/>
+    <path d="M16 0.4 V 5.2" stroke="#b08a1a" stroke-width="0.8"/>
+    <path d="M19 2 c 1 -0.6, 2.4 0, 2.4 1 c -1 0.8, -2.4 0.4, -2.4 -1 Z" fill="#2a1a12" stroke="none" opacity="0.7"/>
+  </g>
+</svg>

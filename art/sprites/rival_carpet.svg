@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" width="480" height="160" data-canvas-width="120" data-densities="4 8">
+  <!--
+    A Celebrity Studies stunt: red carpet, velvet ropes, paparazzi and a news van. Feet at y 40.
+      part-body     carpet, ropes, photographers, van
+      part-flashes  camera flashes (shown at random)
+  -->
+  <g id="part-body" stroke="#14161a" stroke-width="0.5">
+    <path d="M30 40 L 34 34 L 86 34 L 90 40 Z" fill="#c8241c"/>
+    <path d="M36 34 v -8 M60 34 v -8 M84 34 v -8" stroke="#e2b923" stroke-width="1"/>
+    <path d="M36 27 C 44 31, 52 31, 60 27 C 68 31, 76 31, 84 27" fill="none" stroke="#7a1030" stroke-width="1.2"/>
+    <g><circle cx="22" cy="24" r="2" fill="#e8b996"/><rect x="20" y="26" width="4" height="9" rx="1" fill="#2a2e34"/><rect x="23" y="24" width="4" height="3" fill="#1a1a1a"/><path d="M20.6 35 v 5 M23.4 35 v 5" stroke="#2a2e34" stroke-width="1.4"/></g>
+    <g><circle cx="96" cy="24" r="2" fill="#c99a6a"/><rect x="94" y="26" width="4" height="9" rx="1" fill="#5a4a3a"/><rect x="91" y="24" width="4" height="3" fill="#1a1a1a"/><path d="M94.6 35 v 5 M97.4 35 v 5" stroke="#5a4a3a" stroke-width="1.4"/></g>
+    <g><circle cx="12" cy="25" r="2" fill="#e8b996"/><rect x="10" y="27" width="4" height="8" rx="1" fill="#8a2a24"/><rect x="13" y="25" width="4" height="3" fill="#1a1a1a"/><path d="M10.6 35 v 5 M13.4 35 v 5" stroke="#8a2a24" stroke-width="1.4"/></g>
+    <path d="M100 40 V 22 h 18 v 18 Z" fill="#e8e2d4"/>
+    <path d="M109 22 V 12 M105 12 h 8" stroke="#5a6068" stroke-width="0.8"/>
+    <circle cx="109" cy="11" r="2.4" fill="#d8dde2"/>
+    <text x="109" y="30" font-family="Arial, sans-serif" font-size="3.2" font-weight="bold" text-anchor="middle" fill="#c8241c" stroke="none">CH.7</text>
+    <text x="109" y="34" font-family="Arial, sans-serif" font-size="2.2" text-anchor="middle" fill="#14161a" stroke="none">LIVE</text>
+    <circle cx="104" cy="40" r="2" fill="#1a1a1a"/><circle cx="114" cy="40" r="2" fill="#1a1a1a"/>
+  </g>
+  <g id="part-flashes" stroke="none">
+    <circle cx="25" cy="25.5" r="5" fill="#ffffff" opacity="0.7"/><circle cx="25" cy="25.5" r="1.6" fill="#ffffff"/>
+    <circle cx="15" cy="26.5" r="4" fill="#ffffff" opacity="0.6"/>
+    <circle cx="93" cy="25.5" r="5" fill="#ffffff" opacity="0.7"/><circle cx="93" cy="25.5" r="1.6" fill="#ffffff"/>
+  </g>
+</svg>

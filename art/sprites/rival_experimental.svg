@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 48" width="384" height="192" data-canvas-width="96">
+  <!--
+    Experimental Sciences Office ship: dented, lab-green, leaking. Anchor (48, 26).
+      part-body  the ship
+      part-goo   dripping goo (bobs)
+  -->
+  <defs>
+    <linearGradient id="labg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8f0b0"/><stop offset="0.55" stop-color="#6fb85a"/><stop offset="1" stop-color="#2f6a2a"/></linearGradient>
+  </defs>
+  <g id="part-body" stroke="#14261a" stroke-width="0.9" stroke-linejoin="round">
+    <path d="M36 22 C 36 12, 41 8, 48 8 C 55 8, 60 12, 60 22 Z" fill="#9fe08a" opacity="0.6"/>
+    <path d="M44 9 l 3 6 l -4 4" fill="none" stroke="#e8ffe0" stroke-width="0.6"/>
+    <path d="M8 28 C 12 21, 28 18, 48 18 C 64 18, 76 20, 80 22 L 84 21 L 82 25 C 86 26, 88 27, 88 28 C 84 34, 66 37, 48 37 C 30 37, 12 34, 8 28 Z" fill="url(#labg)"/>
+    <path d="M26 21 c 3 2, 7 2, 10 0" fill="none" stroke="#2f6a2a" stroke-width="1"/>
+    <path d="M60 30 c 2 -2, 6 -2, 7 1 c -2 2, -6 2, -7 -1 Z" fill="#14261a" opacity="0.5"/>
+    <rect x="40" y="24" width="16" height="7" fill="#e2b923"/>
+    <path d="M44 24 l -3 7 M50 24 l -3 7 M56 24 l -3 7" stroke="#14161a" stroke-width="1.2"/>
+    <text x="20" y="31" font-family="Arial, sans-serif" font-size="3" font-weight="bold" text-anchor="middle" fill="#14261a" stroke="none">E.S.O.</text>
+    <text x="74" y="31" font-family="Arial, sans-serif" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#14261a" stroke="none">TRIAL 39</text>
+  </g>
+  <g id="part-goo" stroke="none">
+    <path d="M58 36 c 0 3, 2 4, 2 6 c 0 2, -3 2, -3 0 c 0 -2, 1 -3, 1 -6 Z" fill="#9dff7a" opacity="0.9"/>
+    <path d="M34 36 c 0 2, 1.4 3, 1.4 4.4 c 0 1.4, -2 1.4, -2 0 c 0 -1.4, 0.6 -2.4, 0.6 -4.4 Z" fill="#9dff7a" opacity="0.9"/>
+  </g>
+</svg>

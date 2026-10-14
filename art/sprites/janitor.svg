@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 48" width="256" height="384" data-canvas-width="28">
+  <!--
+    Cleanup Crew: an alien janitor with a mop and bucket, facing left. Feet at y 47.5, centered on x 16.
+      part-body  alien in grey coveralls with a bucket
+      part-mop   the mop, swings about the hands (12, 28)
+  -->
+  <g id="part-body" stroke="#1c2318" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M14 39 L 14 46 M18 39 L 18 46" stroke="#5a6068" stroke-width="2.6"/>
+    <path d="M12 46 h 4 v 1.6 h -4 Z M16.6 46 h 4 v 1.6 h -4 Z" fill="#2b2b33"/>
+    <path d="M10 19 C 12 18, 20 18, 22 19 L 23 40 L 9 40 Z" fill="#8a9098"/>
+    <rect x="12" y="26" width="8" height="4" fill="#e2b923" stroke-width="0.4"/>
+    <text x="16" y="29" font-family="Arial, sans-serif" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#14161a" stroke="none">CLEANUP</text>
+    <path d="M16 0.6 C 23 0.6, 27 4.5, 27 9 C 27 13.5, 22 17, 17 17.4 C 12 17, 6 14, 6 9 C 6 4.5, 9.5 0.6, 16 0.6 Z" fill="#8fd16a"/>
+    <path d="M7.4 9.6 C 8 7.4, 12.4 6.2, 14.8 7.6 C 15 10.4, 11.4 12.6, 7.4 9.6 Z M17.6 7.8 C 19.6 6.6, 23 7.4, 23.6 9.4 C 21 11.8, 18 10.4, 17.6 7.8 Z" fill="#141414"/>
+    <path d="M9 14.4 h 3.6" stroke-width="0.6"/>
+    <path d="M6 4 C 10 -1, 22 -1, 26 4 L 26 5 L 6 5 Z" fill="#2b5a8a"/>
+    <path d="M2 40 h 9 l -1 7 h -7 Z" fill="#c9a224"/>
+    <path d="M2.6 41.4 h 7.8" stroke="#8a6a10" stroke-width="0.6"/>
+    <ellipse cx="6.5" cy="40" rx="4.5" ry="0.8" fill="#6fa8c8" stroke-width="0.3"/>
+  </g>
+  <g id="part-mop" stroke="#1c2318" stroke-width="0.6" stroke-linecap="round">
+    <path d="M12 28 L 4 46" stroke="#a87a4a" stroke-width="1.4"/>
+    <path d="M1 45 C 2 48, 7 48, 8 45 L 6 44 L 3 44 Z" fill="#e8e2d4"/>
+    <circle cx="12" cy="28" r="1.2" fill="#8fd16a"/>
+    <circle cx="9" cy="34" r="1.2" fill="#8fd16a"/>
+  </g>
+</svg>

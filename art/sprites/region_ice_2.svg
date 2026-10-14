@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 210" width="440" height="420" data-canvas-width="220" data-densities="2 4">
+  <!--
+    Elephant Seal Beach: shingle, rocks and grey surf (elephant seals, seals).
+    Hunting region backdrop, drawn at canvas (x0, 100), 220x210; ground at local y 200.
+  -->
+  <defs>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f5a3a"/><stop offset="1" stop-color="#1c3a26"/></linearGradient>
+    <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#243a46"/><stop offset="1" stop-color="#1a2a36"/></linearGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8a3a"/><stop offset="1" stop-color="#2f5a26"/></linearGradient>
+    <linearGradient id="walk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8c92"/><stop offset="1" stop-color="#5a5c62"/></linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6a3c"/><stop offset="1" stop-color="#5e3a1c"/></linearGradient>
+    <linearGradient id="barn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a1e16"/><stop offset="0.5" stop-color="#a8302a"/><stop offset="1" stop-color="#6a1810"/></linearGradient>
+    <linearGradient id="bldgR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2a3048"/><stop offset="0.5" stop-color="#3a4262"/><stop offset="1" stop-color="#232838"/></linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fb3d6"/><stop offset="1" stop-color="#2f6a8a"/></linearGradient>
+    <radialGradient id="glowY" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#ffe08a" stop-opacity="0.8"/><stop offset="1" stop-color="#ffe08a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="cone" cx="0" cy="0.5" r="1"><stop offset="0" stop-color="#fff6c4" stop-opacity="0.75"/><stop offset="1" stop-color="#fff6c4" stop-opacity="0"/></radialGradient>
+    <filter id="tex" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" seed="3"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0.05  0 0 0 0 0  1.4 0 0 0 -0.75"/>
+    </filter>
+  </defs>
+  <g id="part-back">
+
+    <rect x="0" y="150" width="220" height="40" fill="#2a4a6a"/>
+    <path d="M0 152 Q 7 148, 14 152 Q 21 148, 28 152 Q 35 148, 42 152 Q 49 148, 56 152 Q 63 148, 70 152 Q 77 148, 84 152 Q 91 148, 98 152 Q 105 148, 112 152 Q 119 148, 126 152 Q 133 148, 140 152 Q 147 148, 154 152 Q 161 148, 168 152 Q 175 148, 182 152 Q 189 148, 196 152 Q 203 148, 210 152 Q 217 148, 224 152" fill="none" stroke="#dff0ff" stroke-width="1"/>
+    <path d="M0 178 C 60 172, 140 176, 220 172 L 220 200 L 0 200 Z" fill="#6a6a70"/>
+    <g fill="#8a8a90"><ellipse cx="23" cy="193" rx="1.8" ry="1"/><ellipse cx="148" cy="185" rx="1.2" ry="1"/><ellipse cx="198" cy="192" rx="1.3" ry="1"/><ellipse cx="211" cy="196" rx="1.4" ry="1"/><ellipse cx="8" cy="191" rx="1.3" ry="1"/><ellipse cx="159" cy="188" rx="2.4" ry="1"/><ellipse cx="125" cy="194" rx="2.6" ry="1"/><ellipse cx="132" cy="191" rx="1.7" ry="1"/><ellipse cx="32" cy="182" rx="2.7" ry="1"/><ellipse cx="48" cy="188" rx="1.6" ry="1"/><ellipse cx="135" cy="190" rx="2.7" ry="1"/><ellipse cx="96" cy="187" rx="2.3" ry="1"/><ellipse cx="162" cy="197" rx="1.6" ry="1"/><ellipse cx="192" cy="198" rx="3.0" ry="1"/><ellipse cx="31" cy="187" rx="2.5" ry="1"/><ellipse cx="180" cy="181" rx="1.8" ry="1"/><ellipse cx="158" cy="194" rx="2.1" ry="1"/><ellipse cx="49" cy="187" rx="1.1" ry="1"/><ellipse cx="71" cy="188" rx="2.6" ry="1"/><ellipse cx="129" cy="187" rx="1.5" ry="1"/><ellipse cx="71" cy="192" rx="1.9" ry="1"/><ellipse cx="41" cy="195" rx="2.2" ry="1"/><ellipse cx="209" cy="190" rx="2.2" ry="1"/><ellipse cx="95" cy="191" rx="2.8" ry="1"/><ellipse cx="212" cy="192" rx="1.9" ry="1"/><ellipse cx="17" cy="195" rx="1.8" ry="1"/><ellipse cx="85" cy="181" rx="1.1" ry="1"/><ellipse cx="87" cy="198" rx="2.5" ry="1"/><ellipse cx="154" cy="192" rx="1.5" ry="1"/><ellipse cx="40" cy="191" rx="1.1" ry="1"/><ellipse cx="129" cy="189" rx="2.1" ry="1"/><ellipse cx="30" cy="181" rx="1.9" ry="1"/><ellipse cx="35" cy="192" rx="1.6" ry="1"/><ellipse cx="136" cy="194" rx="2.2" ry="1"/><ellipse cx="117" cy="184" rx="1.7" ry="1"/><ellipse cx="211" cy="185" rx="1.6" ry="1"/><ellipse cx="109" cy="190" rx="2.6" ry="1"/><ellipse cx="67" cy="197" rx="1.0" ry="1"/><ellipse cx="172" cy="190" rx="2.8" ry="1"/><ellipse cx="36" cy="192" rx="2.9" ry="1"/></g>
+    <path d="M160 178 L 176 150 L 196 160 L 210 178 Z" fill="#3a3a42"/>
+    <text x="60" y="168" font-family="Arial, sans-serif" font-size="3.6" font-weight="bold" fill="#dff0ff" opacity="0.8">smell advisory in effect</text>
+    <rect x="0" y="200" width="220" height="10" fill="#7a7a80"/>
+  </g>
+</svg>

@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 48" width="384" height="192" data-canvas-width="96">
+  <!--
+    Plausible Deniability, UFO 3: matte black stealth saucer badly disguised as a weather balloon,
+    with a fake propeller bolted to the stern. UFO position at (48, 26), light sockets x 24/40/56/72, y 29.
+      part-balloon  balloon and string, sways about the tie point (15, 27)
+      part-body     nearly steady; tilts about (48, 28)
+      part-propa    fake propeller, frame A
+      part-propb    fake propeller, frame B (alternates with A while the engine runs)
+  -->
+  <defs>
+    <linearGradient id="matte" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5d616d"/>
+      <stop offset="0.55" stop-color="#363943"/>
+      <stop offset="1" stop-color="#1f2127"/>
+    </linearGradient>
+    <linearGradient id="sideShade3" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#000" stop-opacity="0.35"/>
+      <stop offset="0.25" stop-color="#000" stop-opacity="0"/>
+      <stop offset="0.75" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.4"/>
+    </linearGradient>
+    <radialGradient id="tint" cx="0.4" cy="0.35" r="0.8">
+      <stop offset="0" stop-color="#8a76b8" stop-opacity="0.6"/>
+      <stop offset="0.8" stop-color="#3a2d55" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#1c1528" stop-opacity="0.7"/>
+    </radialGradient>
+    <radialGradient id="latex" cx="0.35" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.7" stop-color="#ddd7cb"/>
+      <stop offset="1" stop-color="#a9a396"/>
+    </radialGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b08d5c"/><stop offset="0.5" stop-color="#8a6a3e"/><stop offset="1" stop-color="#5e4524"/>
+    </linearGradient>
+    <linearGradient id="strip" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7a5bb5" stop-opacity="0"/><stop offset="0.5" stop-color="#b79cf0"/><stop offset="1" stop-color="#7a5bb5" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="grain3" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="2.2" numOctaves="2" seed="5"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.75  0 0 0 0 0.75  0 0 0 0 0.8  1.2 0 0 0 -0.62"/>
+    </filter>
+    <clipPath id="hull3">
+      <path d="M6 29 C 12 23, 30 20, 48 20 C 66 20, 84 23, 90 29 C 84 33, 66 35, 48 35 C 30 35, 12 33, 6 29 Z"/>
+    </clipPath>
+    <clipPath id="dome3">
+      <path d="M36 22 C 36 14, 41 9, 48 9 C 55 9, 60 14, 60 22 Z"/>
+    </clipPath>
+  </defs>
+
+  <g id="part-balloon" stroke="#1d1a20" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M15 27 C 13 21, 12.5 17, 10 14.5" fill="none" stroke="#e8e2d4" stroke-width="0.45"/>
+    <path d="M14.2 23.2 l -0.6 0.3 M13 19.6 l 0.6 0.2" stroke="#c9c2b2" stroke-width="0.3"/>
+    <path d="M9.4 14.6 l 1.2 0.2 l -0.4 -1.2 Z" fill="#cfc9bd" stroke-width="0.4"/>
+    <ellipse cx="9.6" cy="8" rx="5.6" ry="6.2" fill="url(#latex)" stroke-width="0.7"/>
+    <path d="M6.6 5 C 7.4 3.6, 8.6 3, 9.8 3" fill="none" stroke="#ffffff" stroke-width="0.8"/>
+    <ellipse cx="7.4" cy="5.6" rx="0.6" ry="0.9" fill="#fff" stroke="none" transform="rotate(30 7.4 5.6)"/>
+    <!-- a patch on the balloon, and its stencil -->
+    <rect x="11.4" y="9.6" width="2.4" height="1.4" fill="#b8b5ad" stroke-width="0.25" transform="rotate(25 12.6 10.3)"/>
+    <text x="9.4" y="8.9" font-family="Arial, sans-serif" font-size="2" font-weight="bold" text-anchor="middle" fill="#6d6a63" stroke="none">WX</text>
+    <path d="M7.6 9.6 h 3.6" stroke="#8d897f" stroke-width="0.2"/>
+  </g>
+
+  <g id="part-propa" stroke="#1d1a20" stroke-linejoin="round">
+    <path d="M92 29 C 91 27, 91.2 24.6, 92 24 C 92.8 24.6, 93 27, 92 29 C 93 31, 92.8 33.4, 92 34 C 91.2 33.4, 91 31, 92 29 Z" fill="url(#wood)" stroke-width="0.45"/>
+    <path d="M91.8 25 v 3 M92.2 30 v 3" stroke="#d1b282" stroke-width="0.2"/>
+  </g>
+  <g id="part-propb" stroke="#1d1a20" stroke-linejoin="round">
+    <ellipse cx="92" cy="29" rx="1.3" ry="5.6" fill="#8a6a3e" opacity="0.28" stroke="none"/>
+    <path d="M92 29 C 91.4 28, 91.5 26.8, 92 26.4 C 92.5 26.8, 92.6 28, 92 29 C 92.6 30, 92.5 31.2, 92 31.6 C 91.5 31.2, 91.4 30, 92 29 Z" fill="url(#wood)" stroke-width="0.4"/>
+  </g>
+
+  <g id="part-body" stroke="#1d1a20" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Low, tinted dome: the sunglasses of domes -->
+    <path d="M36 22 C 36 14, 41 9, 48 9 C 55 9, 60 14, 60 22 Z" fill="url(#tint)" stroke="none"/>
+    <g clip-path="url(#dome3)" stroke="none">
+      <path d="M38.8 19 C 38.8 15, 41 11.8, 44.4 10.6 L 45.2 11.4 C 42.2 12.8, 40.2 15.6, 40.1 19 Z" fill="#d9ccff" opacity="0.4"/>
+      <path d="M36 22 C 41 20.4, 55 20.4, 60 22 Z" fill="#0a0710" opacity="0.4"/>
+    </g>
+    <path d="M36 22 C 36 14, 41 9, 48 9 C 55 9, 60 14, 60 22 Z" fill="none" stroke-width="1.2"/>
+    <path d="M35.4 22.2 C 41 21, 55 21, 60.6 22.2 L 60.3 23.2 C 55 22.2, 41 22.2, 35.7 23.2 Z" fill="#2a2c33" stroke-width="0.5"/>
+    <!-- Hull -->
+    <path d="M6 29 C 12 23, 30 20, 48 20 C 66 20, 84 23, 90 29 C 84 33, 66 35, 48 35 C 30 35, 12 33, 6 29 Z" fill="url(#matte)" stroke="none"/>
+    <g clip-path="url(#hull3)" stroke="none">
+      <rect x="0" y="18" width="96" height="20" fill="url(#sideShade3)"/>
+      <!-- Faceted stealth panels -->
+      <g fill="none" stroke="#1a1c21" stroke-width="0.35">
+        <path d="M14 25 L 20 31.6 M26 22 L 30 33.4 M70 22 L 66 33.4 M82 25 L 76 31.6 M10 27.4 L 86 27.4"/>
+      </g>
+      <g fill="none" stroke="#6e7280" stroke-width="0.18">
+        <path d="M14.4 25 L 20.4 31.6 M26.4 22 L 30.4 33.4 M70.4 22 L 66.4 33.4"/>
+      </g>
+      <path d="M26 22 L 30 27.4 L 66 27.4 L 70 22 Z" fill="#ffffff" opacity="0.05"/>
+      <!-- Purple running strip -->
+      <path d="M0 30.6 C 20 33.4, 76 33.4, 96 30.6" fill="none" stroke="#5b3f8f" stroke-width="1.1"/>
+      <path d="M0 30.6 C 20 33.4, 76 33.4, 96 30.6" fill="none" stroke="url(#strip)" stroke-width="0.45"/>
+      <path d="M14 25.2 C 24 22.6, 38 21.6, 48 21.6" fill="none" stroke="#8b8f9a" stroke-width="0.7"/>
+      <!-- Hastily stenciled disguise: overspray halo, then peeling letters -->
+      <text x="48" y="25.6" font-family="Arial Black, Arial, sans-serif" font-size="3.3" font-weight="bold" text-anchor="middle" fill="none" stroke="#ece6d4" stroke-width="0.6" opacity="0.18" letter-spacing="0.25">WEATHER BALLOON</text>
+      <text x="48" y="25.6" font-family="Arial Black, Arial, sans-serif" font-size="3.3" font-weight="bold" text-anchor="middle" fill="#ece6d4" opacity="0.92" letter-spacing="0.25">WEATHER BALLOON</text>
+      <rect x="57.6" y="22.8" width="2.4" height="3.2" fill="#363943"/>
+      <path d="M57.6 22.9 l 0.6 0.5 l 0.5 -0.3 l 0.6 0.4 M57.6 26 l 0.7 -0.3 l 0.6 0.3" fill="none" stroke="#ece6d4" stroke-width="0.2"/>
+      <path d="M36.2 22.6 l 0 3.2" stroke="#ece6d4" stroke-width="0.25" opacity="0.6"/>
+      <rect x="4" y="18" width="88" height="20" filter="url(#grain3)" opacity="0.35"/>
+    </g>
+    <path d="M6 29 C 12 23, 30 20, 48 20 C 66 20, 84 23, 90 29 C 84 33, 66 35, 48 35 C 30 35, 12 33, 6 29 Z" fill="none" stroke-width="1.3"/>
+    <!-- Prop hub bolted on with too many bolts -->
+    <path d="M88.4 27.4 L 91.4 28.4 L 91.4 29.6 L 88.4 30.6 Z" fill="#6d6f78" stroke-width="0.6"/>
+    <g fill="#c9c2a8" stroke="none">
+      <circle cx="89.2" cy="28" r="0.32"/><circle cx="89.2" cy="30" r="0.32"/><circle cx="90.4" cy="28.5" r="0.28"/><circle cx="90.4" cy="29.5" r="0.28"/>
+    </g>
+    <!-- Balloon tie cleat -->
+    <path d="M13.8 27.4 h 2.4" stroke-width="0.9"/>
+    <path d="M13.8 27.4 h 2.4" stroke="#8b8f9a" stroke-width="0.45"/>
+    <!-- Light sockets, recessed -->
+    <g stroke-width="0.6">
+      <circle cx="24" cy="29" r="3.1" fill="#2a2c33"/><circle cx="40" cy="29" r="3.1" fill="#2a2c33"/>
+      <circle cx="56" cy="29" r="3.1" fill="#2a2c33"/><circle cx="72" cy="29" r="3.1" fill="#2a2c33"/>
+    </g>
+    <g fill="#0e0a10" stroke="none">
+      <circle cx="24" cy="29" r="2.4"/><circle cx="40" cy="29" r="2.4"/><circle cx="56" cy="29" r="2.4"/><circle cx="72" cy="29" r="2.4"/>
+    </g>
+  </g>
+</svg>

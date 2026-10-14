@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 255 115" width="510" height="230" data-canvas-width="255" data-densities="2 4">
+  <!--
+    Generator room, drawn at canvas (1025, 425), 255x115.
+    Keep clear: label top-left (0..120, 0..16); the game draws the coil at (50, 63), the energy bar at
+    (100..240, 45..59) and its text at (100, 67). A steam puff is drawn by the game at the valve (182, 13).
+      part-back    rivet plates, pipes, coil base, warning sign, gauge face, backup power
+      part-needle  gauge needle, pivots about (227, 98)
+      part-hamsters_a/b  extra hamster wheels, two frames (Incompetence dept)
+      part-sparks_a/b    arcs around the coil, two frames (Incompetence dept)
+  -->
+  <defs>
+    <linearGradient id="pipe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b3b9bf"/><stop offset="0.35" stop-color="#7d838b"/><stop offset="1" stop-color="#3d4248"/>
+    </linearGradient>
+    <linearGradient id="pipeV" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b3b9bf"/><stop offset="0.35" stop-color="#7d838b"/><stop offset="1" stop-color="#3d4248"/>
+    </linearGradient>
+    <linearGradient id="copper" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6a3418"/><stop offset="0.45" stop-color="#e09a5c"/><stop offset="1" stop-color="#6a3418"/>
+    </linearGradient>
+    <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#40444c"/><stop offset="1" stop-color="#33373e"/>
+    </linearGradient>
+    <radialGradient id="coilGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#6ab7ff" stop-opacity="0.35"/><stop offset="1" stop-color="#6ab7ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignetteG" cx="0.4" cy="0.5" r="0.85">
+      <stop offset="0.5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.45"/>
+    </radialGradient>
+    <filter id="rustStreak" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.6 0.04" numOctaves="3" seed="8"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.45  0 0 0 0 0.22  0 0 0 0 0.1  2.2 0 0 0 -1.25"/>
+    </filter>
+    <pattern id="hazardG" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="3" height="6" fill="#e0b31f"/><rect x="3" width="3" height="6" fill="#1f1d1a"/>
+    </pattern>
+    <linearGradient id="arc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eaffff"/><stop offset="1" stop-color="#7fd8ff"/>
+    </linearGradient>
+  </defs>
+
+  <g id="part-back">
+    <rect width="255" height="115" fill="url(#plate)"/>
+    <rect width="255" height="110" filter="url(#rustStreak)" opacity="0.5"/>
+    <!-- Riveted plates with bevels -->
+    <g stroke="#262a30" stroke-width="1">
+      <path d="M0 38 H 255 M0 78 H 255 M64 0 V 115 M128 0 V 115 M192 0 V 115"/>
+    </g>
+    <g stroke="#565b64" stroke-width="0.35">
+      <path d="M0 39 H 255 M0 79 H 255 M65 0 V 115 M129 0 V 115 M193 0 V 115"/>
+    </g>
+    <g fill="#5d626b">
+      <circle cx="4" cy="34" r="0.9"/><circle cx="60" cy="34" r="0.9"/><circle cx="68" cy="34" r="0.9"/><circle cx="124" cy="34" r="0.9"/>
+      <circle cx="132" cy="34" r="0.9"/><circle cx="188" cy="34" r="0.9"/><circle cx="196" cy="34" r="0.9"/><circle cx="251" cy="34" r="0.9"/>
+      <circle cx="4" cy="82" r="0.9"/><circle cx="60" cy="82" r="0.9"/><circle cx="68" cy="82" r="0.9"/><circle cx="124" cy="82" r="0.9"/>
+      <circle cx="132" cy="82" r="0.9"/><circle cx="188" cy="82" r="0.9"/><circle cx="196" cy="82" r="0.9"/><circle cx="251" cy="82" r="0.9"/>
+    </g>
+    <g fill="#23262b"><circle cx="4.3" cy="34.3" r="0.4"/><circle cx="60.3" cy="34.3" r="0.4"/><circle cx="68.3" cy="34.3" r="0.4"/><circle cx="124.3" cy="34.3" r="0.4"/><circle cx="4.3" cy="82.3" r="0.4"/><circle cx="60.3" cy="82.3" r="0.4"/></g>
+    <rect y="110" width="255" height="5" fill="#22252a"/>
+    <rect y="108" width="255" height="2" fill="url(#hazardG)" opacity="0.8"/>
+    <!-- Pipes along the ceiling and down the right wall, with flanges, a drip and a tag -->
+    <rect x="118" y="9" width="132" height="7" fill="url(#pipe)" stroke="#1d2024" stroke-width="0.6"/>
+    <rect x="244" y="9" width="7" height="72" fill="url(#pipeV)" stroke="#1d2024" stroke-width="0.6"/>
+    <rect x="66" y="22" width="52" height="4" fill="url(#pipe)" stroke="#1d2024" stroke-width="0.5"/>
+    <path d="M118 12.5 h -4 v 11.5" fill="none" stroke="#1d2024" stroke-width="4.6"/>
+    <path d="M118 12.5 h -4 v 11.5" fill="none" stroke="#7d838b" stroke-width="3.4"/>
+    <rect x="116" y="8" width="4" height="9" fill="#5a6068" stroke="#1d2024" stroke-width="0.5"/>
+    <rect x="160" y="8" width="3" height="9" fill="#5a6068" stroke="#1d2024" stroke-width="0.5"/>
+    <rect x="212" y="8" width="3" height="9" fill="#5a6068" stroke="#1d2024" stroke-width="0.5"/>
+    <rect x="243" y="40" width="9" height="3" fill="#5a6068" stroke="#1d2024" stroke-width="0.5"/>
+    <path d="M247 81 v 4" stroke="#7d838b" stroke-width="1.6"/>
+    <ellipse cx="247.5" cy="87" rx="0.6" ry="0.9" fill="#9fd0e8"/>
+    <ellipse cx="247.5" cy="108.6" rx="3" ry="0.6" fill="#5a7a8a" opacity="0.7"/>
+    <path d="M222 16 v 4" stroke="#1d2024" stroke-width="0.3"/>
+    <rect x="219" y="20" width="6" height="4" fill="#e9e1c6" stroke="#1d2024" stroke-width="0.3" transform="rotate(8 222 22)"/>
+    <text x="222" y="22.8" font-family="Arial, sans-serif" font-size="1.4" font-weight="bold" text-anchor="middle" fill="#b0261e" transform="rotate(8 222 22)">HOT?</text>
+    <!-- Valve wheel, wrapped in tape that is not helping -->
+    <circle cx="182" cy="12.5" r="5" fill="none" stroke="#1d1a20" stroke-width="2.2"/>
+    <circle cx="182" cy="12.5" r="5" fill="none" stroke="#c23a2e" stroke-width="1.4"/>
+    <path d="M177 12.5 h 10 M182 7.5 v 10" stroke="#c23a2e" stroke-width="1"/>
+    <circle cx="182" cy="12.5" r="1" fill="#7a1e16"/>
+    <rect x="185" y="11" width="6" height="3" fill="#bdb8ae" transform="rotate(-25 188 12.5)"/>
+    <!-- Coil base: copper rings on a plinth, cables snaking off -->
+    <circle cx="50" cy="63" r="34" fill="url(#coilGlow)"/>
+    <path d="M30 104 C 20 104, 14 100, 10 92 M70 104 C 82 104, 90 96, 96 88" fill="none" stroke="#14161a" stroke-width="2"/>
+    <rect x="30" y="92" width="40" height="18" rx="1" fill="#2b2e33" stroke="#1d2024" stroke-width="0.7"/>
+    <path d="M30 94 h 40" stroke="#4a4f57" stroke-width="0.4"/>
+    <rect x="35" y="84" width="30" height="9" fill="url(#copper)" stroke="#1d2024" stroke-width="0.6"/>
+    <path d="M35 86.5 h 30 M35 89.5 h 30" stroke="#5a2c14" stroke-width="0.6"/>
+    <path d="M35 85.4 h 30" stroke="#f6c08e" stroke-width="0.3"/>
+    <text x="50" y="102.4" font-family="Arial, sans-serif" font-size="2.4" font-weight="bold" text-anchor="middle" fill="#9aa1a8">MK II (MK I EXPLODED)</text>
+    <!-- Backup power: a hamster wheel. The hamster is unionising. -->
+    <circle cx="100" cy="98" r="9" fill="none" stroke="#9aa1a8" stroke-width="0.8"/>
+    <circle cx="100" cy="98" r="7.6" fill="none" stroke="#5a6068" stroke-width="0.4"/>
+    <path d="M100 89 v 18 M91 98 h 18 M93.6 91.6 l 12.8 12.8 M106.4 91.6 l -12.8 12.8" stroke="#5a6068" stroke-width="0.3"/>
+    <path d="M100 107 v 3 M96 110 h 8" stroke="#5a6068" stroke-width="0.8"/>
+    <ellipse cx="100" cy="104.4" rx="2.4" ry="1.6" fill="#d9a066" stroke="#1d1a20" stroke-width="0.4"/>
+    <circle cx="98.4" cy="104" r="0.25" fill="#111"/>
+    <path d="M101.6 102.4 l 1 -1.6 h 1.6" fill="none" stroke="#e9e1c6" stroke-width="0.4"/>
+    <rect x="102.8" y="99.6" width="3" height="1.8" fill="#e9e1c6" stroke="#1d1a20" stroke-width="0.2"/>
+    <text x="100" y="88" font-family="Arial, sans-serif" font-size="1.8" font-weight="bold" text-anchor="middle" fill="#9aa1a8">BACKUP</text>
+    <!-- Warning sign -->
+    <rect x="114" y="91" width="86" height="17" rx="1" fill="#e2b923" stroke="#1d1a20" stroke-width="0.8"/>
+    <rect x="115.2" y="92.2" width="83.6" height="14.6" rx="0.6" fill="none" stroke="#1d1a20" stroke-width="0.35"/>
+    <path d="M120 105 L 125 95 L 130 105 Z" fill="none" stroke="#1d1a20" stroke-width="1"/>
+    <path d="M125 98.5 v 3 M125 103 v 0.4" stroke="#1d1a20" stroke-width="1"/>
+    <text x="165" y="98.6" font-family="Arial, sans-serif" font-size="4.8" font-weight="bold" text-anchor="middle" fill="#1d1a20">HIGH VOLTAGE</text>
+    <text x="165" y="105.2" font-family="Arial, sans-serif" font-size="4.8" font-weight="bold" text-anchor="middle" fill="#1d1a20">DO NOT LICK (AGAIN)</text>
+    <!-- Gauge face -->
+    <circle cx="227" cy="98" r="11" fill="#2b2e33" stroke="#1d2024" stroke-width="0.6"/>
+    <circle cx="227" cy="98" r="10" fill="#f0ebdc" stroke="#1d2024" stroke-width="0.8"/>
+    <path d="M233.2 90.2 A 10 10 0 0 1 236.4 101.4" fill="none" stroke="#c8241c" stroke-width="2.2"/>
+    <path d="M219.6 92 A 10 10 0 0 1 226 88.1" fill="none" stroke="#3a9a4a" stroke-width="1.4"/>
+    <path d="M219 101 l 1.4 -0.6 M218.6 96 l 1.5 0.3 M221 91.2 l 1 1.1 M227 88.6 v 1.5 M233 91.2 l -1 1.1" stroke="#1d2024" stroke-width="0.6"/>
+    <text x="227" y="103.6" font-family="Arial, sans-serif" font-size="1.8" font-weight="bold" text-anchor="middle" fill="#1d2024">PSI?</text>
+    <path d="M219.6 94 C 221 90.6, 224 89, 227 89" fill="none" stroke="#ffffff" stroke-width="0.6" opacity="0.6"/>
+    <rect width="255" height="115" fill="url(#vignetteG)"/>
+  </g>
+
+  <g id="part-needle">
+    <path d="M227 98 L 222 90.5" stroke="#1d2024" stroke-width="1" stroke-linecap="round"/>
+    <path d="M227 98 L 228.2 99.8" stroke="#1d2024" stroke-width="0.8" stroke-linecap="round"/>
+    <circle cx="227" cy="98" r="1.4" fill="#1d2024"/>
+    <circle cx="226.7" cy="97.7" r="0.4" fill="#8a8f96"/>
+  </g>
+  <g id="part-hamsters_a" stroke="#14161a" stroke-width="0.5">
+    <!-- Unusual Power Systems (Incompetence dept): more hamster wheels, frame A -->
+    <g transform="translate(190 76)">
+      <circle r="9" fill="#2a2e34" stroke="#9aa1a8" stroke-width="0.8"/>
+      <path d="M0 -9 V 9 M-9 0 H 9 M-6.4 -6.4 L 6.4 6.4 M6.4 -6.4 L -6.4 6.4" stroke="#5a6068" stroke-width="0.3"/>
+      <ellipse cx="-1" cy="6.2" rx="2.6" ry="1.6" fill="#d9a066"/><circle cx="-3" cy="5.8" r="0.3" fill="#111" stroke="none"/>
+    </g>
+    <g transform="translate(214 76)">
+      <circle r="9" fill="#2a2e34" stroke="#9aa1a8" stroke-width="0.8"/>
+      <path d="M0 -9 V 9 M-9 0 H 9" stroke="#5a6068" stroke-width="0.3"/>
+      <ellipse cx="1" cy="6.2" rx="2.6" ry="1.6" fill="#f2e6d0"/><circle cx="-1" cy="5.8" r="0.3" fill="#111" stroke="none"/>
+    </g>
+    <path d="M181 86 h 42 M190 85 v 3 M214 85 v 3" stroke="#5a6068" stroke-width="0.8"/>
+    <path d="M199 76 h 6" stroke="#c9a224" stroke-width="0.8"/>
+  </g>
+  <g id="part-hamsters_b" stroke="#14161a" stroke-width="0.5">
+    <g transform="translate(190 76)">
+      <circle r="9" fill="#2a2e34" stroke="#9aa1a8" stroke-width="0.8"/>
+      <path d="M-4.6 -7.8 L 4.6 7.8 M-7.8 4.6 L 7.8 -4.6 M-9 -0 M0 0" stroke="#5a6068" stroke-width="0.3"/>
+      <ellipse cx="1" cy="6.4" rx="2.6" ry="1.4" fill="#d9a066"/><circle cx="-1" cy="6" r="0.3" fill="#111" stroke="none"/>
+    </g>
+    <g transform="translate(214 76)">
+      <circle r="9" fill="#2a2e34" stroke="#9aa1a8" stroke-width="0.8"/>
+      <path d="M-6.4 -6.4 L 6.4 6.4 M6.4 -6.4 L -6.4 6.4" stroke="#5a6068" stroke-width="0.3"/>
+      <ellipse cx="-1" cy="6.4" rx="2.6" ry="1.4" fill="#f2e6d0"/><circle cx="-3" cy="6" r="0.3" fill="#111" stroke="none"/>
+    </g>
+    <path d="M181 86 h 42 M190 85 v 3 M214 85 v 3" stroke="#5a6068" stroke-width="0.8"/>
+    <path d="M199 76 h 6" stroke="#c9a224" stroke-width="0.8"/>
+  </g>
+  <g id="part-sparks_a" fill="none" stroke="url(#arc)" stroke-linecap="round">
+    <!-- The generator sparks (Incompetence dept) -->
+    <path d="M50 30 l -6 8 l 5 3 l -7 9 M78 48 l 8 -4 l -2 6 l 9 -3 M24 66 l -8 2 l 4 4 l -9 3 M60 92 l 4 7 l -5 1 l 4 8" stroke-width="1.1"/>
+  </g>
+  <g id="part-sparks_b" fill="none" stroke="url(#arc)" stroke-linecap="round">
+    <path d="M38 34 l 4 7 l -6 2 l 3 8 M84 64 l 8 2 l -4 4 l 9 2 M20 50 l -7 -3 l 1 6 l -8 -2 M44 92 l -3 7 l 5 1 l -4 8" stroke-width="1.1"/>
+  </g>
+</svg>

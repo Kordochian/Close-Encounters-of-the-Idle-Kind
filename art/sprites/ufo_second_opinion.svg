@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 48" width="384" height="192" data-canvas-width="96">
+  <!--
+    Second Opinion, UFO 2: a repainted clinic saucer with a learner plate. Same frame as Old Reliable:
+    UFO position at (48, 26), light sockets at x 24/40/56/72, y 29.
+      part-plate   learner plate, swings about (81, 31)
+      part-body    sways gently about (48, 28)
+      part-siren   orange glow on the dome siren, pulses while the engine runs
+  -->
+  <defs>
+    <linearGradient id="mint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c8f2dd"/>
+      <stop offset="0.6" stop-color="#7cc4a6"/>
+      <stop offset="1" stop-color="#4f9c80"/>
+    </linearGradient>
+    <linearGradient id="skirt2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#83909a"/>
+      <stop offset="1" stop-color="#424b53"/>
+    </linearGradient>
+    <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.45" stop-color="#b8c2c8"/><stop offset="0.55" stop-color="#6d7a83"/><stop offset="1" stop-color="#d9e1e5"/>
+    </linearGradient>
+    <linearGradient id="sideShade2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#000" stop-opacity="0.3"/>
+      <stop offset="0.22" stop-color="#000" stop-opacity="0"/>
+      <stop offset="0.75" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0.35"/>
+    </linearGradient>
+    <radialGradient id="glass2" cx="0.4" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#e2fcff" stop-opacity="0.55"/>
+      <stop offset="0.75" stop-color="#74c9d4" stop-opacity="0.36"/>
+      <stop offset="1" stop-color="#2f7c88" stop-opacity="0.55"/>
+    </radialGradient>
+    <radialGradient id="sirenGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fff2b0" stop-opacity="0.95"/>
+      <stop offset="0.35" stop-color="#ff9a2e" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#ff7a00" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lens" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7a2e0c"/><stop offset="0.4" stop-color="#c8621f"/><stop offset="1" stop-color="#6a260a"/>
+    </linearGradient>
+    <filter id="grain2" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="3" seed="11"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.15  0 0 0 0 0.2  0 0 0 0 0.18  1.4 0 0 0 -0.72"/>
+    </filter>
+    <clipPath id="hull2">
+      <path d="M8 28 C 10 20, 28 17, 48 17 C 68 17, 86 20, 88 28 C 86 34, 68 37, 48 37 C 28 37, 10 34, 8 28 Z"/>
+    </clipPath>
+    <clipPath id="dome2">
+      <path d="M34 22 C 34 10, 40 5.5, 48 5.5 C 56 5.5, 62 10, 62 22 Z"/>
+    </clipPath>
+    <pattern id="checker" x="0" y="26" width="6" height="5" patternUnits="userSpaceOnUse">
+      <rect width="3" height="2.5" fill="#4f9c80"/><rect x="3" y="2.5" width="3" height="2.5" fill="#4f9c80"/>
+    </pattern>
+  </defs>
+
+  <g id="part-plate" stroke="#1d1a20" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M80.4 31 C 80.2 32, 80.4 33, 79.6 33.6 M81.6 31 C 81.8 32, 81.6 33, 82.4 33.6" fill="none" stroke="#9aa3a8" stroke-width="0.35"/>
+    <rect x="77.5" y="33.5" width="7" height="7" rx="0.6" fill="#f4f1e6" stroke-width="0.7"/>
+    <rect x="78.1" y="34.1" width="5.8" height="5.8" rx="0.4" fill="none" stroke="#d8d2c0" stroke-width="0.25"/>
+    <path d="M79.8 35 V 39 H 82.6" fill="none" stroke="#d6332a" stroke-width="1.4" stroke-linecap="square"/>
+    <path d="M77.9 39.8 l 1.2 -1 M83.2 34 l 0.8 0.4" stroke="#b9b29e" stroke-width="0.25"/>
+  </g>
+
+  <g id="part-body" stroke="#1d1a20" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Siren housing (glow is its own part) -->
+    <rect x="44.2" y="3.3" width="7.6" height="2.4" rx="0.5" fill="url(#chrome)" stroke-width="0.55"/>
+    <path d="M45.4 3.6 C 45.4 1.1, 50.6 1.1, 50.6 3.6 Z" fill="url(#lens)" stroke-width="0.55"/>
+    <path d="M46.6 3.4 v -1.4 M48 3.4 v -1.9 M49.4 3.4 v -1.4" stroke="#e8935a" stroke-width="0.25"/>
+    <!-- Dome -->
+    <path d="M34 22 C 34 10, 40 5.5, 48 5.5 C 56 5.5, 62 10, 62 22 Z" fill="url(#glass2)" stroke="none"/>
+    <g clip-path="url(#dome2)" stroke="none">
+      <path d="M37.6 18 C 37.6 12.4, 40.4 8.6, 44.4 7.2 L 45.4 8.2 C 41.8 9.8, 39.2 13, 39.1 18 Z" fill="#fff" opacity="0.5"/>
+      <path d="M58.6 10 C 60.2 12.4, 60.9 15.4, 60.9 19.6" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="0.6"/>
+      <path d="M34 22 C 40 19.8, 56 19.8, 62 22 Z" fill="#0d2a33" opacity="0.3"/>
+      <!-- a dangling air freshener inside -->
+      <path d="M48 5.6 V 9" stroke="#e9e6dc" stroke-width="0.2"/>
+      <path d="M47 9 l 1 -0.4 l 1 0.4 l 0.4 1.6 l -1.4 1.4 l -1.4 -1.4 Z" fill="#67c46b" opacity="0.85"/>
+    </g>
+    <path d="M34 22 C 34 10, 40 5.5, 48 5.5 C 56 5.5, 62 10, 62 22 Z" fill="none" stroke-width="1.2"/>
+    <path d="M33.4 22.2 C 40 20.6, 56 20.6, 62.6 22.2 L 62.3 23.4 C 56 22.2, 40 22.2, 33.7 23.4 Z" fill="url(#chrome)" stroke-width="0.5"/>
+
+    <!-- Hull: mint top, checkered white band, grey skirt -->
+    <path d="M8 28 C 10 20, 28 17, 48 17 C 68 17, 86 20, 88 28 C 86 34, 68 37, 48 37 C 28 37, 10 34, 8 28 Z" fill="url(#mint)" stroke="none"/>
+    <g clip-path="url(#hull2)" stroke="none">
+      <rect x="0" y="25.5" width="96" height="5.5" fill="#eef0e8"/>
+      <rect x="0" y="25.5" width="96" height="5.5" fill="url(#checker)" opacity="0.85"/>
+      <rect x="0" y="31" width="96" height="10" fill="url(#skirt2)"/>
+      <rect x="0" y="16" width="96" height="22" fill="url(#sideShade2)"/>
+      <!-- Panel seams and rivets on the mint shell -->
+      <g fill="none" stroke="#3f7f67" stroke-width="0.32">
+        <path d="M20 20.2 C 19.2 22, 18.9 23.8, 19 25.4 M34 18.2 C 33.6 20.4, 33.5 23, 33.6 25.4 M62 18.2 C 62.4 20.4, 62.5 23, 62.4 25.4 M76 20.2 C 76.8 22, 77.1 23.8, 77 25.4"/>
+      </g>
+      <g fill="#3a7560">
+        <circle cx="12" cy="24.6" r="0.25"/><circle cx="16" cy="23.4" r="0.25"/><circle cx="26" cy="21.6" r="0.25"/><circle cx="30" cy="21.2" r="0.25"/>
+        <circle cx="66" cy="21.2" r="0.25"/><circle cx="70" cy="21.6" r="0.25"/><circle cx="80" cy="23.4" r="0.25"/><circle cx="84" cy="24.6" r="0.25"/>
+      </g>
+      <!-- Name decal on the skirt -->
+      <text x="48" y="35.4" font-family="Arial, sans-serif" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#e6efe9" opacity="0.85" letter-spacing="0.3">2ND OPINION</text>
+      <!-- Chipped paint showing older rust-red paint, with bright chip edges -->
+      <path d="M66 20.5 c 2 -0.8, 4.5 -0.4, 5 0.8 c -1.2 1, -3.6 1.2, -5 -0.8 Z" fill="#9b4a35"/>
+      <path d="M66 20.5 c 2 -0.8, 4.5 -0.4, 5 0.8" fill="none" stroke="#e9f7ef" stroke-width="0.25"/>
+      <path d="M17 33 c 1.5 -0.6, 3.5 -0.2, 4 0.8 c -1.4 0.8, -3 0.6, -4 -0.8 Z" fill="#9b4a35"/>
+      <path d="M40 19 c 0.8 -0.3, 1.6 -0.1, 1.8 0.4 c -0.6 0.4, -1.3 0.3, -1.8 -0.4 Z" fill="#9b4a35"/>
+      <!-- Scuffs -->
+      <path d="M50 19.6 l 5 0.6 M24 30.4 l 3 0.6 M58 30.6 l 4 -0.4" stroke="#ffffff" stroke-width="0.2" opacity="0.6"/>
+      <rect x="6" y="16" width="84" height="22" filter="url(#grain2)" opacity="0.45"/>
+      <path d="M15 22.5 C 25 19.5, 38 18.8, 48 18.8" fill="none" stroke="#f6fffb" stroke-width="0.9" stroke-opacity="0.9"/>
+    </g>
+    <path d="M8 28 C 10 20, 28 17, 48 17 C 68 17, 86 20, 88 28 C 86 34, 68 37, 48 37 C 28 37, 10 34, 8 28 Z" fill="none" stroke-width="1.3"/>
+    <!-- Chrome trim bands -->
+    <path d="M8.5 25.6 C 25 24.2, 71 24.2, 87.5 25.6" fill="none" stroke="url(#chrome)" stroke-width="0.8"/>
+    <path d="M8.6 30.8 C 25 33.6, 71 33.6, 87.4 30.8" fill="none" stroke-width="0.8"/>
+    <path d="M9.4 31.6 C 25 34.3, 71 34.3, 86.6 31.6" fill="none" stroke="#c2ccd2" stroke-width="0.3"/>
+    <!-- Sticking plaster over a dent -->
+    <g transform="rotate(-20 20 22)">
+      <rect x="15.5" y="20.6" width="9" height="3" rx="1.2" fill="#e8b98f" stroke-width="0.5"/>
+      <rect x="18.8" y="20.9" width="2.4" height="2.4" fill="#d79e72" stroke="none"/>
+      <g fill="#c58b61" stroke="none">
+        <circle cx="16.6" cy="21.6" r="0.18"/><circle cx="17.4" cy="22.5" r="0.18"/><circle cx="22.6" cy="21.6" r="0.18"/><circle cx="23.4" cy="22.5" r="0.18"/>
+      </g>
+    </g>
+    <!-- Light sockets with chrome bezels -->
+    <g stroke-width="0.6">
+      <circle cx="24" cy="29" r="3.2" fill="url(#chrome)"/><circle cx="40" cy="29" r="3.2" fill="url(#chrome)"/>
+      <circle cx="56" cy="29" r="3.2" fill="url(#chrome)"/><circle cx="72" cy="29" r="3.2" fill="url(#chrome)"/>
+    </g>
+    <g fill="#1b1416" stroke="none">
+      <circle cx="24" cy="29" r="2.4"/><circle cx="40" cy="29" r="2.4"/><circle cx="56" cy="29" r="2.4"/><circle cx="72" cy="29" r="2.4"/>
+    </g>
+    <!-- Plate hook -->
+    <circle cx="81" cy="31" r="0.7" fill="url(#chrome)" stroke-width="0.4"/>
+  </g>
+
+  <g id="part-siren" stroke="none">
+    <circle cx="48" cy="3" r="7.5" fill="url(#sirenGlow)"/>
+    <path d="M45.4 3.6 C 45.4 1.2, 50.6 1.2, 50.6 3.6 Z" fill="#ffd27a"/>
+    <path d="M46.4 3.2 C 46.6 2.2, 47.4 1.8, 48 1.8" fill="none" stroke="#fffbe8" stroke-width="0.4"/>
+  </g>
+</svg>

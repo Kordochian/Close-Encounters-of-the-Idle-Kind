@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" width="600" height="200" data-canvas-width="300" data-densities="2 4">
+  <!--
+    Hangar interior, drawn at canvas (660, 300), 300x100. Open to the cliff on the left.
+    Keep clear: label top-left (0..150, 0..16); ship labels along y 13..27; docked ships y 42..90; UFO pads are drawn by the game at y 87..93.
+      part-back     walls, truss, hazard band, props, incident sign
+      part-beacon   amber warning beacon glow at (205, 9), flashes
+  -->
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#262a31"/>
+      <stop offset="1" stop-color="#3d424b"/>
+    </linearGradient>
+    <linearGradient id="mouth" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#151826"/>
+      <stop offset="1" stop-color="#151826" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2c2f35"/><stop offset="1" stop-color="#1c1e22"/>
+    </linearGradient>
+    <linearGradient id="drum" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5a1f16"/><stop offset="0.35" stop-color="#b24a32"/><stop offset="1" stop-color="#4a1810"/>
+    </linearGradient>
+    <linearGradient id="drumB" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1f3b52"/><stop offset="0.35" stop-color="#3f74a0"/><stop offset="1" stop-color="#18304a"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="0.5" cy="0" r="1">
+      <stop offset="0" stop-color="#ffe2a8" stop-opacity="0.22"/><stop offset="1" stop-color="#ffe2a8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="oil" cx="0.4" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#3a3f5a"/><stop offset="0.5" stop-color="#15161a"/><stop offset="1" stop-color="#15161a" stop-opacity="0.6"/>
+    </radialGradient>
+    <pattern id="hazard" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="4" height="8" fill="#e0b31f"/><rect x="4" width="4" height="8" fill="#1f1d1a"/>
+    </pattern>
+    <radialGradient id="amber" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffe7a0" stop-opacity="0.95"/>
+      <stop offset="0.3" stop-color="#ffb52e" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#ff9a00" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="grimeH" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08 0.5" numOctaves="3" seed="3"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0 0.04  1.5 0 0 0 -0.6"/>
+    </filter>
+  </defs>
+
+  <g id="part-back">
+    <rect width="300" height="100" fill="url(#wall)"/>
+    <!-- Corrugated wall ribs with highlight and shadow -->
+    <g stroke="#4b505a" stroke-width="1.2">
+      <path d="M30 14 V 78 M46 14 V 78 M62 14 V 78 M78 14 V 78 M94 14 V 78 M110 14 V 78 M126 14 V 78 M142 14 V 78 M158 14 V 78 M174 14 V 78 M190 14 V 78 M206 14 V 78 M222 14 V 78 M238 14 V 78 M254 14 V 78 M270 14 V 78 M286 14 V 78"/>
+    </g>
+    <g stroke="#1f2228" stroke-width="0.8">
+      <path d="M31.5 14 V 78 M47.5 14 V 78 M63.5 14 V 78 M79.5 14 V 78 M95.5 14 V 78 M111.5 14 V 78 M127.5 14 V 78 M143.5 14 V 78 M159.5 14 V 78 M175.5 14 V 78 M191.5 14 V 78 M207.5 14 V 78 M223.5 14 V 78 M239.5 14 V 78 M255.5 14 V 78 M271.5 14 V 78 M287.5 14 V 78"/>
+    </g>
+    <rect y="14" width="300" height="64" filter="url(#grimeH)" opacity="0.7"/>
+    <!-- Wall-mounted pipes and conduit -->
+    <rect x="26" y="60" width="274" height="2.4" fill="#5a6068"/>
+    <path d="M26 60.4 H 300" stroke="#9aa1a8" stroke-width="0.4"/>
+    <g fill="#3a3f46"><rect x="60" y="59" width="2" height="4.4"/><rect x="120" y="59" width="2" height="4.4"/><rect x="180" y="59" width="2" height="4.4"/><rect x="240" y="59" width="2" height="4.4"/></g>
+    <!-- Roof truss with bolts -->
+    <rect x="0" y="0" width="300" height="5" fill="#1d2025"/>
+    <path d="M0 13 H 300 M0 5 L 10 13 L 20 5 L 30 13 L 40 5 L 50 13 L 60 5 L 70 13 L 80 5 L 90 13 L 100 5 L 110 13 L 120 5 L 130 13 L 140 5 L 150 13 L 160 5 L 170 13 L 180 5 L 190 13 L 200 5 L 210 13 L 220 5 L 230 13 L 240 5 L 250 13 L 260 5 L 270 13 L 280 5 L 290 13 L 300 5" fill="none" stroke="#545a67" stroke-width="1.1"/>
+    <path d="M0 12.4 H 300" stroke="#7a8190" stroke-width="0.3"/>
+    <g fill="#8a919c"><circle cx="20" cy="5.4" r="0.5"/><circle cx="60" cy="5.4" r="0.5"/><circle cx="100" cy="5.4" r="0.5"/><circle cx="140" cy="5.4" r="0.5"/><circle cx="180" cy="5.4" r="0.5"/><circle cx="220" cy="5.4" r="0.5"/><circle cx="260" cy="5.4" r="0.5"/></g>
+    <!-- Hanging work lamps and their light pools -->
+    <path d="M95 13 V 20 M255 13 V 18" stroke="#1b1d22" stroke-width="0.6"/>
+    <path d="M91 20 h 8 l -1.5 3 h -5 Z M251 18 h 8 l -1.5 3 h -5 Z" fill="#3b4048" stroke="#16181c" stroke-width="0.4"/>
+    <path d="M92.6 23 h 4.8 M252.6 21 h 4.8" stroke="#fff1c2" stroke-width="0.8"/>
+    <path d="M92 23 L 60 84 L 130 84 L 98 23 Z" fill="url(#pool)"/>
+    <path d="M252 21 L 222 84 L 288 84 L 258 21 Z" fill="url(#pool)"/>
+    <!-- Hazard band and floor -->
+    <rect x="0" y="78" width="300" height="6" fill="url(#hazard)"/>
+    <path d="M0 78 H 300 M0 84 H 300" stroke="#141414" stroke-width="0.6"/>
+    <rect x="0" y="84" width="300" height="16" fill="url(#floor)"/>
+    <path d="M0 92 H 300" stroke="#3a3e46" stroke-width="0.3"/>
+    <path d="M40 84 L 36 100 M100 84 L 98 100 M160 84 L 160 100 M220 84 L 222 100 M280 84 L 284 100" stroke="#33363d" stroke-width="0.4"/>
+    <ellipse cx="128" cy="96" rx="14" ry="2.2" fill="url(#oil)"/>
+    <ellipse cx="212" cy="97" rx="9" ry="1.6" fill="url(#oil)"/>
+    <ellipse cx="252" cy="95.5" rx="5" ry="1.2" fill="#3b2a1e" opacity="0.8"/>
+    <path d="M124 95.4 c 2 -0.6, 5 -0.6, 7 0" fill="none" stroke="#6a7aa8" stroke-width="0.3" opacity="0.6"/>
+    <!-- Fuel drums, one leaking -->
+    <g stroke="#140c0a" stroke-width="0.5">
+      <rect x="28" y="66" width="10" height="13" rx="1" fill="url(#drum)"/>
+      <rect x="39" y="68" width="9" height="11" rx="1" fill="url(#drumB)"/>
+      <path d="M28 69.5 h 10 M28 75.5 h 10 M39 71 h 9 M39 76 h 9" stroke="#1a0f0c" stroke-width="0.5"/>
+    </g>
+    <text x="33" y="73.6" font-family="Arial, sans-serif" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#f1d7a8">FUEL?</text>
+    <path d="M35 79 c 0.5 2, 2 3, 5 3" fill="none" stroke="#2a1a14" stroke-width="0.8"/>
+    <!-- Tool cart -->
+    <g stroke="#16181c" stroke-width="0.45">
+      <rect x="136" y="66" width="16" height="2" fill="#a0262a"/>
+      <rect x="136" y="72" width="16" height="2" fill="#a0262a"/>
+      <path d="M137 68 v 10 M151 68 v 10" stroke="#6b6f76" stroke-width="0.8"/>
+      <circle cx="138" cy="79" r="1" fill="#222"/><circle cx="150" cy="79" r="1" fill="#222"/>
+      <path d="M139 66 l 3 -3 M144 66 v -3.6 M147 66 l 2 -2.4" stroke="#9aa1a8" stroke-width="0.6"/>
+      <rect x="139" y="70" width="4" height="2" fill="#d6b33a"/>
+    </g>
+    <!-- Hanging cables -->
+    <path d="M70 13 C 72 26, 80 28, 84 18 M160 13 C 161 30, 168 32, 172 13" fill="none" stroke="#14161a" stroke-width="1"/>
+    <!-- Painted wall stencil -->
+    <text x="118" y="54" font-family="Arial Black, Arial, sans-serif" font-size="6" font-weight="bold" text-anchor="middle" fill="#c9ced6" opacity="0.12" letter-spacing="1">BAY 7</text>
+    <!-- Incident sign (kept small and low: ship labels run along y 13..27) -->
+    <rect x="257" y="28" width="38" height="22" rx="1" fill="#1d3b2b" stroke="#c9d2c0" stroke-width="0.8"/>
+    <rect x="258" y="29" width="36" height="1.2" fill="#2b5640"/>
+    <text x="276" y="33.4" font-family="Arial, sans-serif" font-size="3.4" font-weight="bold" text-anchor="middle" fill="#e9eedd">DAYS WITHOUT</text>
+    <text x="276" y="37.6" font-family="Arial, sans-serif" font-size="3.4" font-weight="bold" text-anchor="middle" fill="#e9eedd">AN INCIDENT</text>
+    <rect x="270" y="39" width="12" height="9.5" fill="#f3efe2"/>
+    <text x="276" y="47.4" font-family="Arial Black, Arial, sans-serif" font-size="8.6" font-weight="bold" text-anchor="middle" fill="#c8241c">0</text>
+    <path d="M283 40 l 2 6 M285 40 l 2 6 M287 40 l 2 6" stroke="#e9eedd" stroke-width="0.4" opacity="0.6"/>
+    <!-- Beacon housing -->
+    <rect x="199" y="5" width="12" height="2.5" fill="#55595f"/>
+    <path d="M201 7.5 C 201 12.5, 209 12.5, 209 7.5 Z" fill="#8a5a12" stroke="#1d1a20" stroke-width="0.6"/>
+    <path d="M203 8.4 c 0.4 1.6, 1.4 2.2, 2 2.4 M205 7.8 v 3.6 M207 8.4 c -0.4 1.6, -1.4 2.2, -2 2.4" fill="none" stroke="#5a3a0a" stroke-width="0.35"/>
+    <!-- The cliff mouth on the left fades to night -->
+    <rect x="0" y="0" width="26" height="84" fill="url(#mouth)"/>
+    <g fill="#c8d0e8" opacity="0.6"><circle cx="4" cy="20" r="0.35"/><circle cx="9" cy="34" r="0.3"/><circle cx="3" cy="52" r="0.35"/></g>
+  </g>
+
+  <g id="part-beacon">
+    <circle cx="205" cy="9" r="22" fill="url(#amber)"/>
+    <path d="M201 7.5 C 201 12.5, 209 12.5, 209 7.5 Z" fill="#ffd36b"/>
+    <path d="M203 8.4 c 0.4 1.6, 1.4 2.2, 2 2.4" fill="none" stroke="#fff6d6" stroke-width="0.5"/>
+  </g>
+</svg>

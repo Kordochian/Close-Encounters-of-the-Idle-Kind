@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 20" width="192" height="160" data-canvas-width="16" data-densities="4 8">
+  <!--
+    Pufferfish, facing left, belly on y 19. Drawn 16x13.3 canvas units.
+      part-body    relaxed
+      part-puffed  stressed (shown now and then; staff relate)
+      part-fin     tail fin, flaps about (19, 11)
+  -->
+  <defs>
+    <radialGradient id="pf" cx="0.4" cy="0.35" r="0.7"><stop offset="0" stop-color="#fff2a8"/><stop offset="1" stop-color="#d6a02a"/></radialGradient>
+  </defs>
+  <g id="part-fin" stroke="#3a2a10" stroke-width="0.5" stroke-linejoin="round">
+    <path d="M18 11 L 23 7 L 22.4 11 L 23 15 Z" fill="#e2b923"/>
+  </g>
+  <g id="part-body" stroke="#3a2a10" stroke-width="0.6" stroke-linejoin="round">
+    <ellipse cx="11" cy="12" rx="8" ry="6" fill="url(#pf)"/>
+    <path d="M5 14 C 8 17, 14 17, 17 14" fill="#fff8e0" stroke="none"/>
+    <g fill="#8a6a2a" stroke="none"><circle cx="10" cy="9" r="0.6"/><circle cx="13" cy="10" r="0.6"/><circle cx="15" cy="13" r="0.6"/></g>
+    <circle cx="6.6" cy="10" r="1.8" fill="#ffffff"/><circle cx="6.2" cy="10" r="0.8" fill="#111" stroke="none"/>
+    <path d="M3.2 12.6 c 0.6 0.6, 1.4 0.6, 1.8 0" fill="none" stroke-width="0.5"/>
+  </g>
+  <g id="part-puffed" stroke="#3a2a10" stroke-width="0.6" stroke-linejoin="round">
+    <circle cx="11" cy="10" r="9" fill="url(#pf)"/>
+    <path d="M20.0 10.0 l 2.0 0.0 M19.3 13.4 l 1.8 0.8 M17.4 16.4 l 1.4 1.4 M14.4 18.3 l 0.8 1.8 M11.0 19.0 l -0.0 2.0 M7.6 18.3 l -0.8 1.8 M4.6 16.4 l -1.4 1.4 M2.7 13.4 l -1.8 0.8 M2.0 10.0 l -2.0 -0.0 M2.7 6.6 l -1.8 -0.8 M4.6 3.6 l -1.4 -1.4 M7.6 1.7 l -0.8 -1.8 M11.0 1.0 l 0.0 -2.0 M14.4 1.7 l 0.8 -1.8 M17.4 3.6 l 1.4 -1.4 M19.3 6.6 l 1.8 -0.8" stroke-width="0.7"/>
+    <circle cx="6" cy="8" r="2.4" fill="#ffffff"/><circle cx="5.6" cy="8.2" r="1.4" fill="#111" stroke="none"/>
+    <path d="M3 12 c 0.4 0.8, 1.4 0.8, 1.8 0" fill="none" stroke-width="0.6"/>
+  </g>
+</svg>

@@ -1,0 +1,524 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="240 -300 1460 1160" width="2190" height="1740" data-canvas-width="1460" data-densities="1.5 2.5">
+  <!--
+    Station Permafrost (Antarctic): drawn instead of the mountain, same frame and base-local coordinates.
+    An ice shelf; the hangar is a snow-covered hut (780..1080 x 110..210, open to the left) on stilts above
+    the shelf; the bunker is cut into the ice and permafrost, with the Boiler Room where storage was.
+      part-back          sky haze, ice shelf, hut, flag, snowmobile, bunker
+      part-aurora        aurora curtains (shimmer)
+      part-furnace_glow  the boiler's fire (flickers)
+      part-taps          Geothermal Taps: vents in the ice (the game puffs steam from (1250, 236) and (1330, 240))
+      part-vault         Cryo Vault: a frosted vault door on the shelf
+  -->
+  <defs>
+    <linearGradient id="rock" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a7e8c"/><stop offset="0.25" stop-color="#5d616d"/><stop offset="1" stop-color="#3a3c44"/>
+    </linearGradient>
+    <radialGradient id="moonRim" cx="1700" cy="-300" r="1100" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c9d6f0" stop-opacity="0.35"/><stop offset="1" stop-color="#c9d6f0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="snow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f7fc"/><stop offset="1" stop-color="#b9c4d8"/>
+    </linearGradient>
+    <linearGradient id="wallH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2e3239"/><stop offset="0.25" stop-color="#3b4049"/><stop offset="1" stop-color="#434852"/>
+    </linearGradient>
+    <linearGradient id="pipeH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a9b0b7"/><stop offset="0.4" stop-color="#737a82"/><stop offset="1" stop-color="#3d4248"/>
+    </linearGradient>
+    <linearGradient id="pipeCu" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e3a066"/><stop offset="0.5" stop-color="#a5602e"/><stop offset="1" stop-color="#5e3215"/>
+    </linearGradient>
+    <linearGradient id="log" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9a6a3c"/><stop offset="0.5" stop-color="#7a4e28"/><stop offset="1" stop-color="#4f3016"/>
+    </linearGradient>
+    <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a3a2a"/><stop offset="1" stop-color="#3a2418"/>
+    </linearGradient>
+    <linearGradient id="tank" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#25553a"/><stop offset="0.35" stop-color="#4fa06c"/><stop offset="1" stop-color="#1d4430"/>
+    </linearGradient>
+    <linearGradient id="crate" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a8844f"/><stop offset="1" stop-color="#6e5330"/>
+    </linearGradient>
+    <radialGradient id="lampCone" cx="0.5" cy="0" r="1">
+      <stop offset="0" stop-color="#ffe9b0" stop-opacity="0.55"/><stop offset="1" stop-color="#ffe9b0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tvGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#bfe0ff" stop-opacity="0.9"/><stop offset="1" stop-color="#6fa8ff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="rockTex" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035 0.06" numOctaves="5" seed="17"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.12  1.6 0 0 0 -0.65"/>
+    </filter>
+    <filter id="rockSpeck" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="4"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.85  0 0 0 0 0.86  0 0 0 0 0.9  2.2 0 0 0 -1.45"/>
+    </filter>
+    <filter id="concrete" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.4" numOctaves="3" seed="23"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.12  0 0 0 0 0.12  0 0 0 0 0.13  1.4 0 0 0 -0.7"/>
+    </filter>
+    <clipPath id="mtn">
+      <path d="M240 860 L 240 302 L 260 300 L 300 297 L 360 292 L 420 286 L 480 279 L 540 271 L 600 262 L 650 252 L 690 242 L 720 232 L 745 224 L 762 218 L 780 213 L 780 107 L 776 102 L 786 94 L 790 92 L 915 92 L 935 74 L 960 46 L 985 14 L 1010 -25 L 1035 -70 L 1060 -130 L 1080 -185 L 1095 -222 L 1105 -236 L 1120 -222 L 1150 -190 L 1185 -160 L 1215 -150 L 1250 -120 L 1290 -80 L 1330 -55 L 1370 -20 L 1400 0 L 1440 30 L 1475 66 L 1515 120 L 1555 172 L 1595 220 L 1635 258 L 1670 288 L 1684 298 L 1700 300 L 1700 860 Z"/>
+    </clipPath>
+    <pattern id="grate" width="3" height="3" patternUnits="userSpaceOnUse">
+      <rect width="3" height="3" fill="#24272c"/><path d="M0 0 L 3 3" stroke="#3a3f47" stroke-width="0.5"/>
+    </pattern>
+    <pattern id="hazardM" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="2" height="4" fill="#e0b31f"/><rect x="2" width="2" height="4" fill="#1f1d1a"/>
+    </pattern>
+    <pattern id="rungs" width="14" height="5" patternUnits="userSpaceOnUse" x="1008" y="403">
+      <rect width="14" height="5" fill="none"/><path d="M2 2.5 H 12" stroke="#8a9098" stroke-width="0.8"/>
+    </pattern>
+    <linearGradient id="iceSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a1428" stop-opacity="0"/><stop offset="1" stop-color="#2a3a5a" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="iceTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4faff"/><stop offset="1" stop-color="#b8d4e8"/>
+    </linearGradient>
+    <linearGradient id="iceDeep" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8ab8d8"/><stop offset="0.3" stop-color="#4a6a88"/><stop offset="1" stop-color="#2a2a32"/>
+    </linearGradient>
+    <linearGradient id="hut" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c8ccd0"/><stop offset="1" stop-color="#8a9098"/>
+    </linearGradient>
+    <linearGradient id="auroraG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7affb0" stop-opacity="0"/><stop offset="0.5" stop-color="#7affb0" stop-opacity="0.45"/><stop offset="1" stop-color="#7a9aff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g id="part-back">
+    <rect x="240" y="-300" width="1460" height="560" fill="url(#iceSky)"/>
+    <!-- Distant icebergs -->
+    <path d="M1300 250 L 1340 170 L 1370 190 L 1400 140 L 1450 250 Z M1480 250 L 1520 200 L 1560 215 L 1600 250 Z" fill="#c8dcec" opacity="0.7"/>
+    <!-- Ice shelf -->
+    <path d="M240 300 L 240 252 C 400 246, 700 250, 1000 248 C 1300 246, 1500 252, 1700 250 L 1700 300 Z" fill="url(#iceTop)"/>
+    <ellipse cx="1573.3086573088422" cy="261.4860577799318" rx="55.69733376194317" ry="4.417753384153418" fill="#f4faff"/><ellipse cx="1100.6786621777442" cy="256.2374740823496" rx="41.20352040472026" ry="4.6515147062374025" fill="#f4faff"/><ellipse cx="532.6359637057956" cy="256.44573573873015" rx="28.841566926288763" ry="6.275164794238583" fill="#f4faff"/><ellipse cx="295.1690938351873" cy="252.8577408627625" rx="48.400328009796404" ry="6.106241808070971" fill="#f4faff"/><ellipse cx="987.9401726371456" cy="259.34209078783493" rx="34.35985439144799" ry="4.287772648246093" fill="#f4faff"/><ellipse cx="1372.005345747916" cy="257.89123482772004" rx="46.31650840399581" ry="7.104957275690335" fill="#f4faff"/><ellipse cx="1638.444023162119" cy="255.62792518478108" rx="50.39146448974124" ry="5.843419073841034" fill="#f4faff"/><ellipse cx="1072.3064292923289" cy="258.6053210925032" rx="32.575644425447464" ry="4.428680621619357" fill="#f4faff"/><ellipse cx="933.1743202525158" cy="259.179140037528" rx="43.6243879173668" ry="6.237257796366672" fill="#f4faff"/><ellipse cx="1172.177421095151" cy="253.8202921598409" rx="27.141598026033247" ry="5.6170617443833" fill="#f4faff"/><ellipse cx="1418.5403595752707" cy="253.956078528039" rx="24.572048211791255" ry="4.493020989974679" fill="#f4faff"/><ellipse cx="315.28510083686075" cy="254.75564461500153" rx="42.912875795537516" ry="8.103315904362622" fill="#f4faff"/><ellipse cx="729.7428841504843" cy="255.696539320061" rx="31.539372963355845" ry="5.523937169259015" fill="#f4faff"/><ellipse cx="1364.1671497055447" cy="257.48993469911034" rx="30.33674095557131" ry="4.535636157529512" fill="#f4faff"/><ellipse cx="1373.0088747258428" cy="259.07143454217027" rx="53.1426130214376" ry="5.190131989429225" fill="#f4faff"/><ellipse cx="1034.5802126994663" cy="261.18743176350847" rx="43.70782944570424" ry="8.727332233750623" fill="#f4faff"/><ellipse cx="497.5088536592201" cy="261.7500646884575" rx="22.236792335167856" ry="6.081116601578215" fill="#f4faff"/><ellipse cx="293.1751784000465" cy="260.09563265931854" rx="47.48821437738417" ry="8.868678235344674" fill="#f4faff"/>
+    <rect x="240" y="296" width="1460" height="564" fill="url(#iceDeep)"/>
+    <rect x="240" y="296" width="1460" height="564" filter="url(#rockTex)" opacity="0.5"/>
+    <path d="M240 330 C 600 320, 1200 340, 1700 326 M240 380 C 700 370, 1100 390, 1700 376" fill="none" stroke="#c8e4f4" stroke-width="1" opacity="0.4"/>
+    <!-- The hangar hut on stilts -->
+    <path d="M790 248 V 214 M1070 248 V 214 M930 248 V 214" stroke="#5a6068" stroke-width="4"/>
+    <path d="M776 214 L 776 112 C 800 70, 1060 70, 1084 112 L 1084 214 Z" fill="url(#hut)" stroke="#14161a" stroke-width="1"/>
+    <path d="M790 92 C 860 72, 1000 72, 1070 92" fill="none" stroke="#f4faff" stroke-width="10"/>
+    <path d="M800 84 l 2 8 l 2 -8 M860 78 l 2 9 l 2 -9 M1000 78 l 2 10 l 2 -10 M1060 86 l 2 7 l 2 -7" fill="#dff0ff"/>
+    <text x="930" y="66" font-family="Arial Black, Arial, sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="#e8f2ff">STATION PERMAFROST</text>
+    <text x="930" y="58" font-family="Arial, sans-serif" font-size="4" text-anchor="middle" fill="#9fc8e8">definitely a weather station</text>
+    <!-- Flag, snowmobile -->
+    <path d="M740 252 V 196" stroke="#8a9098" stroke-width="1.4"/>
+    <path d="M740 198 h 18 l -3 5 l 3 5 h -18 Z" fill="#7fc25b" stroke="#14161a" stroke-width="0.4"/>
+    <g stroke="#14161a" stroke-width="0.6"><path d="M700 252 h 26 l -4 -6 h -14 l -4 -4 h -4 Z" fill="#c8241c"/><path d="M698 254 h 32" stroke-width="1.6"/></g>
+    <!-- Warning sign about the cold -->
+    <rect x="1140" y="222" width="40" height="18" fill="#e9e1c6" stroke="#14161a" stroke-width="0.6"/>
+    <text x="1160" y="229" font-family="Arial, sans-serif" font-size="3.4" font-weight="bold" text-anchor="middle" fill="#2b5a8a">OUTSIDE TEMP:</text>
+    <text x="1160" y="235" font-family="Arial, sans-serif" font-size="3.4" font-weight="bold" text-anchor="middle" fill="#c8241c">NO</text>
+    <path d="M1160 240 v 12" stroke="#5a6068" stroke-width="1.2"/>
+
+    <!-- ===================== Bunker (base-local; rooms are drawn by the game on top) ===================== -->
+    <rect x="780" y="101" width="309" height="118" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="780" y="101" width="309" height="118" filter="url(#concrete)" opacity="0.6"/>
+    <rect x="1101" y="321" width="323" height="118" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="1101" y="321" width="323" height="118" filter="url(#concrete)" opacity="0.6"/>
+    <rect x="511" y="471" width="348" height="133" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="511" y="471" width="348" height="133" filter="url(#concrete)" opacity="0.6"/>
+    <rect x="1161" y="471" width="273" height="133" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="1161" y="471" width="273" height="133" filter="url(#concrete)" opacity="0.6"/>
+    <rect x="681" y="671" width="623" height="133" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="681" y="671" width="623" height="133" filter="url(#concrete)" opacity="0.6"/>
+    <rect x="551" y="311" width="306" height="124" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="551" y="311" width="306" height="124" filter="url(#concrete)" opacity="0.6"/>
+    <!-- Cargo lift from the hangar floor down to level 1 -->
+    <rect x="924" y="213" width="42" height="194" fill="#4d5058"/>
+    <rect x="930" y="213" width="30" height="194" fill="#25282e"/>
+    <path d="M932 213 V 407 M958 213 V 407" stroke="#8a9098" stroke-width="1"/>
+    <path d="M938 213 V 300 M952 213 V 300" stroke="#14161a" stroke-width="0.6"/>
+    <rect x="931" y="300" width="28" height="3" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="931" y="300" width="28" height="1" fill="url(#hazardM)"/>
+    <g stroke="#2a1d0e" stroke-width="0.3"><rect x="935" y="292" width="9" height="8" fill="url(#crate)"/><rect x="945" y="294" width="7" height="6" fill="url(#crate)"/></g>
+    <path d="M936 292 l 8 8 M944 292 l -8 8" stroke="#5a4326" stroke-width="0.3"/>
+    <text x="945" y="226" font-family="Arial, sans-serif" font-size="2.4" font-weight="bold" text-anchor="middle" fill="#e2b923">CARGO LIFT</text>
+    <text x="945" y="229" font-family="Arial, sans-serif" font-size="1.6" text-anchor="middle" fill="#c9ced6">max 1 cow</text>
+    <!-- Pipe bundle from the hangar down to level 1 -->
+    <rect x="1058" y="213" width="16" height="194" fill="#4d5058"/>
+    <rect x="1061" y="213" width="4" height="194" fill="url(#pipeV)"/><rect x="1066" y="213" width="3" height="194" fill="url(#pipeCu)"/><rect x="1070" y="213" width="2" height="194" fill="#2b5a8a"/>
+    <!-- Power conduit from the generator up to containment -->
+    <rect x="1296" y="433" width="16" height="44" fill="#4d5058"/>
+    <rect x="1299" y="433" width="4" height="44" fill="url(#pipeV)"/><rect x="1305" y="433" width="4" height="44" fill="#c9a224"/>
+    <path d="M1299 445 h 10 M1299 465 h 10" stroke="#14161a" stroke-width="0.6"/>
+    <!-- Stairwell (west): flights between the three levels -->
+    <rect x="464" y="398" width="42" height="400" fill="#4d5058"/>
+    <rect x="470" y="404" width="30" height="391" fill="url(#wallH)"/>
+    <rect x="470" y="404" width="30" height="391" filter="url(#concrete)" opacity="0.5"/>
+    <g fill="none" stroke="#8a9098" stroke-width="1.2">
+      <path d="M472 426 L 498 470 L 472 510 L 498 552 L 472 595"/>
+      <path d="M472 595 L 498 640 L 472 685 L 498 735 L 472 795"/>
+    </g>
+    <g fill="none" stroke="#5a606a" stroke-width="0.4">
+      <path d="M472 420 L 498 464 L 472 504 L 498 546 L 472 589 L 498 634 L 472 679 L 498 729 L 472 789"/>
+    </g>
+    <g fill="#5a606a"><rect x="470" y="424" width="30" height="2"/><rect x="470" y="593" width="30" height="2"/><rect x="470" y="793" width="30" height="2"/></g>
+    <text x="485" y="418" font-family="Arial Black, Arial, sans-serif" font-size="7" font-weight="bold" text-anchor="middle" fill="#e2b923" opacity="0.5">B1</text>
+    <text x="485" y="588" font-family="Arial Black, Arial, sans-serif" font-size="7" font-weight="bold" text-anchor="middle" fill="#e2b923" opacity="0.5">B2</text>
+    <text x="485" y="788" font-family="Arial Black, Arial, sans-serif" font-size="7" font-weight="bold" text-anchor="middle" fill="#e2b923" opacity="0.5">B3</text>
+    <!-- Elevator shaft (centre): from level 1 down to the break room, car stuck halfway -->
+    <rect x="984" y="426" width="36" height="254" fill="#4d5058"/>
+    <rect x="990" y="426" width="24" height="254" fill="#22252a"/>
+    <path d="M992 426 V 680 M1012 426 V 680" stroke="#8a9098" stroke-width="0.9"/>
+    <path d="M1000 426 V 612 M1004 426 V 612" stroke="#14161a" stroke-width="0.5"/>
+    <rect x="991" y="612" width="22" height="26" fill="#5a6068" stroke="#14161a" stroke-width="0.5"/>
+    <path d="M1002 612 v 26" stroke="#14161a" stroke-width="0.5"/>
+    <rect x="993" y="620" width="18" height="5" fill="#e9e1c6" transform="rotate(-6 1002 622.5)"/>
+    <text x="1002" y="623.6" font-family="Arial, sans-serif" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#b0261e" transform="rotate(-6 1002 622.5)">OUT OF ORDER</text>
+    <text x="1002" y="634" font-family="Arial, sans-serif" font-size="1.4" text-anchor="middle" fill="#c9ced6">since 1987</text>
+    <!-- Ladder shaft (east): containment, generator and the break room level -->
+    <rect x="1434" y="402" width="28" height="396" fill="#4d5058"/>
+    <rect x="1440" y="408" width="16" height="387" fill="#22252a"/>
+    <path d="M1442 408 V 795 M1454 408 V 795" stroke="#8a9098" stroke-width="0.8"/>
+    <path d="M1442 412 H 1454 M1442 417 H 1454 M1442 422 H 1454 M1442 427 H 1454 M1442 432 H 1454 M1442 437 H 1454 M1442 442 H 1454 M1442 447 H 1454 M1442 452 H 1454 M1442 457 H 1454 M1442 462 H 1454 M1442 467 H 1454 M1442 472 H 1454 M1442 477 H 1454 M1442 482 H 1454 M1442 487 H 1454 M1442 492 H 1454 M1442 497 H 1454 M1442 502 H 1454 M1442 507 H 1454 M1442 512 H 1454 M1442 517 H 1454 M1442 522 H 1454 M1442 527 H 1454 M1442 532 H 1454 M1442 537 H 1454 M1442 542 H 1454 M1442 547 H 1454 M1442 552 H 1454 M1442 557 H 1454 M1442 562 H 1454 M1442 567 H 1454 M1442 572 H 1454 M1442 577 H 1454 M1442 582 H 1454 M1442 587 H 1454 M1442 592 H 1454 M1442 597 H 1454 M1442 602 H 1454 M1442 607 H 1454 M1442 612 H 1454 M1442 617 H 1454 M1442 622 H 1454 M1442 627 H 1454 M1442 632 H 1454 M1442 637 H 1454 M1442 642 H 1454 M1442 647 H 1454 M1442 652 H 1454 M1442 657 H 1454 M1442 662 H 1454 M1442 667 H 1454 M1442 672 H 1454 M1442 677 H 1454 M1442 682 H 1454 M1442 687 H 1454 M1442 692 H 1454 M1442 697 H 1454 M1442 702 H 1454 M1442 707 H 1454 M1442 712 H 1454 M1442 717 H 1454 M1442 722 H 1454 M1442 727 H 1454 M1442 732 H 1454 M1442 737 H 1454 M1442 742 H 1454 M1442 747 H 1454 M1442 752 H 1454 M1442 757 H 1454 M1442 762 H 1454 M1442 767 H 1454 M1442 772 H 1454 M1442 777 H 1454 M1442 782 H 1454 M1442 787 H 1454 M1442 792 H 1454" stroke="#8a9098" stroke-width="0.6"/>
+    <path d="M1440 440 C 1440 434, 1456 434, 1456 440 M1440 470 C 1440 464, 1456 464, 1456 470 M1440 500 C 1440 494, 1456 494, 1456 500 M1440 530 C 1440 524, 1456 524, 1456 530 M1440 560 C 1440 554, 1456 554, 1456 560 M1440 590 C 1440 584, 1456 584, 1456 590 M1440 620 C 1440 614, 1456 614, 1456 620 M1440 650 C 1440 644, 1456 644, 1456 650 M1440 680 C 1440 674, 1456 674, 1456 680 M1440 710 C 1440 704, 1456 704, 1456 710 M1440 740 C 1440 734, 1456 734, 1456 740 M1440 770 C 1440 764, 1456 764, 1456 770" fill="none" stroke="#5a606a" stroke-width="0.5"/>
+    <!-- Tunnel T1 -->
+    <rect x="848" y="404" width="259" height="25" fill="#4d5058"/>
+    <rect x="848" y="407" width="259" height="19" fill="url(#wallH)"/>
+    <rect x="848" y="407" width="259" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <path d="M872 407 V 423 M920 407 V 423 M968 407 V 423 M1016 407 V 423 M1064 407 V 423" stroke="#30343b" stroke-width="0.4"/>
+    <rect x="848" y="407.5" width="259" height="2.6" fill="url(#pipeH)"/>
+    <rect x="848" y="410.6" width="259" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="848" y="423.4" width="259" height="2.6" fill="url(#grate)"/>
+    <path d="M848 423.4 H 1107" stroke="#5a606a" stroke-width="0.4"/>
+    <path d="M876 408 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <path d="M1036 408 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <!-- Tunnel T1W -->
+    <rect x="500" y="404" width="57" height="25" fill="#4d5058"/>
+    <rect x="500" y="407" width="57" height="19" fill="url(#wallH)"/>
+    <rect x="500" y="407" width="57" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <path d="M524 407 V 423" stroke="#30343b" stroke-width="0.4"/>
+    <rect x="500" y="407.5" width="57" height="2.6" fill="url(#pipeH)"/>
+    <rect x="500" y="410.6" width="57" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="500" y="423.4" width="57" height="2.6" fill="url(#grate)"/>
+    <path d="M500 423.4 H 557" stroke="#5a606a" stroke-width="0.4"/>
+    <path d="M524 408 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <!-- Tunnel T1E -->
+    <rect x="1418" y="408" width="22" height="25" fill="#4d5058"/>
+    <rect x="1418" y="411" width="22" height="19" fill="url(#wallH)"/>
+    <rect x="1418" y="411" width="22" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <rect x="1418" y="411.5" width="22" height="2.6" fill="url(#pipeH)"/>
+    <rect x="1418" y="414.6" width="22" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="1418" y="427.4" width="22" height="2.6" fill="url(#grate)"/>
+    <path d="M1418 427.4 H 1440" stroke="#5a606a" stroke-width="0.4"/>
+    <!-- Tunnel T2 -->
+    <rect x="853" y="573" width="314" height="25" fill="#4d5058"/>
+    <rect x="853" y="576" width="314" height="19" fill="url(#wallH)"/>
+    <rect x="853" y="576" width="314" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <path d="M877 576 V 592 M925 576 V 592 M973 576 V 592 M1021 576 V 592 M1069 576 V 592 M1117 576 V 592 M1165 576 V 592" stroke="#30343b" stroke-width="0.4"/>
+    <rect x="853" y="576.5" width="314" height="2.6" fill="url(#pipeH)"/>
+    <rect x="853" y="579.6" width="314" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="853" y="592.4" width="314" height="2.6" fill="url(#grate)"/>
+    <path d="M853 592.4 H 1167" stroke="#5a606a" stroke-width="0.4"/>
+    <path d="M896 577 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <path d="M1056 577 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <path d="M1131 577 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <!-- Tunnel T2W -->
+    <rect x="500" y="573" width="17" height="25" fill="#4d5058"/>
+    <rect x="500" y="576" width="17" height="19" fill="url(#wallH)"/>
+    <rect x="500" y="576" width="17" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <rect x="500" y="576.5" width="17" height="2.6" fill="url(#pipeH)"/>
+    <rect x="500" y="579.6" width="17" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="500" y="592.4" width="17" height="2.6" fill="url(#grate)"/>
+    <path d="M500 592.4 H 517" stroke="#5a606a" stroke-width="0.4"/>
+    <!-- Tunnel T2E -->
+    <rect x="1428" y="573" width="12" height="25" fill="#4d5058"/>
+    <rect x="1428" y="576" width="12" height="19" fill="url(#wallH)"/>
+    <rect x="1428" y="576" width="12" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <rect x="1428" y="576.5" width="12" height="2.6" fill="url(#pipeH)"/>
+    <rect x="1428" y="579.6" width="12" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="1428" y="592.4" width="12" height="2.6" fill="url(#grate)"/>
+    <path d="M1428 592.4 H 1440" stroke="#5a606a" stroke-width="0.4"/>
+    <!-- Tunnel T3W -->
+    <rect x="500" y="773" width="187" height="25" fill="#4d5058"/>
+    <rect x="500" y="776" width="187" height="19" fill="url(#wallH)"/>
+    <rect x="500" y="776" width="187" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <path d="M524 776 V 792 M572 776 V 792 M620 776 V 792 M668 776 V 792" stroke="#30343b" stroke-width="0.4"/>
+    <rect x="500" y="776.5" width="187" height="2.6" fill="url(#pipeH)"/>
+    <rect x="500" y="779.6" width="187" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="500" y="792.4" width="187" height="2.6" fill="url(#grate)"/>
+    <path d="M500 792.4 H 687" stroke="#5a606a" stroke-width="0.4"/>
+    <path d="M536 777 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <path d="M636 777 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <!-- Tunnel T3E -->
+    <rect x="1298" y="773" width="142" height="25" fill="#4d5058"/>
+    <rect x="1298" y="776" width="142" height="19" fill="url(#wallH)"/>
+    <rect x="1298" y="776" width="142" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <path d="M1322 776 V 792 M1370 776 V 792 M1418 776 V 792" stroke="#30343b" stroke-width="0.4"/>
+    <rect x="1298" y="776.5" width="142" height="2.6" fill="url(#pipeH)"/>
+    <rect x="1298" y="779.6" width="142" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="1298" y="792.4" width="142" height="2.6" fill="url(#grate)"/>
+    <path d="M1298 792.4 H 1440" stroke="#5a606a" stroke-width="0.4"/>
+    <path d="M1366 777 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <!-- Boiler Room (replaces the storage hall in the ice) -->
+    <rect x="560" y="320" width="288" height="106" fill="#3a2e2a"/>
+    <rect x="560" y="320" width="288" height="106" filter="url(#concrete)" opacity="0.5"/>
+    <rect x="560" y="421.4" width="288" height="4.6" fill="url(#grate)"/>
+    <text x="704" y="338" font-family="Arial Black, Arial, sans-serif" font-size="8" font-weight="bold" text-anchor="middle" fill="#e8c8a8" opacity="0.2" letter-spacing="1">BOILER ROOM</text>
+    <!-- The furnace (its glow is a part), coal, pipes going everywhere -->
+    <g stroke="#14161a" stroke-width="0.8">
+      <rect x="690" y="356" width="70" height="65" rx="6" fill="#4a4048"/>
+      <rect x="704" y="380" width="42" height="30" rx="3" fill="#1a1010"/>
+      <path d="M690 368 h 70 M690 400 h 70" stroke="#2a2428"/>
+      <rect x="716" y="320" width="18" height="36" fill="#5a5058"/>
+      <path d="M560 344 H 690 M760 344 H 848 M760 336 H 848" stroke="#8a6a4a" stroke-width="4"/>
+      <path d="M600 421 c 6 -14, 30 -16, 44 0 Z" fill="#1a1a1e"/>
+      <circle cx="790" cy="380" r="14" fill="#f0ebdc"/>
+      <path d="M778 384 A 14 14 0 0 1 790 366 A 14 14 0 0 1 802 384" fill="none" stroke="#c8241c" stroke-width="2"/>
+    </g>
+    <text x="790" y="392" font-family="Arial, sans-serif" font-size="3.4" font-weight="bold" text-anchor="middle" fill="#14161a">HEAT</text>
+    <rect x="808" y="350" width="34" height="22" fill="#e9e1c6" stroke="#14161a" stroke-width="0.5"/>
+    <text x="825" y="357" font-family="Arial, sans-serif" font-size="3" font-weight="bold" text-anchor="middle" fill="#c8241c">FEED THE BOILER</text>
+    <text x="825" y="362" font-family="Arial, sans-serif" font-size="2.6" text-anchor="middle" fill="#14161a">it is the only one</text>
+    <text x="825" y="366" font-family="Arial, sans-serif" font-size="2.6" text-anchor="middle" fill="#14161a">that loves you</text>
+    <rect x="846" y="403" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="846" y="403" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="848" cy="415" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="1105" y="403" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="1105" y="403" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="1107" cy="415" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="555" y="403" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="555" y="403" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="557" cy="415" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="1416" y="407" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="1416" y="407" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="1418" cy="419" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="851" y="572" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="851" y="572" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="853" cy="584" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="1165" y="572" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="1165" y="572" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="1167" cy="584" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="515" y="572" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="515" y="572" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="517" cy="584" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="1426" y="572" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="1426" y="572" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="1428" cy="584" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="685" y="772" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="685" y="772" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="687" cy="784" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="1296" y="772" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="1296" y="772" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="1298" cy="784" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="930" y="403" width="30" height="2.6" fill="url(#hazardM)"/>
+    <rect x="990" y="423.4" width="24" height="2.6" fill="url(#hazardM)"/>
+    <rect x="990" y="592.4" width="24" height="2.6" fill="url(#hazardM)"/>
+    <g transform="translate(120 4)">
+    <!-- electrical panel with hanging wires -->
+    <rect x="740" y="408" width="15" height="10.6" fill="#7a8088" stroke="#1d1f23" stroke-width="0.4"/>
+    <rect x="741" y="409" width="13" height="8.6" fill="#2a2e34"/>
+    <g fill="#14161a"><circle cx="743" cy="410.6" r="0.6"/><circle cx="746" cy="410.6" r="0.6"/><circle cx="749" cy="410.6" r="0.6"/><circle cx="752" cy="410.6" r="0.6"/></g>
+    <path d="M742 413 h 11 M742 415 h 11" stroke="#555b63" stroke-width="0.3"/>
+    <path d="M755 410 l 3 -1.4 l 0 -0.4 M744 417.6 C 744 420, 748 421, 750 419.4 M751 417.6 C 752 419.6, 754 419.6, 756 418" fill="none" stroke="#d6a02a" stroke-width="0.4"/>
+    <rect x="740" y="406.6" width="15" height="1.4" fill="url(#hazardM)"/>
+    </g>
+    <g transform="translate(181 4)">
+    <!-- poster -->
+    <rect x="704" y="408.6" width="9" height="9" fill="#e8dcc0" stroke="#1d1a20" stroke-width="0.3"/>
+    <circle cx="708.5" cy="412" r="1.6" fill="#7fc25b"/><path d="M706.8 412 h 3.4" stroke="#111" stroke-width="0.5"/>
+    <text x="708.5" y="415.6" font-family="Arial, sans-serif" font-size="1.1" font-weight="bold" text-anchor="middle" fill="#1d1a20">SMILE!</text>
+    <text x="708.5" y="416.9" font-family="Arial, sans-serif" font-size="0.8" text-anchor="middle" fill="#1d1a20">you're undercover</text>
+    </g>
+    <g transform="translate(29 4)">
+    <!-- gas cylinders -->
+    <g stroke="#0f1a14" stroke-width="0.3">
+      <rect x="876" y="409" width="3.4" height="10.4" rx="1.2" fill="url(#tank)"/><rect x="880" y="408" width="3.4" height="11.4" rx="1.2" fill="url(#tank)"/><rect x="884" y="410" width="3.4" height="9.4" rx="1.2" fill="url(#tank)"/>
+    </g>
+    <path d="M875.6 413 h 12.2" stroke="#2a2a2e" stroke-width="0.5"/>
+    </g>
+    <g transform="translate(52 4)">
+    <!-- fire extinguisher, alien edition -->
+    <rect x="918" y="411" width="2.6" height="7" rx="1" fill="#7fc25b" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M919.3 411 v -1 h 1.6" fill="none" stroke="#1d1a20" stroke-width="0.4"/>
+    </g>
+    <g transform="translate(194 4)">
+    <!-- poster -->
+    <rect x="826" y="408.4" width="13" height="9.4" fill="#1e2a40" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M832.5 410 l 4 3 h -8 Z" fill="#a9b1ba"/>
+    <text x="832.5" y="415.2" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#f3e7b5">LOOSE LIPS</text>
+    <text x="832.5" y="416.6" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#f3e7b5">SINK MOTHERSHIPS</text>
+    </g>
+    <g transform="translate(66 4)">
+    <!-- vending machine, one snack stuck forever -->
+    <rect x="984" y="406" width="10" height="13.4" fill="#2b5a8a" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="985" y="407" width="6" height="9" fill="#9fd0e8" opacity="0.6"/>
+    <g fill="#e2b923"><rect x="985.6" y="408" width="1.4" height="1"/><rect x="988" y="408" width="1.4" height="1"/><rect x="985.6" y="410.6" width="1.4" height="1"/><rect x="988.6" y="411.4" width="1.4" height="1" transform="rotate(30 989.3 411.9)"/></g>
+    <rect x="991.6" y="408" width="1.8" height="3" fill="#14161a"/>
+    </g>
+    <g transform="translate(146 4)">
+    <!-- poster -->
+    <rect x="934" y="408.6" width="12" height="9" fill="#efe6d0" stroke="#1d1a20" stroke-width="0.3"/>
+    <text x="940" y="411" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#7d5aa6">HAVE YOU</text>
+    <text x="940" y="412.4" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#7d5aa6">WIPED A</text>
+    <text x="940" y="413.8" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#7d5aa6">MEMORY</text>
+    <text x="940" y="415.2" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#7d5aa6">TODAY?</text>
+    </g>
+    <g transform="translate(-166 4)">
+    <!-- crates, one upside-down "THIS SIDE UP" -->
+    <g stroke="#2a1d0e" stroke-width="0.3">
+      <rect x="676" y="413" width="9" height="6.4" fill="url(#crate)"/><path d="M676 413 l 9 6.4 M685 413 l -9 6.4" stroke="#5a4326" stroke-width="0.3"/>
+      <rect x="686" y="411" width="11" height="8.4" fill="url(#crate)"/><rect x="678" y="408" width="6" height="5" fill="url(#crate)"/>
+    </g>
+    <text x="691.5" y="415.6" font-family="Arial, sans-serif" font-size="1.4" font-weight="bold" text-anchor="middle" fill="#2a1d0e" transform="rotate(180 691.5 415.2)">THIS SIDE UP</text>
+    </g>
+    <g transform="translate(648 8)">
+    <!-- drooping wire bundle -->
+    <path d="M772 408 C 776 418, 784 418, 790 408 M774 408 C 778 416, 784 416, 788 408" fill="none" stroke="#14161a" stroke-width="0.7"/>
+    </g>
+    <g transform="translate(66 173)">
+    <!-- mop bucket and a wet-floor sign -->
+    <path d="M804 415 h 6 l -0.6 4.4 h -4.8 Z" fill="#d6b33a" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M808 415 l 3 -8" stroke="#8a6a3e" stroke-width="0.6"/>
+    <path d="M814 419.4 l 2.4 -7 l 2.4 7" fill="#e2b923" stroke="#1d1a20" stroke-width="0.3"/>
+    <text x="816.4" y="417.6" font-family="Arial, sans-serif" font-size="0.9" font-weight="bold" text-anchor="middle" fill="#1d1a20">WET</text>
+    </g>
+    <g transform="translate(-159 173)">
+    <!-- poster: employee of the month (nobody) -->
+    <rect x="1054" y="408.4" width="10" height="10" fill="#efe6d0" stroke="#1d1a20" stroke-width="0.3"/>
+    <rect x="1056" y="410.4" width="6" height="5" fill="#c9c2b2"/>
+    <text x="1059" y="409.8" font-family="Arial, sans-serif" font-size="0.8" font-weight="bold" text-anchor="middle" fill="#1d1a20">EMPLOYEE OF</text>
+    <text x="1059" y="417.6" font-family="Arial, sans-serif" font-size="0.8" font-weight="bold" text-anchor="middle" fill="#1d1a20">THE MONTH</text>
+    <text x="1059" y="413.6" font-family="Arial, sans-serif" font-size="1.4" font-weight="bold" text-anchor="middle" fill="#8a8f96">?</text>
+    </g>
+    <g transform="translate(-165 173)">
+    <!-- vertical pipes with a valve -->
+    <rect x="1090" y="403" width="3" height="16.4" fill="url(#pipeH)"/><rect x="1094" y="403" width="2" height="16.4" fill="url(#pipeCu)"/>
+    <circle cx="1091.5" cy="412" r="2" fill="none" stroke="#c23a2e" stroke-width="0.7"/>
+    </g>
+    <g transform="translate(-178 173)">
+    <!-- second panel -->
+    <rect x="1118" y="408" width="15" height="10.6" fill="#7a8088" stroke="#1d1f23" stroke-width="0.4"/>
+    <rect x="1119" y="409" width="13" height="8.6" fill="#2a2e34"/>
+    <g fill="#14161a"><circle cx="1121" cy="410.6" r="0.6"/><circle cx="1124" cy="410.6" r="0.6"/><circle cx="1127" cy="410.6" r="0.6"/><circle cx="1130" cy="410.6" r="0.6"/></g>
+    <path d="M1120 413.4 h 11 M1120 415.4 h 7" stroke="#555b63" stroke-width="0.3"/>
+    <text x="1125.5" y="417.4" font-family="Arial, sans-serif" font-size="0.9" font-weight="bold" text-anchor="middle" fill="#e2b923">DO NOT</text>
+    </g>
+    <g transform="translate(-118 173)">
+    <!-- crates of unused probes -->
+    <g stroke="#2a1d0e" stroke-width="0.3"><rect x="1148" y="411" width="14" height="8.4" fill="url(#crate)"/><rect x="1151" y="406.6" width="8" height="4.4" fill="url(#crate)"/></g>
+    <text x="1155" y="415.8" font-family="Arial, sans-serif" font-size="1.3" font-weight="bold" text-anchor="middle" fill="#2a1d0e">PROBES</text>
+    <text x="1155" y="417.6" font-family="Arial, sans-serif" font-size="0.9" text-anchor="middle" fill="#2a1d0e">(unused)</text>
+    </g>
+    <g transform="translate(-132 173)">
+    <!-- the last intern, still waiting for his performance review -->
+    <g stroke="#3a3830" stroke-width="0.3">
+      <circle cx="1212" cy="411.4" r="1.6" fill="#e9e3cf"/>
+      <path d="M1211.2 411.4 h 0.4 M1212.6 411.4 h 0.4" stroke="#1d1a20" stroke-width="0.5"/>
+      <path d="M1210 413.6 h 4.2 l -0.6 4 h -3 Z" fill="#eef1f2"/>
+      <path d="M1212 414 v 3 M1210.6 414.6 h 2.8 M1210.6 415.8 h 2.8" stroke="#c9c2b2" stroke-width="0.25"/>
+      <path d="M1211 417.6 l -3 1.6 M1213.4 417.6 l -2 2" stroke="#e9e3cf" stroke-width="0.6"/>
+      <rect x="1213" y="414" width="1.4" height="0.9" fill="#f6e27a" stroke="none"/>
+    </g>
+    <text x="1212" y="408.6" font-family="Arial, sans-serif" font-size="0.9" text-anchor="middle" fill="#8a8f96">REVIEW PENDING</text>
+    </g>
+    <g transform="translate(44 33)">
+    <!-- poster -->
+    <rect x="1066" y="548.6" width="12" height="9" fill="#efe6d0" stroke="#1d1a20" stroke-width="0.3"/>
+    <text x="1072" y="551.4" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#1d1a20">REPORT</text>
+    <text x="1072" y="552.8" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#1d1a20">HUMAN-LIKE</text>
+    <text x="1072" y="554.2" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#1d1a20">BEHAVIOUR</text>
+    <text x="1072" y="556.2" font-family="Arial, sans-serif" font-size="0.8" text-anchor="middle" fill="#7d5aa6">in your coworkers</text>
+    </g>
+    <g transform="translate(30 33)">
+    <!-- barrels of something glowing -->
+    <g stroke="#14161a" stroke-width="0.3"><rect x="1110" y="551" width="5" height="8.4" rx="0.6" fill="#c9a224"/><rect x="1116" y="552" width="5" height="7.4" rx="0.6" fill="#c9a224"/></g>
+    <path d="M1110 553 h 5 M1116 554 h 5" stroke="#14161a" stroke-width="0.4"/>
+    <ellipse cx="1112.5" cy="551" rx="2.2" ry="0.6" fill="#9dff7a"/>
+    </g>
+    <g transform="translate(-179 33)">
+    <!-- water cooler, empty -->
+    <rect x="684" y="552" width="6" height="7.4" fill="#d8dde2" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M685 552 c 0 -4, 4 -4, 4 0" fill="#bfe3f0" opacity="0.5" stroke="#1d1a20" stroke-width="0.3"/>
+    </g>
+    <g transform="translate(-180 233)">
+    <!-- poster -->
+    <rect x="700" y="548.6" width="12" height="9" fill="#f1d7a8" stroke="#1d1a20" stroke-width="0.3"/>
+    <text x="706" y="551.6" font-family="Arial, sans-serif" font-size="1.05" font-weight="bold" text-anchor="middle" fill="#b0261e">MANDATORY</text>
+    <text x="706" y="553.4" font-family="Arial, sans-serif" font-size="1.05" font-weight="bold" text-anchor="middle" fill="#b0261e">FUN</text>
+    <text x="706" y="555.6" font-family="Arial, sans-serif" font-size="0.9" text-anchor="middle" fill="#1d1a20">TUESDAYS 3AM</text>
+    </g>
+    <g transform="translate(-182 233)">
+    <!-- coat rack with spare lab coats -->
+    <path d="M730 559.4 v -12 M727 547.4 h 6" stroke="#4f3016" stroke-width="0.6"/>
+    <path d="M727.4 548 l -1.4 6 h 3 Z M732.6 548 l -1.4 6 h 3 Z" fill="#eef1f2" stroke="#1d1a20" stroke-width="0.25"/>
+    </g>
+    <g transform="translate(-188 233)">
+    <!-- stretcher with straps -->
+    <rect x="748" y="554" width="22" height="2" fill="#c9ced2" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M750 556 v 3.4 M768 556 v 3.4" stroke="#5a6068" stroke-width="0.6"/>
+    <path d="M754 553.4 v 3.2 M760 553.4 v 3.2 M766 553.4 v 3.2" stroke="#2a2e34" stroke-width="0.8"/>
+    </g>
+    <g transform="translate(-191 233)">
+    <!-- suggestion box, padlocked, overflowing -->
+    <rect x="786" y="550" width="8" height="6" fill="#7a2a24" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M788 550 l 1 -1.4 l 1.4 0.6 M791 550 l 0.6 -1.6" stroke="#efe6d0" stroke-width="0.5"/>
+    <rect x="789.2" y="553.4" width="1.6" height="1.6" fill="#c9a24a"/>
+    <text x="790" y="557.6" font-family="Arial, sans-serif" font-size="0.8" text-anchor="middle" fill="#efe6d0">IDEAS</text>
+    </g>
+    <g transform="translate(-197 233)">
+    <!-- specimen cooler -->
+    <rect x="812" y="552.6" width="10" height="6.8" rx="0.8" fill="#e7eef2" stroke="#1d1a20" stroke-width="0.3"/>
+    <rect x="812" y="552.6" width="10" height="2" fill="#c8241c"/>
+    <text x="817" y="557.8" font-family="Arial, sans-serif" font-size="1" font-weight="bold" text-anchor="middle" fill="#1d1a20">DO NOT EAT</text>
+    </g>
+    <g transform="translate(-206 233)">
+    <!-- tubes: a manifold of glass tubes with green fluid -->
+    <g stroke="#1d2226" stroke-width="0.3">
+      <rect x="846" y="547" width="1.8" height="12" fill="#cfe9f0" opacity="0.6"/><rect x="849" y="547" width="1.8" height="12" fill="#cfe9f0" opacity="0.6"/><rect x="852" y="547" width="1.8" height="12" fill="#cfe9f0" opacity="0.6"/>
+      <rect x="846" y="551" width="1.8" height="8" fill="#6fdf6a" opacity="0.8"/><rect x="849" y="554" width="1.8" height="5" fill="#6fdf6a" opacity="0.8"/><rect x="852" y="549" width="1.8" height="10" fill="#6fdf6a" opacity="0.8"/>
+    </g>
+    <path d="M846 547 C 846 545, 854 545, 854 547" fill="none" stroke="#8a9098" stroke-width="0.5"/>
+    </g>
+    <g transform="translate(-220 233)">
+    <!-- poster -->
+    <rect x="880" y="548.6" width="12" height="9" fill="#1e2340" stroke="#1d1a20" stroke-width="0.3"/>
+    <circle cx="886" cy="552" r="2.2" fill="#3e6aa8"/><path d="M884.6 551 c 0.6 0.6, 1.6 0.6, 2.6 -0.4 M884.8 553 c 0.8 0.4, 1.8 0.2, 2.4 -0.4" fill="none" stroke="#5aa06a" stroke-width="0.4"/>
+    <text x="886" y="556.4" font-family="Arial, sans-serif" font-size="0.9" font-weight="bold" text-anchor="middle" fill="#f3e7b5">NOT FOREVER</text>
+    </g>
+    <g transform="translate(352 233)">
+    <!-- fuse box with a loose wire (the spark is its own part) -->
+    <rect x="958" y="547" width="13" height="11" fill="#7a8088" stroke="#1d1f23" stroke-width="0.4"/>
+    <rect x="959" y="548" width="11" height="9" fill="#2a2e34"/>
+    <g fill="#14161a"><circle cx="961" cy="549.6" r="0.6"/><circle cx="964" cy="549.6" r="0.6"/><circle cx="967" cy="549.6" r="0.6"/></g>
+    <path d="M960 552 h 9 M960 554 h 9" stroke="#555b63" stroke-width="0.3"/>
+    <path d="M971 551 C 974 552, 973 555, 972 556" fill="none" stroke="#14161a" stroke-width="0.6"/>
+    <path d="M971 551 C 974 552, 973 555, 972 556" fill="none" stroke="#c13b3b" stroke-width="0.3"/>
+    <text x="964.5" y="556.6" font-family="Arial, sans-serif" font-size="0.9" font-weight="bold" text-anchor="middle" fill="#e2b923">FUSES</text>
+    </g>
+    <g transform="translate(295 233)">
+    <!-- stacked chairs -->
+    <g fill="none" stroke="#5a6068" stroke-width="0.5"><path d="M1040 559.4 v -6 h 6 v 6 M1040 553.4 v -4 M1041 552 v -4 h 6 v 7"/></g>
+    </g>
+    <g transform="translate(188 233)">
+    <!-- poster -->
+    <rect x="1236" y="548.6" width="12" height="9" fill="#2b5a3a" stroke="#1d1a20" stroke-width="0.3"/>
+    <text x="1242" y="552" font-family="Arial, sans-serif" font-size="1" font-weight="bold" text-anchor="middle" fill="#eaffef">MIND THE</text>
+    <text x="1242" y="553.6" font-family="Arial, sans-serif" font-size="1" font-weight="bold" text-anchor="middle" fill="#eaffef">PROBE</text>
+    </g>
+
+  </g>
+  <g id="part-aurora">
+    <path d="M240 -260 C 500 -200, 800 -280, 1100 -210 C 1400 -150, 1600 -240, 1700 -200 L 1700 -60 C 1500 -110, 1300 -20, 1000 -80 C 700 -140, 500 -60, 240 -120 Z" fill="url(#auroraG)"/>
+  </g>
+  <g id="part-furnace_glow">
+    <rect x="704" y="380" width="42" height="30" rx="3" fill="#ff8a2a"/>
+    <path d="M708 410 c 4 -12, 8 -6, 10 -16 c 4 10, 8 4, 10 14 c 4 -10, 8 -4, 12 -12 c 2 6, 2 10, 0 14 Z" fill="#ffe08a"/>
+    <circle cx="725" cy="395" r="40" fill="#ff8a2a" opacity="0.15"/>
+  </g>
+  <g id="part-taps" stroke="#14161a" stroke-width="0.8">
+    <rect x="1242" y="236" width="16" height="16" fill="#5a6068"/><rect x="1322" y="240" width="16" height="12" fill="#5a6068"/>
+    <path d="M1250 252 V 296 M1330 252 V 296" stroke="#c96a2a" stroke-width="3"/>
+    <text x="1290" y="232" font-family="Arial, sans-serif" font-size="3.6" font-weight="bold" text-anchor="middle" fill="#c96a2a" stroke="none">GEOTHERMAL</text>
+  </g>
+  <g id="part-vault" stroke="#14161a" stroke-width="0.8">
+    <rect x="1190" y="200" width="44" height="52" rx="4" fill="#8aa8c0"/>
+    <circle cx="1212" cy="226" r="14" fill="#b8d4e8"/><circle cx="1212" cy="226" r="4" fill="#5a6068"/>
+    <path d="M1212 212 V 240 M1198 226 H 1226" stroke="#5a6068" stroke-width="1.6"/>
+    <path d="M1190 204 c 6 4, 12 -2, 18 2 c 6 4, 12 -2, 18 2 c 4 2, 6 0, 8 -2" fill="none" stroke="#f4faff" stroke-width="3"/>
+    <text x="1212" y="250" font-family="Arial, sans-serif" font-size="3.4" font-weight="bold" text-anchor="middle" fill="#14161a" stroke="none">CRYO VAULT</text>
+  </g>
+</svg>

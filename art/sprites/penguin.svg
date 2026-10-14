@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 26" width="160" height="208" data-canvas-width="14" data-densities="4 8">
+  <!--
+    Penguin, facing left, feet on y 25.6. Drawn 14x18.2 canvas units; the game waddles it.
+      part-body
+      part-flipper  flaps about the shoulder (11, 11)
+  -->
+  <g id="part-body" stroke="#0e1018" stroke-width="0.6" stroke-linejoin="round">
+    <path d="M10 2 C 15 2, 17 8, 17 15 C 17 22, 14 25, 10 25 C 6 25, 3 22, 3 15 C 3 8, 5 2, 10 2 Z" fill="#1c2030"/>
+    <path d="M10 8 C 13 8, 14 13, 14 17 C 14 22, 12 24, 10 24 C 7 24, 6 21, 6 17 C 6 12, 7 8, 10 8 Z" fill="#f4f6f8" stroke="none"/>
+    <path d="M3 7 L 0.4 8.4 L 3.4 9.4 Z" fill="#e8a02a"/>
+    <circle cx="6" cy="6" r="1.4" fill="#ffffff" stroke-width="0.3"/><circle cx="5.6" cy="6" r="0.6" fill="#111" stroke="none"/>
+    <path d="M7 11 C 8.6 10, 11 10, 12.4 11" fill="none" stroke="#e8c02a" stroke-width="0.8"/>
+    <path d="M6 25.4 h 3 M11 25.4 h 3" stroke="#e8a02a" stroke-width="1.2"/>
+  </g>
+  <g id="part-flipper" stroke="#0e1018" stroke-width="0.5">
+    <path d="M12 11 C 15 13, 16 17, 15 20 C 13 18, 12 15, 12 11 Z" fill="#1c2030"/>
+  </g>
+</svg>

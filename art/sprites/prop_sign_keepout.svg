@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 9" width="48" height="36" data-canvas-width="12" data-densities="4 8">
+  <!--
+    "KEEP OUT (esp. you)" plate nailed to the cabin wall. Plate occupies (1.5..10.5, 2.5..7.5).
+    Parts: base, burnt (instead of base), snow (overlay), fire_a / fire_b (flame frames).
+  -->
+  <defs>
+    <linearGradient id="flameK" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ffef9a"/><stop offset="0.45" stop-color="#ff9a2e"/><stop offset="1" stop-color="#d6331c" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <g id="part-base" stroke="#2a1a0c" stroke-width="0.3">
+    <rect x="1.5" y="2.5" width="9" height="5" rx="0.3" fill="#e9e1c6"/>
+    <rect x="2" y="3" width="8" height="4" fill="none" stroke="#b0261e" stroke-width="0.25"/>
+    <text x="6" y="5.1" font-family="Arial, sans-serif" font-size="1.6" font-weight="bold" text-anchor="middle" fill="#b0261e" stroke="none">KEEP OUT</text>
+    <text x="6" y="6.6" font-family="Arial, sans-serif" font-size="1.1" font-style="italic" text-anchor="middle" fill="#2a1a0c" stroke="none">esp. you</text>
+    <circle cx="2.2" cy="3.2" r="0.22" fill="#8a9098" stroke="none"/><circle cx="9.8" cy="3.2" r="0.22" fill="#8a9098" stroke="none"/>
+    <path d="M3 7.4 l 0.6 0.6 M8.6 7.5 l -0.4 0.6" stroke="#8a4019" stroke-width="0.2"/>
+  </g>
+  <g id="part-burnt" stroke="#0e0a08" stroke-width="0.3">
+    <path d="M1.8 3 L 4 2.6 L 6 3.2 L 8.4 2.7 L 10.3 3.3 L 10.2 7.2 L 7.6 7.6 L 5 7 L 2 7.4 Z" fill="#2a1e18"/>
+    <path d="M1.8 3 L 4 2.6 L 6 3.2 L 8.4 2.7 L 10.3 3.3" fill="none" stroke="#e8642a" stroke-width="0.25"/>
+    <text x="6" y="5.4" font-family="Arial, sans-serif" font-size="1.6" font-weight="bold" text-anchor="middle" fill="#5a4a40" stroke="none" opacity="0.6">KEEP OUT</text>
+  </g>
+  <g id="part-snow" stroke="#9aa6bc" stroke-width="0.2">
+    <path d="M1.3 2.6 C 1.6 1.8, 3 2, 4 1.9 C 6 1.6, 8 2, 10.7 2.1 L 10.6 2.7 L 1.4 2.7 Z" fill="#f4f7fc"/>
+    <path d="M4.6 2.7 l 0.2 0.7 l 0.2 -0.7" fill="#f4f7fc"/>
+  </g>
+  <g id="part-fire_a" stroke="none">
+    <path d="M1.8 5 C 1.4 3.4, 2.6 2.6, 2.8 1 C 3.6 2.4, 4.6 2.4, 4.6 0.6 C 6 1.8, 6.6 2.6, 7.2 1.2 C 8 2.6, 9 2.4, 9.4 0.8 C 10.4 2.6, 10.8 3.6, 10.2 5 Z" fill="url(#flameK)"/>
+    <path d="M3.6 5 C 3.6 4, 4.4 3.4, 4.8 2.8 C 5.4 3.6, 6.2 3.6, 6.6 2.6 C 7.2 3.4, 8 3.8, 8.2 5 Z" fill="#fff3b0" opacity="0.85"/>
+  </g>
+  <g id="part-fire_b" stroke="none">
+    <path d="M1.6 5 C 1.6 3.6, 3 3, 3.4 1.6 C 4 2.8, 5 2.8, 5.6 1 C 6.4 2.4, 7.4 2.2, 8 0.4 C 8.8 2, 10.4 3, 10.4 5 Z" fill="url(#flameK)"/>
+    <path d="M3.2 5 C 3.4 4, 4.6 3.6, 5 2.8 C 5.6 3.6, 6.4 3.4, 7 2.4 C 7.6 3.4, 8.6 4, 8.6 5 Z" fill="#fff3b0" opacity="0.85"/>
+  </g>
+</svg>

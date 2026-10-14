@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="96" height="96" data-canvas-width="24" data-densities="4 8">
+  <!--
+    The old man's "GO HOME" sign, aimed down at the hangar mouth. Post base at (12, 23.5).
+    Drawn by the game as a prop on the cliff-top plateau. States are separate parts:
+      part-base    the sign as built
+      part-burnt   drawn instead of base once it has burned
+      part-snow    snow cap overlay
+      part-fire_a  flames, frame A
+      part-fire_b  flames, frame B
+  -->
+  <defs>
+    <linearGradient id="plank" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b37a44"/><stop offset="1" stop-color="#7a4e28"/>
+    </linearGradient>
+    <linearGradient id="char" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a2a22"/><stop offset="1" stop-color="#14100e"/>
+    </linearGradient>
+    <linearGradient id="flame" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ffef9a"/><stop offset="0.45" stop-color="#ff9a2e"/><stop offset="1" stop-color="#d6331c" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+
+  <g id="part-base" stroke="#2a1a0c" stroke-width="0.45" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M12 23.5 V 9" stroke-width="1.8"/>
+    <path d="M12 23.5 V 9" stroke="#6a4020" stroke-width="1"/>
+    <path d="M11.6 22 v -10" stroke="#9a6a3c" stroke-width="0.25"/>
+    <!-- Board, nailed on crooked, pointing down-left at the hangar -->
+    <g transform="rotate(-8 12 9)">
+      <path d="M1.5 5.6 L 21.5 5.6 L 21.5 12.6 L 1.5 12.6 L 0.2 9.1 Z" fill="url(#plank)"/>
+      <path d="M2 8.4 H 21 M2.6 10.6 H 20" stroke="#8a5a30" stroke-width="0.2"/>
+      <text x="11.6" y="10.6" font-family="Arial Black, Arial, sans-serif" font-size="3.7" font-weight="bold" text-anchor="middle" fill="#f3ece0" stroke="none">GO HOME</text>
+      <path d="M5 11.7 l 1 0.8 M18 11.4 l 0.6 1" stroke="#f3ece0" stroke-width="0.35"/>
+      <circle cx="12" cy="6.6" r="0.35" fill="#8a9098" stroke="none"/><circle cx="12" cy="11.6" r="0.35" fill="#8a9098" stroke="none"/>
+    </g>
+    <!-- A rock to keep it upright -->
+    <path d="M9 23.5 C 9 21.6, 10.6 21, 12 21.2 C 14 21, 15.4 21.8, 15.2 23.5 Z" fill="#6a6e78"/>
+  </g>
+
+  <g id="part-burnt" stroke="#0e0a08" stroke-width="0.45" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M12 23.5 V 9.6" stroke-width="1.6"/>
+    <path d="M12 23.5 V 9.6" stroke="#2a1e18" stroke-width="0.9"/>
+    <g transform="rotate(-8 12 9)">
+      <path d="M2.4 6.4 L 6 5.8 L 8 6.6 L 12 5.8 L 15 6.8 L 18.4 6 L 20.4 7.2 L 20.8 11.4 L 17 12.2 L 14.6 11.2 L 11 12.4 L 7 11.4 L 3 12 L 1 9.2 Z" fill="url(#char)"/>
+      <path d="M2.4 6.4 L 6 5.8 L 8 6.6 L 12 5.8 L 15 6.8 L 18.4 6 L 20.4 7.2" fill="none" stroke="#e8642a" stroke-width="0.35" opacity="0.8"/>
+      <text x="11.6" y="10.6" font-family="Arial Black, Arial, sans-serif" font-size="3.7" font-weight="bold" text-anchor="middle" fill="#5a4a40" stroke="none" opacity="0.6">GO HOME</text>
+    </g>
+    <path d="M9 23.5 C 9 21.6, 10.6 21, 12 21.2 C 14 21, 15.4 21.8, 15.2 23.5 Z" fill="#3a3c42"/>
+    <g fill="#ff8a3a" stroke="none"><circle cx="5" cy="11.4" r="0.3"/><circle cx="16.6" cy="11" r="0.3"/><circle cx="12.4" cy="15" r="0.25"/></g>
+  </g>
+
+  <g id="part-snow" stroke="#9aa6bc" stroke-width="0.3" stroke-linejoin="round">
+    <g transform="rotate(-8 12 9)">
+      <path d="M1.2 5.8 C 1.6 4.4, 3 4.6, 4 4.8 C 6 4.2, 8 4.8, 10 4.4 C 12 4, 14 4.8, 16 4.4 C 18 4.2, 20 4.6, 21.8 5 L 21.6 5.9 L 1.4 5.9 Z" fill="#f4f7fc"/>
+      <path d="M3 5.9 l 0.3 1 l 0.3 -1 M15 5.9 l 0.25 1.2 l 0.25 -1.2" fill="#f4f7fc"/>
+    </g>
+    <path d="M8.6 22 C 9 20.4, 11 20.4, 12 20.6 C 13.6 20.4, 15.4 20.8, 15.6 22 Z" fill="#f4f7fc"/>
+  </g>
+
+  <g id="part-fire_a" stroke="none">
+    <ellipse cx="12" cy="8" rx="11" ry="7" fill="#ff9a2e" opacity="0.18"/>
+    <path d="M3 10 C 1.6 7, 3.4 5, 3.6 2 C 5 4, 6.6 4.4, 6 1 C 8.6 3, 9 6, 10 3.6 C 11 1.6, 12 0.6, 12.4 0 C 13 2.6, 14.6 3.6, 15 2 C 16.8 4, 17.4 3, 18 1.4 C 19 4, 21.8 6, 20.6 10 Z" fill="url(#flame)"/>
+    <path d="M6 10 C 5.4 8, 6.4 6.4, 7 5 C 7.6 6.6, 8.6 7, 9 5.6 C 10 7, 11 6, 11.6 4 C 12.4 6, 13.6 7, 14.4 5.6 C 15 7, 16 7.4, 16.6 6 C 17.6 8, 17 9, 16.4 10 Z" fill="#fff3b0" opacity="0.85"/>
+  </g>
+  <g id="part-fire_b" stroke="none">
+    <ellipse cx="12" cy="8" rx="11.5" ry="7.4" fill="#ff9a2e" opacity="0.22"/>
+    <path d="M2.6 10 C 2 7, 4.6 6, 4.4 3.4 C 6 5, 7 5, 7.4 2.4 C 9 4.6, 10 4, 10.8 1.6 C 12 3.4, 13 3.6, 13.6 0.8 C 15 3, 16.4 4.6, 17 3 C 18.4 5, 20 4, 20.4 2.6 C 21.4 6, 22 8, 21 10 Z" fill="url(#flame)"/>
+    <path d="M5.4 10 C 5 8.4, 6.6 7.4, 7.4 6 C 8 7.4, 9.4 7.6, 10 6 C 10.8 7.4, 12 7, 12.6 5 C 13.2 7, 14.6 7.6, 15.4 6.4 C 16.2 7.6, 17.4 8.6, 16.8 10 Z" fill="#fff3b0" opacity="0.85"/>
+  </g>
+</svg>

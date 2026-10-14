@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 605 115" width="1210" height="230" data-canvas-width="605" data-densities="2 4">
+  <!--
+    Break room, drawn at canvas (675, 565), 605x115.
+    Keep clear: label top-left (0..110, 0..16); bulletin board (20..270, 25..105); text (290..500, 30..90);
+    encyclopedia shelf from (290, 90); "MEMORY-WIPE STATION" label at (445, 5); crew badges at (550..600, 16..30).
+    A steam puff is drawn by the game above the coffee pot (574, 72).
+      part-back   dingy wall, wainscot, ceiling stain, poster, plant, coffee machine, clock face, fridge notes
+      part-hand   clock hand, pivots about (425, 14) - the clock runs backwards
+      part-printer / printer_a / printer_b  Automated Cover Stories printer and its spewing memos (Incompetence)
+      part-helmet / helmet_lights          scrambler helmet at the memory-wipe station (Human)
+      part-trophy_shelf, trophy_bio / trophy_human / trophy_incomp  signature trophies
+  -->
+  <defs>
+    <linearGradient id="bwall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#46423f"/><stop offset="1" stop-color="#58524d"/>
+    </linearGradient>
+    <linearGradient id="wains" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#433d38"/><stop offset="1" stop-color="#2f2a26"/>
+    </linearGradient>
+    <radialGradient id="beam" cx="0.5" cy="0" r="1">
+      <stop offset="0" stop-color="#fff3a0" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#fff3a0" stop-opacity="0.15"/>
+    </radialGradient>
+    <linearGradient id="machine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4a241c"/><stop offset="0.3" stop-color="#7a3a2c"/><stop offset="1" stop-color="#3f1e17"/>
+    </linearGradient>
+    <linearGradient id="pot" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#cfe3ea" stop-opacity="0.35"/><stop offset="0.3" stop-color="#ffffff" stop-opacity="0.6"/><stop offset="1" stop-color="#9fb8c2" stop-opacity="0.3"/>
+    </linearGradient>
+    <radialGradient id="lamp" cx="0.5" cy="0" r="1">
+      <stop offset="0" stop-color="#ffe9b8" stop-opacity="0.18"/><stop offset="1" stop-color="#ffe9b8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignetteB" cx="0.5" cy="0.4" r="0.8">
+      <stop offset="0.55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.4"/>
+    </radialGradient>
+    <filter id="paper" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035 0.5" numOctaves="3" seed="31"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.22  0 0 0 0 0.19  0 0 0 0 0.16  1.6 0 0 0 -0.8"/>
+    </filter>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff2a8"/><stop offset="0.5" stop-color="#e2b923"/><stop offset="1" stop-color="#8a6a10"/>
+    </linearGradient>
+  </defs>
+
+  <g id="part-back">
+    <rect width="605" height="115" fill="url(#bwall)"/>
+    <!-- Faint wallpaper stripes, yellowed and peeling in a corner -->
+    <g stroke="#4e4945" stroke-width="3">
+      <path d="M12 0 V 82 M36 0 V 82 M60 0 V 82 M84 0 V 82 M108 0 V 82 M132 0 V 82 M156 0 V 82 M180 0 V 82 M204 0 V 82 M228 0 V 82 M252 0 V 82 M276 0 V 82 M300 0 V 82 M324 0 V 82 M348 0 V 82 M372 0 V 82 M396 0 V 82 M420 0 V 82 M444 0 V 82 M468 0 V 82 M492 0 V 82 M516 0 V 82 M540 0 V 82 M564 0 V 82 M588 0 V 82"/>
+    </g>
+    <g fill="#5a544e"><circle cx="24" cy="20" r="0.8"/><circle cx="48" cy="44" r="0.8"/><circle cx="72" cy="20" r="0.8"/><circle cx="96" cy="44" r="0.8"/><circle cx="120" cy="20" r="0.8"/><circle cx="144" cy="44" r="0.8"/><circle cx="168" cy="20" r="0.8"/><circle cx="192" cy="44" r="0.8"/><circle cx="216" cy="20" r="0.8"/><circle cx="240" cy="44" r="0.8"/><circle cx="264" cy="20" r="0.8"/><circle cx="288" cy="44" r="0.8"/><circle cx="312" cy="20" r="0.8"/><circle cx="336" cy="44" r="0.8"/><circle cx="360" cy="20" r="0.8"/><circle cx="384" cy="44" r="0.8"/><circle cx="408" cy="20" r="0.8"/><circle cx="432" cy="44" r="0.8"/><circle cx="456" cy="20" r="0.8"/><circle cx="480" cy="44" r="0.8"/><circle cx="504" cy="20" r="0.8"/><circle cx="528" cy="44" r="0.8"/><circle cx="552" cy="20" r="0.8"/><circle cx="576" cy="44" r="0.8"/></g>
+    <rect width="605" height="82" filter="url(#paper)" opacity="0.28"/>
+    <path d="M600 0 C 598 6, 602 10, 605 12 L 605 0 Z" fill="#6e665d"/>
+    <path d="M600 0 C 598 6, 602 10, 605 12" fill="none" stroke="#2f2a26" stroke-width="0.4"/>
+    <!-- Wainscot with dado rail and scuffs -->
+    <rect y="82" width="605" height="33" fill="url(#wains)"/>
+    <path d="M0 82 H 605" stroke="#2a2522" stroke-width="2"/>
+    <path d="M0 81 H 605" stroke="#6e665d" stroke-width="0.5"/>
+    <path d="M60 82 V 110 M150 82 V 110 M240 82 V 110 M330 82 V 110 M420 82 V 110 M510 82 V 110" stroke="#292421" stroke-width="0.6"/>
+    <path d="M90 100 l 8 1 M200 96 l 6 2 M380 102 l 9 0" stroke="#5a524b" stroke-width="0.5"/>
+    <rect y="110" width="605" height="5" fill="#231f1c"/>
+    <!-- Ceiling lamp pools -->
+    <path d="M150 0 L 100 82 L 200 82 Z" fill="url(#lamp)"/>
+    <path d="M520 0 L 480 82 L 560 82 Z" fill="url(#lamp)"/>
+    <!-- Ceiling water stain -->
+    <path d="M360 0 C 362 6, 370 9, 380 8 C 390 7, 396 10, 402 6 C 406 3, 406 0, 406 0 Z" fill="#5f574b" opacity="0.75"/>
+    <path d="M362 2 C 366 6, 376 7, 384 6 C 392 5, 398 7, 403 3 M366 1 C 370 4, 378 4.6, 386 4 C 393 3.4, 398 4, 401 1.6" fill="none" stroke="#6e6556" stroke-width="0.6"/>
+    <path d="M381 8 v 2.4" stroke="#7a8a96" stroke-width="0.7" stroke-linecap="round"/>
+    <!-- Poster: HANG IN THERE (a cow in a tractor beam) -->
+    <rect x="507" y="25" width="46" height="54" fill="#d9d2c0"/>
+    <rect x="508" y="26" width="44" height="52" fill="#1e2340" stroke="#9a937f" stroke-width="0.4"/>
+    <g fill="#c8d0e8"><circle cx="512" cy="30" r="0.4"/><circle cx="547" cy="33" r="0.35"/><circle cx="515" cy="44" r="0.3"/><circle cx="545" cy="48" r="0.35"/></g>
+    <path d="M520 34 L 540 34 L 548 66 L 512 66 Z" fill="url(#beam)" opacity="0.6"/>
+    <ellipse cx="530" cy="33" rx="10" ry="3" fill="#a9b1ba" stroke="#1d1a20" stroke-width="0.6"/>
+    <ellipse cx="530" cy="31" rx="4" ry="2.6" fill="#8fd6e6"/>
+    <path d="M522 33.6 h 16" stroke="#d6dde2" stroke-width="0.4"/>
+    <g transform="translate(530 50) rotate(-18)">
+      <rect x="-6" y="-3" width="12" height="6" rx="2.4" fill="#f2efe6" stroke="#1d1a20" stroke-width="0.5"/>
+      <rect x="-9" y="-4" width="4.4" height="4.4" rx="1" fill="#f2efe6" stroke="#1d1a20" stroke-width="0.5"/>
+      <path d="M-4 3 v 3 M-1 3 v 3 M2 3 v 3 M5 3 v 3" stroke="#1d1a20" stroke-width="0.8"/>
+      <circle cx="1" cy="-0.6" r="1.6" fill="#2a2420"/>
+      <circle cx="-7.6" cy="-2.4" r="0.5" fill="#fff"/><circle cx="-7.5" cy="-2.3" r="0.2" fill="#111"/>
+    </g>
+    <path d="M512 66 h 36" stroke="#3f7a2e" stroke-width="1.4"/>
+    <text x="530" y="73.6" font-family="Arial, sans-serif" font-size="5" font-weight="bold" text-anchor="middle" fill="#f3e7b5">HANG IN THERE</text>
+    <path d="M507.6 25.6 l 2 0 l -2 2 Z M552.4 25.6 l -2 0 l 2 2 Z" fill="#9aa1a8"/>
+    <!-- A plant that has given up -->
+    <path d="M494 104 h 12 l -1.6 7 h -8.8 Z" fill="#9a5a3a" stroke="#1d1a20" stroke-width="0.6"/>
+    <path d="M494.4 105.4 h 11.2" stroke="#c07a52" stroke-width="0.4"/>
+    <path d="M500 104 C 500 98, 498 95, 494 96 M500 104 C 501 99, 504 97, 507 99 M500 104 C 499.6 100, 501 97, 500 94" fill="none" stroke="#6b5a2e" stroke-width="0.8"/>
+    <path d="M494 96 l -1.5 1.4 l 0.4 1 M507 99 l 1 2 M500 94 l -1 -0.6" fill="none" stroke="#8a7a3e" stroke-width="0.8"/>
+    <ellipse cx="497" cy="110.6" rx="1.6" ry="0.4" fill="#6b5a2e"/>
+    <!-- Coffee machine: dents, an error, a passive-aggressive note -->
+    <rect x="558" y="48" width="38" height="62" rx="2" fill="url(#machine)" stroke="#1d1a20" stroke-width="0.8"/>
+    <path d="M559 49.4 h 36" stroke="#a65a44" stroke-width="0.4"/>
+    <rect x="561" y="51" width="32" height="10" rx="1" fill="#2e1712"/>
+    <circle cx="566" cy="56" r="1.4" fill="#d6332a"/><circle cx="571" cy="56" r="1.4" fill="#4fd06a"/>
+    <circle cx="565.6" cy="55.6" r="0.4" fill="#ff9b94"/><circle cx="570.6" cy="55.6" r="0.4" fill="#b7f5c4"/>
+    <rect x="576" y="53.5" width="14" height="5" fill="#9adbb0"/>
+    <text x="583" y="57.4" font-family="Arial, sans-serif" font-size="3.2" font-weight="bold" text-anchor="middle" fill="#1d3b2b">ERR 7</text>
+    <rect x="563" y="64" width="28" height="30" fill="#1f100c"/>
+    <path d="M565 66 h 24" stroke="#3a1f18" stroke-width="0.6"/>
+    <path d="M568 74 h 13 l -1.5 16 h -10 Z" fill="url(#pot)" stroke="#1d1a20" stroke-width="0.6"/>
+    <path d="M568.6 82 h 11.8 l -0.8 8 h -10.2 Z" fill="#3b2116"/>
+    <path d="M569 82.6 h 11" stroke="#7a4a2a" stroke-width="0.4"/>
+    <path d="M581 77 c 3 0, 3 6, 0 6" fill="none" stroke="#1d1a20" stroke-width="0.8"/>
+    <rect x="561" y="94" width="32" height="3" fill="#2e1712"/>
+    <path d="M592 70 c -1 1.4, -2.6 1.8, -3.6 1" fill="none" stroke="#2a1410" stroke-width="0.5"/>
+    <rect x="584" y="68" width="9" height="9" fill="#f6e27a" transform="rotate(6 588 72)"/>
+    <path d="M585.4 71 h 6 M585.2 73 h 5 M585 75 h 4" stroke="#6b5a2e" stroke-width="0.5" transform="rotate(6 588 72)"/>
+    <path d="M590 108 c 2 0, 4 1, 5 2" fill="none" stroke="#2a1410" stroke-width="0.6"/>
+    <ellipse cx="572" cy="111.2" rx="6" ry="0.8" fill="#2a160f" opacity="0.8"/>
+    <!-- Clock face (moved left of the memory-wipe label) -->
+    <circle cx="425" cy="14" r="8.5" fill="#2a2522"/>
+    <circle cx="425" cy="14" r="7.6" fill="#f0ebdc" stroke="#1d1a20" stroke-width="0.8"/>
+    <path d="M425 7.2 v 1.2 M425 19.6 v 1.2 M418.2 14 h 1.2 M430.6 14 h 1.2" stroke="#1d1a20" stroke-width="0.6"/>
+    <path d="M421.6 8.2 l 0.4 0.7 M428.4 8.2 l -0.4 0.7 M421.6 19.8 l 0.4 -0.7 M428.4 19.8 l -0.4 -0.7" stroke="#1d1a20" stroke-width="0.35"/>
+    <path d="M425 14 L 422 11.6" stroke="#1d1a20" stroke-width="0.9" stroke-linecap="round"/>
+    <path d="M419.4 10.6 C 420.6 8.2, 423 7, 425.6 7.2" fill="none" stroke="#fff" stroke-width="0.5" opacity="0.6"/>
+    <rect width="605" height="115" fill="url(#vignetteB)"/>
+  </g>
+
+  <g id="part-hand">
+    <path d="M425 14 L 425 8.2" stroke="#b0261e" stroke-width="0.7" stroke-linecap="round"/>
+    <path d="M425 14 L 425 15.6" stroke="#b0261e" stroke-width="0.7" stroke-linecap="round"/>
+    <circle cx="425" cy="14" r="0.8" fill="#1d1a20"/>
+  </g>
+  <g id="part-printer" stroke="#14161a" stroke-width="0.5">
+    <!-- Automated Cover Stories (Incompetence dept): a printer on the coffee machine -->
+    <rect x="561" y="38" width="32" height="10" rx="1" fill="#d8dce0"/>
+    <rect x="565" y="36" width="24" height="3" fill="#b8bec4"/>
+    <circle cx="589" cy="42" r="0.8" fill="#4fd06a" stroke="none"/>
+    <text x="574" y="45.6" font-family="Arial, sans-serif" font-size="1.8" font-weight="bold" text-anchor="middle" fill="#5a6068" stroke="none">COVER-O-MATIC</text>
+  </g>
+  <g id="part-printer_a" stroke="#14161a" stroke-width="0.3">
+    <path d="M568 36 C 560 30, 556 22, 546 20 C 538 18, 532 24, 524 22 L 523 26 C 532 28, 538 22, 545 24 C 554 26, 558 32, 566 38 Z" fill="#f6f4ec"/>
+    <text x="540" y="24" font-family="Arial, sans-serif" font-size="1.8" font-weight="bold" text-anchor="middle" fill="#2a2e34" stroke="none" transform="rotate(-6 540 24)">AMBITIOUS OWL</text>
+    <rect x="512" y="40" width="9" height="6" fill="#f6f4ec" transform="rotate(20 516 43)"/>
+    <rect x="530" y="48" width="9" height="6" fill="#f6f4ec" transform="rotate(-15 534 51)"/>
+  </g>
+  <g id="part-printer_b" stroke="#14161a" stroke-width="0.3">
+    <path d="M568 36 C 562 28, 556 18, 544 16 C 536 15, 528 20, 518 17 L 517 21 C 528 24, 536 19, 543 20 C 554 22, 558 30, 566 38 Z" fill="#f6f4ec"/>
+    <text x="536" y="19.6" font-family="Arial, sans-serif" font-size="1.8" font-weight="bold" text-anchor="middle" fill="#2a2e34" stroke="none" transform="rotate(-4 536 19.6)">AMBITIOUS OWL</text>
+    <rect x="514" y="46" width="9" height="6" fill="#f6f4ec" transform="rotate(-10 518 49)"/>
+    <rect x="528" y="42" width="9" height="6" fill="#f6f4ec" transform="rotate(25 532 45)"/>
+  </g>
+  <g id="part-helmet" stroke="#14161a" stroke-width="0.5">
+    <!-- Memory Manipulation (Human dept): the scrambler helmet hangs over the memory-wipe station -->
+    <path d="M482 0 V 20" stroke="#2a2e34" stroke-width="0.8"/>
+    <path d="M478 0 C 476 8, 470 12, 472 22 M486 0 C 490 10, 494 14, 492 22" fill="none" stroke="#c13b3b" stroke-width="0.6"/>
+    <path d="M471 30 C 471 21, 493 21, 493 30 Z" fill="#b8c0c8"/>
+    <g fill="#5a6068" stroke="none"><circle cx="476" cy="27" r="0.8"/><circle cx="480" cy="25" r="0.8"/><circle cx="484" cy="25" r="0.8"/><circle cx="488" cy="27" r="0.8"/><circle cx="482" cy="28" r="0.8"/></g>
+    <path d="M469 30 h 26" stroke="#5a6068" stroke-width="1.2"/>
+    <path d="M482 21 v -2" stroke="#2a2e34" stroke-width="1.6"/>
+  </g>
+  <g id="part-helmet_lights" stroke="none">
+    <circle cx="474" cy="29" r="0.9" fill="#ff4a3a"/><circle cx="482" cy="23" r="0.9" fill="#4fff6a"/><circle cx="490" cy="29" r="0.9" fill="#ffd23a"/>
+    <circle cx="482" cy="23" r="2.4" fill="#4fff6a" opacity="0.3"/>
+  </g>
+  <g id="part-trophy_shelf" stroke="#14161a" stroke-width="0.5">
+    <!-- Trophy shelf: one trophy per completed signature experiment -->
+    <rect x="160" y="21" width="100" height="3" fill="#6a4020"/>
+    <path d="M166 24 l 2 3 M254 24 l -2 3" stroke="#4a2c14" stroke-width="0.8"/>
+  </g>
+  <g id="part-trophy_bio" stroke="#14161a" stroke-width="0.4">
+    <!-- Golden cow, for the Biological signature -->
+    <rect x="171" y="17" width="12" height="4" fill="#3a2a1a"/>
+    <rect x="172" y="10" width="9" height="5" rx="2" fill="url(#gold)"/><rect x="169.6" y="9" width="4" height="4" rx="1" fill="url(#gold)"/>
+    <path d="M173.4 15 v 2 M179.4 15 v 2" stroke="#8a6a10" stroke-width="0.8"/>
+  </g>
+  <g id="part-trophy_human" stroke="#14161a" stroke-width="0.4">
+    <!-- Golden brain in a jar, for the Human signature -->
+    <rect x="203" y="17" width="12" height="4" fill="#3a2a1a"/>
+    <rect x="204.6" y="7" width="8.8" height="10" rx="1.6" fill="#cfe9f0" opacity="0.5"/>
+    <path d="M206 13 c 0 -3, 2 -4, 3 -3 c 1 -1, 3 0, 3 3 c 0 2, -6 2, -6 0 Z" fill="url(#gold)"/>
+  </g>
+  <g id="part-trophy_incomp" stroke="#14161a" stroke-width="0.4">
+    <!-- Golden fire extinguisher (empty), for the Incompetence signature -->
+    <rect x="235" y="17" width="12" height="4" fill="#3a2a1a"/>
+    <rect x="238.6" y="8" width="4.8" height="9" rx="1.6" fill="url(#gold)"/>
+    <path d="M241 8 v -1.6 h 2.4 l 1.6 1" fill="none" stroke="#8a6a10" stroke-width="0.6"/>
+  </g>
+</svg>

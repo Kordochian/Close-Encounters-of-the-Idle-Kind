@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 20" width="480" height="80" data-canvas-width="120" data-densities="4 8">
+  <!--
+    Hazard tape around a breach. Feet at y 20.
+      part-body
+  -->
+  <defs>
+    <pattern id="tapeP" width="6" height="3" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#e2b923"/><rect x="3" width="3" height="3" fill="#14161a"/></pattern>
+  </defs>
+  <g id="part-body" stroke="#14161a" stroke-width="0.5">
+    <path d="M4 20 V 6 M44 20 V 6 M80 20 V 6 M116 20 V 6" stroke="#c96a2a" stroke-width="1.4"/>
+    <path d="M4 8 L 44 10 L 80 8 L 116 10 L 116 13 L 80 11 L 44 13 L 4 11 Z" fill="url(#tapeP)"/>
+    <rect x="48" y="0" width="28" height="6" fill="#e9e1c6"/>
+    <text x="62" y="4.4" font-family="Arial, sans-serif" font-size="3" font-weight="bold" text-anchor="middle" fill="#c8241c" stroke="none">BIOHAZARD</text>
+  </g>
+</svg>

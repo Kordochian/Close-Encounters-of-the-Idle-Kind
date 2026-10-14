@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="64" height="64" data-canvas-width="16" data-densities="2 4">
+  <!-- Exhaust puff for Old Reliable; the game tints, scales and fades it. -->
+  <defs>
+    <radialGradient id="puff" cx="0.45" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#d8d4cc"/>
+      <stop offset="0.6" stop-color="#9a958d"/>
+      <stop offset="1" stop-color="#6d6963" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g id="part-puff">
+    <circle cx="8" cy="8.5" r="7" fill="url(#puff)"/>
+    <circle cx="5.5" cy="7" r="3.5" fill="#bdb8af" opacity="0.6"/>
+    <circle cx="10.5" cy="6.5" r="3" fill="#c9c4bb" opacity="0.5"/>
+  </g>
+</svg>

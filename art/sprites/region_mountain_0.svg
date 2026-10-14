@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 210" width="440" height="420" data-canvas-width="220" data-densities="2 4">
+  <!--
+    Pine Ridge Valley: forest, a creek, a barn and a pasture (squirrels, cows).
+    Hunting region backdrop, drawn at canvas (x0, 100), 220x210; ground line at local y 200 (canvas 300).
+    The game draws the specimens, Earth's responses and labels on top.
+  -->
+  <defs>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f5a3a"/><stop offset="1" stop-color="#1c3a26"/></linearGradient>
+    <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#243a46"/><stop offset="1" stop-color="#1a2a36"/></linearGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8a3a"/><stop offset="1" stop-color="#2f5a26"/></linearGradient>
+    <linearGradient id="walk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8c92"/><stop offset="1" stop-color="#5a5c62"/></linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6a3c"/><stop offset="1" stop-color="#5e3a1c"/></linearGradient>
+    <linearGradient id="barn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a1e16"/><stop offset="0.5" stop-color="#a8302a"/><stop offset="1" stop-color="#6a1810"/></linearGradient>
+    <linearGradient id="bldgR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2a3048"/><stop offset="0.5" stop-color="#3a4262"/><stop offset="1" stop-color="#232838"/></linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fb3d6"/><stop offset="1" stop-color="#2f6a8a"/></linearGradient>
+    <radialGradient id="glowY" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#ffe08a" stop-opacity="0.8"/><stop offset="1" stop-color="#ffe08a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="cone" cx="0" cy="0.5" r="1"><stop offset="0" stop-color="#fff6c4" stop-opacity="0.75"/><stop offset="1" stop-color="#fff6c4" stop-opacity="0"/></radialGradient>
+    <filter id="tex" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" seed="3"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0.05  0 0 0 0 0  1.4 0 0 0 -0.75"/>
+    </filter>
+  </defs>
+  <g id="part-back">
+
+    <path d="M0 150 C 40 120, 90 130, 130 145 C 170 160, 200 140, 220 135 L 220 200 L 0 200 Z" fill="url(#hillFar)"/>
+    <g transform="translate(8 151) scale(0.8)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/><path d="M0 -24 L 2.6 -19 L -2.6 -19 Z" fill="#e6edf7"/></g><g transform="translate(22 152) scale(0.8)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/><path d="M0 -24 L 2.6 -19 L -2.6 -19 Z" fill="#e6edf7"/></g><g transform="translate(36 156) scale(0.8)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/><path d="M0 -24 L 2.6 -19 L -2.6 -19 Z" fill="#e6edf7"/></g><g transform="translate(50 151) scale(0.8)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/><path d="M0 -24 L 2.6 -19 L -2.6 -19 Z" fill="#e6edf7"/></g><g transform="translate(64 151) scale(0.8)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/><path d="M0 -24 L 2.6 -19 L -2.6 -19 Z" fill="#e6edf7"/></g><g transform="translate(78 152) scale(0.8)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/><path d="M0 -24 L 2.6 -19 L -2.6 -19 Z" fill="#e6edf7"/></g><g transform="translate(92 153) scale(0.8)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/><path d="M0 -24 L 2.6 -19 L -2.6 -19 Z" fill="#e6edf7"/></g><g transform="translate(106 147) scale(0.8)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/><path d="M0 -24 L 2.6 -19 L -2.6 -19 Z" fill="#e6edf7"/></g><g transform="translate(120 146) scale(0.8)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/><path d="M0 -24 L 2.6 -19 L -2.6 -19 Z" fill="#e6edf7"/></g>
+    <path d="M0 175 C 50 160, 120 170, 220 165 L 220 200 L 0 200 Z" fill="url(#hill)"/>
+    <g transform="translate(10 185) scale(1.0)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/></g><g transform="translate(26 183) scale(1.0)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/></g><g transform="translate(40 182) scale(1.0)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/></g><g transform="translate(54 184) scale(1.0)" stroke="#0f1a14" stroke-width="0.5"><rect x="-1" y="-4" width="2" height="4" fill="#3b2a1a"/><path d="M0 -24 L 7 -11 L 3.5 -11 L 9 -4 L -9 -4 L -3.5 -11 L -7 -11 Z" fill="#1f4a32"/></g>
+    <path d="M70 200 C 80 192, 96 194, 104 188 C 112 182, 128 186, 140 180" fill="none" stroke="url(#water)" stroke-width="3"/>
+    <path d="M74 198 l 6 -3 M96 192 l 6 -2" stroke="#c9eaff" stroke-width="0.5"/>
+    <g stroke="#14161a" stroke-width="0.6">
+      <rect x="150" y="166" width="40" height="34" fill="url(#barn)"/>
+      <path d="M146 166 L 170 150 L 194 166 Z" fill="#3a2a22"/>
+      <rect x="162" y="178" width="16" height="22" fill="#5a1410"/>
+      <path d="M162 178 L 178 200 M178 178 L 162 200" stroke="#e8dcc0" stroke-width="1"/>
+      <rect x="166" y="158" width="8" height="6" fill="#ffe08a"/>
+    </g>
+    <path d="M104 200 V 186 M118 200 V 186 M132 200 V 186 M146 200 V 186 M104 190 H 146 M104 196 H 146" stroke="#c9b28a" stroke-width="1.2"/>
+    <text x="40" y="140" font-family="Arial, sans-serif" font-size="5" font-weight="bold" fill="#9aa6bc" opacity="0.6">elev. 4,200 ft</text>
+    <rect x="0" y="200" width="220" height="10" fill="url(#grass)"/><path d="M0 200 H 220" stroke="#7fbf5a" stroke-width="0.8"/>
+  </g>
+</svg>

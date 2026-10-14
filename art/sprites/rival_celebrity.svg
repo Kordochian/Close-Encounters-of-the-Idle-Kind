@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 48" width="384" height="192" data-canvas-width="96">
+  <!--
+    Celebrity Studies Division ship: glossy pink, a star on the hull, a spotlight. Anchor (48, 26).
+      part-body     the ship
+      part-sparkle  glints (flicker)
+  -->
+  <defs>
+    <linearGradient id="pink" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd0ea"/><stop offset="0.5" stop-color="#ff6fb8"/><stop offset="1" stop-color="#b8306f"/></linearGradient>
+    <radialGradient id="dome" cx="0.4" cy="0.35" r="0.75"><stop offset="0" stop-color="#ffffff" stop-opacity="0.8"/><stop offset="1" stop-color="#ff9ad0" stop-opacity="0.5"/></radialGradient>
+  </defs>
+  <g id="part-body" stroke="#3a0a24" stroke-width="0.9" stroke-linejoin="round">
+    <path d="M34 22 C 34 10, 40 6, 48 6 C 56 6, 62 10, 62 22 Z" fill="url(#dome)"/>
+    <path d="M8 28 C 12 20, 30 18, 48 18 C 66 18, 84 20, 88 28 C 84 34, 66 37, 48 37 C 30 37, 12 34, 8 28 Z" fill="url(#pink)"/>
+    <path d="M14 23 C 26 20, 40 19.6, 48 19.6" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.9"/>
+    <path d="M48 23 l 1.6 3.6 l 3.8 0.3 l -3 2.4 l 1 3.8 l -3.4 -2.2 l -3.4 2.2 l 1 -3.8 l -3 -2.4 l 3.8 -0.3 Z" fill="#ffe08a" stroke-width="0.4"/>
+    <text x="28" y="31" font-family="Arial, sans-serif" font-size="3" font-weight="bold" text-anchor="middle" fill="#ffffff" stroke="none">CSD</text>
+    <text x="69" y="31" font-family="Arial, sans-serif" font-size="2.6" font-style="italic" text-anchor="middle" fill="#ffffff" stroke="none">xoxo</text>
+  </g>
+  <g id="part-sparkle" stroke="none" fill="#ffffff">
+    <path d="M20 21 l 0.6 -2 l 0.6 2 l 2 0.6 l -2 0.6 l -0.6 2 l -0.6 -2 l -2 -0.6 Z"/>
+    <path d="M70 20 l 0.5 -1.6 l 0.5 1.6 l 1.6 0.5 l -1.6 0.5 l -0.5 1.6 l -0.5 -1.6 l -1.6 -0.5 Z"/>
+    <path d="M44 9 l 0.5 -1.6 l 0.5 1.6 l 1.6 0.5 l -1.6 0.5 l -0.5 1.6 l -0.5 -1.6 l -1.6 -0.5 Z"/>
+  </g>
+</svg>

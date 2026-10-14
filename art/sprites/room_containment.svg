@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 305 100" width="610" height="200" data-canvas-width="305" data-densities="2 4">
+  <!--
+    Containment, drawn at canvas (975, 300), 305x100. Padded cell.
+    Keep clear: label top-left (0..160, 0..16), "FULL" at (185, 5), crew badges at (230..290, 5..17). Floor tiles are drawn by the game
+    from (10, 26) in rows 36 tall.
+      part-back   quilted padding, scratch marks, sign, drain, bulb cage
+      part-bulb   caged bulb glow at (290, 11), flickers
+      part-bars     reinforced habitat bars, drawn over the specimens (Biological dept)
+  -->
+  <defs>
+    <radialGradient id="cushion" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#6a6175"/><stop offset="0.7" stop-color="#524a5c"/><stop offset="1" stop-color="#3a3442"/>
+    </radialGradient>
+    <pattern id="quilt" width="14" height="14" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="#3e3846"/>
+      <path d="M0 7 L 7 0 L 14 7 L 7 14 Z" fill="url(#cushion)"/>
+      <path d="M0 7 L 7 0 L 14 7 L 7 14 Z" fill="none" stroke="#2c2733" stroke-width="0.8"/>
+      <path d="M1.6 6.4 L 7 1 L 12.4 6.4" fill="none" stroke="#7a7186" stroke-width="0.35"/>
+      <g fill="#231f29"><circle cx="7" cy="0" r="1"/><circle cx="0" cy="7" r="1"/><circle cx="14" cy="7" r="1"/><circle cx="7" cy="14" r="1"/></g>
+      <g fill="#6a6175"><circle cx="6.7" cy="-0.3" r="0.3"/><circle cx="-0.3" cy="6.7" r="0.3"/><circle cx="13.7" cy="6.7" r="0.3"/><circle cx="6.7" cy="13.7" r="0.3"/></g>
+    </pattern>
+    <radialGradient id="warm" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#fff1c4" stop-opacity="0.9"/>
+      <stop offset="0.35" stop-color="#ffd27a" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#ffb84a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.75">
+      <stop offset="0.55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.45"/>
+    </radialGradient>
+    <filter id="stain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" seed="12"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.25  0 0 0 0 0.22  0 0 0 0 0.12  2.4 0 0 0 -1.25"/>
+    </filter>
+    <linearGradient id="steelBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4a4f58"/><stop offset="0.4" stop-color="#b8c0c8"/><stop offset="1" stop-color="#3a3e46"/>
+    </linearGradient>
+  </defs>
+
+  <g id="part-back">
+    <rect width="305" height="100" fill="url(#quilt)"/>
+    <rect width="305" height="100" filter="url(#stain)" opacity="0.55"/>
+    <rect width="305" height="20" fill="#221e27" opacity="0.65"/>
+    <path d="M0 20 H 305" stroke="#5f566b" stroke-width="0.5"/>
+    <rect y="95" width="305" height="5" fill="#231f28"/>
+    <path d="M0 95 H 305" stroke="#4a4354" stroke-width="0.5"/>
+    <!-- Claw marks through the padding, stuffing bulging out -->
+    <g stroke="#2a252f" stroke-width="1.6" stroke-linecap="round">
+      <path d="M262 44 L 276 70 M267 42 L 281 67 M272 41 L 285 63"/>
+    </g>
+    <g stroke="#e4dccb" stroke-width="0.9" stroke-linecap="round">
+      <path d="M262.4 44.4 L 275.6 69.2 M267.4 42.4 L 280.6 66.2 M272.4 41.4 L 284.6 62.4"/>
+    </g>
+    <g fill="#f2ecdd"><circle cx="268" cy="56" r="1"/><circle cx="273" cy="53" r="0.8"/><circle cx="279" cy="56" r="0.9"/><circle cx="270.4" cy="61" r="0.7"/></g>
+    <!-- Tally marks by the door -->
+    <path d="M290 28 v 8 M292.5 28 v 8 M295 28 v 8 M297.5 28 v 8 M288.5 34 L 299 30 M290 40 v 8 M292.5 40 v 8 M295 40 v 8 M297.5 40 v 8 M288.5 46 L 299 42 M290 52 v 8 M292.5 52 v 8" stroke="#b3a6bf" stroke-width="0.7" stroke-linecap="round"/>
+    <!-- Observation window, one-way (the specimens can tell) -->
+    <rect x="232" y="24" width="22" height="14" rx="1" fill="#16222c" stroke="#1a171d" stroke-width="1"/>
+    <path d="M234 36 L 244 26 M240 36 L 250 26" stroke="#5f8aa6" stroke-width="0.8" opacity="0.5"/>
+    <circle cx="246" cy="32" r="1.4" fill="#7ad48a" opacity="0.7"/><circle cx="249" cy="32" r="1.4" fill="#7ad48a" opacity="0.7"/>
+    <circle cx="246.3" cy="32.2" r="0.6" fill="#0a0a0a"/><circle cx="249.3" cy="32.2" r="0.6" fill="#0a0a0a"/>
+    <!-- Sign (crew badges sit at 230..290 along the top, so it lives left of them) -->
+    <rect x="163" y="3" width="62" height="12" rx="1" fill="#e2b923" stroke="#1d1a20" stroke-width="0.8"/>
+    <rect x="164.1" y="4.1" width="59.8" height="9.8" rx="0.6" fill="none" stroke="#1d1a20" stroke-width="0.35"/>
+    <text x="194" y="8.3" font-family="Arial, sans-serif" font-size="3.8" font-weight="bold" text-anchor="middle" fill="#1d1a20">PLEASE DO NOT</text>
+    <text x="194" y="12.9" font-family="Arial, sans-serif" font-size="3.8" font-weight="bold" text-anchor="middle" fill="#1d1a20">TAP ON THE SPECIMENS</text>
+    <!-- Drain, with something stuck in it -->
+    <ellipse cx="152" cy="97.5" rx="8" ry="1.8" fill="#141217"/>
+    <path d="M146 97.5 h 12 M148 96.4 v 2.2 M152 96 v 3 M156 96.4 v 2.2" stroke="#4a4450" stroke-width="0.6"/>
+    <path d="M154 97 c 1 -1, 2.4 -1.2, 3 -0.4" fill="none" stroke="#b5864a" stroke-width="0.6"/>
+    <!-- Food bowl labelled with a specimen number, and a lone sock -->
+    <path d="M206 92 h 10 l -1.4 3 h -7.2 Z" fill="#9aa1a8" stroke="#1d1a20" stroke-width="0.5"/>
+    <text x="211" y="94.4" font-family="Arial, sans-serif" font-size="1.8" font-weight="bold" text-anchor="middle" fill="#2a2a2e">#0042</text>
+    <path d="M226 93 c 0 -2, 1 -3, 2.4 -3 v 3.4 c 0 1, 1 1.4, 2.4 1.4 v 1.2 h -3.6 c -0.8 0, -1.2 -1, -1.2 -3 Z" fill="#d6d1c2" stroke="#1d1a20" stroke-width="0.4"/>
+    <path d="M226 93.6 h 2.4" stroke="#c13b3b" stroke-width="0.5"/>
+    <!-- Bulb cage -->
+    <rect x="285" y="2" width="10" height="2" fill="#3a363f"/>
+    <circle cx="290" cy="10.5" r="3" fill="#a69a7a"/>
+    <path d="M285.5 5 C 285 12, 287 15.5, 290 15.5 C 293 15.5, 295 12, 294.5 5 M287.5 4.5 C 287 11, 288.2 15.5, 290 15.5 C 291.8 15.5, 293 11, 292.5 4.5 M285.6 10 H 294.4" fill="none" stroke="#1f1c22" stroke-width="0.7"/>
+    <rect width="305" height="100" fill="url(#vignette)"/>
+  </g>
+
+  <g id="part-bulb">
+    <circle cx="290" cy="11" r="26" fill="url(#warm)"/>
+    <circle cx="290" cy="10.5" r="2.8" fill="#fff4cf"/>
+    <path d="M288.8 10.8 c 0.4 -1, 1.6 -1, 2.4 0" fill="none" stroke="#ffb84a" stroke-width="0.35"/>
+  </g>
+  <g id="part-bars" stroke="#14161a" stroke-width="0.6">
+    <!-- Reinforced habitat bars (Biological dept), drawn in front of the specimens -->
+    <rect x="0" y="20" width="305" height="4" fill="url(#steelBar)"/>
+    <rect x="0" y="58" width="305" height="3" fill="url(#steelBar)"/>
+    <rect x="8" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="32" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="56" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="80" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="104" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="128" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="152" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="176" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="200" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="224" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="248" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="272" y="20" width="3.4" height="78" fill="url(#steelBar)"/><rect x="296" y="20" width="3.4" height="78" fill="url(#steelBar)"/>
+    <g fill="#d6dbe2" stroke="none"><circle cx="9.7" cy="22" r="0.6"/><circle cx="9.7" cy="59.5" r="0.6"/><circle cx="33.7" cy="22" r="0.6"/><circle cx="33.7" cy="59.5" r="0.6"/><circle cx="57.7" cy="22" r="0.6"/><circle cx="57.7" cy="59.5" r="0.6"/><circle cx="81.7" cy="22" r="0.6"/><circle cx="81.7" cy="59.5" r="0.6"/><circle cx="105.7" cy="22" r="0.6"/><circle cx="105.7" cy="59.5" r="0.6"/><circle cx="129.7" cy="22" r="0.6"/><circle cx="129.7" cy="59.5" r="0.6"/><circle cx="153.7" cy="22" r="0.6"/><circle cx="153.7" cy="59.5" r="0.6"/><circle cx="177.7" cy="22" r="0.6"/><circle cx="177.7" cy="59.5" r="0.6"/><circle cx="201.7" cy="22" r="0.6"/><circle cx="201.7" cy="59.5" r="0.6"/><circle cx="225.7" cy="22" r="0.6"/><circle cx="225.7" cy="59.5" r="0.6"/><circle cx="249.7" cy="22" r="0.6"/><circle cx="249.7" cy="59.5" r="0.6"/><circle cx="273.7" cy="22" r="0.6"/><circle cx="273.7" cy="59.5" r="0.6"/><circle cx="297.7" cy="22" r="0.6"/><circle cx="297.7" cy="59.5" r="0.6"/></g>
+    <rect x="250" y="28" width="40" height="7" fill="#e9e1c6" stroke-width="0.4"/>
+    <text x="270" y="33.2" font-family="Arial, sans-serif" font-size="4" font-weight="bold" text-anchor="middle" fill="#2b5a3a" stroke="none">REINFORCED</text>
+  </g>
+</svg>

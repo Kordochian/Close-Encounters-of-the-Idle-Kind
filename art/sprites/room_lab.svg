@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 115" width="660" height="230" data-canvas-width="330" data-densities="2 4">
+  <!--
+    Lab, drawn at canvas (675, 425), 330x115. Tiled walls, specimen jars, a poster, equipment.
+    Keep clear: label top-left (0..120, 0..16). The game draws the alien at x 25 and three tables
+    at x 50/142/234 (80 wide, y 70..100) with scanner sweeps from y 20.
+      part-back    tiles, fixtures, jars, poster, monitors, stain
+      part-light   fluorescent tube glow, flickers
+      part-mirror     two-way mirror with observers (Human dept)
+      part-signature  department-coloured strobe while a signature experiment runs
+  -->
+  <defs>
+    <pattern id="tiles" width="10" height="10" patternUnits="userSpaceOnUse">
+      <rect width="10" height="10" fill="#5f6a73"/>
+      <rect x="0.6" y="0.6" width="9" height="9" fill="#66717a"/>
+      <path d="M0.6 9.6 H 9.6 V 0.6" fill="none" stroke="#56606a" stroke-width="0.4"/>
+      <path d="M0 0 H 10 M0 0 V 10" stroke="#4a545c" stroke-width="0.8"/>
+    </pattern>
+    <linearGradient id="tubeGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e9fff6" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#bff5e0" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="goo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b6f79a" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#2f8a2c" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="glassJar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.35"/><stop offset="0.25" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.2"/>
+    </linearGradient>
+    <linearGradient id="lowerWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4b545e"/><stop offset="1" stop-color="#383f47"/>
+    </linearGradient>
+    <radialGradient id="vignetteL" cx="0.45" cy="0.3" r="0.85">
+      <stop offset="0.5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.4"/>
+    </radialGradient>
+    <filter id="grimeL" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" seed="21"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.2  0 0 0 0 0.24  0 0 0 0 0.18  1.8 0 0 0 -0.95"/>
+    </filter>
+    <linearGradient id="mirrorGlass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a3440"/><stop offset="0.5" stop-color="#3e4a58"/><stop offset="1" stop-color="#1c232c"/>
+    </linearGradient>
+    <radialGradient id="sigGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.5"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <g id="part-back">
+    <rect width="330" height="115" fill="url(#tiles)"/>
+    <rect width="330" height="66" filter="url(#grimeL)" opacity="0.6"/>
+    <rect y="66" width="330" height="49" fill="url(#lowerWall)"/>
+    <path d="M0 66 H 330" stroke="#2f353c" stroke-width="1.5"/>
+    <path d="M0 67.2 H 330" stroke="#6d7782" stroke-width="0.4"/>
+    <rect y="110" width="330" height="5" fill="#262b31"/>
+    <!-- Fluorescent fixture -->
+    <rect x="128" y="1" width="96" height="5" rx="1" fill="#3a4048" stroke="#22262b" stroke-width="0.6"/>
+    <rect x="131" y="4" width="90" height="2.4" rx="1.2" fill="#9aa59f"/>
+    <path d="M150 1 V 0 M202 1 V 0" stroke="#22262b" stroke-width="0.8"/>
+    <!-- Cable run along the ceiling and down to the equipment -->
+    <path d="M224 3 H 318 V 66" fill="none" stroke="#24292e" stroke-width="1.4"/>
+    <path d="M224 4.6 H 316.6 V 66" fill="none" stroke="#c13b3b" stroke-width="0.6"/>
+    <!-- Shelf with specimen jars -->
+    <rect x="250" y="25" width="74" height="2.5" fill="#4a3c2f"/>
+    <path d="M250 25.4 H 324" stroke="#7a6550" stroke-width="0.4"/>
+    <path d="M254 27.5 l 2 4 M320 27.5 l -2 4" stroke="#2f261d" stroke-width="0.8"/>
+    <g stroke="#1d2226" stroke-width="0.6">
+      <rect x="254" y="12" width="10" height="13" rx="2" fill="url(#goo)"/>
+      <circle cx="259" cy="18" r="2.6" fill="#f6f3e8"/><circle cx="260" cy="18.4" r="1.1" fill="#3a6bc7"/><circle cx="260.3" cy="18.4" r="0.5" fill="#111"/>
+      <path d="M257 19.6 c -0.6 1, -1 2, -0.6 3.4" fill="none" stroke="#d64a4a" stroke-width="0.4"/>
+      <rect x="268" y="15" width="9" height="10" rx="2" fill="url(#goo)"/>
+      <path d="M270 21 c 1 -2, 3 -2, 4 0 c -1 1.5, -3 1.5, -4 0 Z" fill="#e8a3a0"/>
+      <rect x="281" y="10" width="12" height="15" rx="2.5" fill="url(#goo)"/>
+      <path d="M284 16 l 2 -2 l 2 2 l 2 -2 M284 20 h 6" fill="none" stroke="#f0e8d0" stroke-width="0.7"/>
+      <rect x="297" y="14" width="9" height="11" rx="2" fill="url(#goo)" opacity="0.6"/>
+      <path d="M299 22 c 1 -1, 2 -1, 3 0 c 1 1, 2 1, 3 0" fill="none" stroke="#f6f3e8" stroke-width="0.4"/>
+      <rect x="310" y="16" width="9" height="9" rx="2" fill="url(#goo)"/>
+      <circle cx="314.5" cy="20.5" r="1.8" fill="#f6f3e8"/><circle cx="313.8" cy="20.6" r="0.7" fill="#111"/>
+      <rect x="253.5" y="10.6" width="11" height="2" fill="#6b5a45"/><rect x="267.5" y="13.6" width="10" height="2" fill="#6b5a45"/>
+      <rect x="280.5" y="8.6" width="13" height="2" fill="#6b5a45"/><rect x="309.5" y="14.6" width="10" height="2" fill="#6b5a45"/>
+      <rect x="296.5" y="12.6" width="10" height="2" fill="#6b5a45"/>
+    </g>
+    <g fill="url(#glassJar)"><rect x="254" y="12" width="10" height="13" rx="2"/><rect x="268" y="15" width="9" height="10" rx="2"/><rect x="281" y="10" width="12" height="15" rx="2.5"/><rect x="297" y="14" width="9" height="11" rx="2"/><rect x="310" y="16" width="9" height="9" rx="2"/></g>
+    <g fill="#f2ead0" stroke="#1d2226" stroke-width="0.2"><rect x="256" y="22" width="6" height="2"/><rect x="283" y="22" width="8" height="2"/></g>
+    <!-- Poster: a human, labelled with low confidence -->
+    <rect x="228" y="32" width="22" height="30" fill="#e9e3cf" stroke="#2a2f34" stroke-width="0.7"/>
+    <circle cx="229.5" cy="33.5" r="0.6" fill="#8a8f96"/><circle cx="248.5" cy="33.5" r="0.6" fill="#8a8f96"/>
+    <circle cx="239" cy="39" r="2.4" fill="none" stroke="#2a2f34" stroke-width="0.8"/>
+    <path d="M239 41.4 V 49 M234.6 44 H 243.4 M239 49 L 235.8 54 M239 49 L 242.2 54" fill="none" stroke="#2a2f34" stroke-width="0.8"/>
+    <path d="M243 38 l 3 -2 M244 46 l 3 0 M241 52 l 4 2" stroke="#b0261e" stroke-width="0.35"/>
+    <text x="247.4" y="35.6" font-family="Arial, sans-serif" font-size="1.6" fill="#b0261e">head?</text>
+    <text x="247.4" y="46.6" font-family="Arial, sans-serif" font-size="1.6" fill="#b0261e">arms</text>
+    <text x="239" y="59.6" font-family="Arial, sans-serif" font-size="3.4" font-weight="bold" text-anchor="middle" fill="#b0261e">HUMAN (?)</text>
+    <path d="M249 60 l 1 2 l -2 0 Z" fill="#c9c2a8"/>
+    <!-- Monitor on a wall arm, showing a heartbeat that is mostly flat -->
+    <path d="M300 40 h 10 v 4" fill="none" stroke="#3a4048" stroke-width="1"/>
+    <rect x="296" y="44" width="22" height="14" rx="1" fill="#22272d" stroke="#14171a" stroke-width="0.7"/>
+    <rect x="297.5" y="45.5" width="19" height="11" fill="#0e1a14"/>
+    <path d="M298 52 h 6 l 1 -3 l 1.2 6 l 1 -3 h 9" fill="none" stroke="#6fdf9a" stroke-width="0.5"/>
+    <text x="315.8" y="47.6" font-family="Arial, sans-serif" font-size="1.6" text-anchor="end" fill="#6fdf9a">BPM 3</text>
+    <!-- Eye-wash station nobody has used -->
+    <rect x="182" y="40" width="10" height="7" rx="1" fill="#2d8a4a" stroke="#14171a" stroke-width="0.5"/>
+    <path d="M184 43.5 h 6 M187 41.4 v 4" stroke="#e9f6ec" stroke-width="0.7"/>
+    <!-- Hazard bin, and a stain nobody filed a report about -->
+    <rect x="316" y="92" width="11" height="18" rx="1" fill="#c9a224" stroke="#1d2226" stroke-width="0.6"/>
+    <path d="M318 97 h 7 M318 100 h 7" stroke="#1d2226" stroke-width="0.6"/>
+    <circle cx="321.5" cy="105" r="2" fill="none" stroke="#1d2226" stroke-width="0.5"/>
+    <path d="M140 110 c 6 -3, 14 -2, 18 0 c 3 1.5, -1 3, -6 3 c -5 0, -14 0, -12 -3 Z" fill="#4f9a3c" opacity="0.75"/>
+    <path d="M143 110 c 3 -1, 7 -1, 9 0" fill="none" stroke="#a9e28f" stroke-width="0.35" opacity="0.8"/>
+    <circle cx="162" cy="109" r="1" fill="#4f9a3c" opacity="0.7"/><circle cx="165" cy="108" r="0.6" fill="#4f9a3c" opacity="0.7"/>
+    <rect width="330" height="115" fill="url(#vignetteL)"/>
+  </g>
+
+  <g id="part-light">
+    <path d="M131 6 L 221 6 L 255 64 L 97 64 Z" fill="url(#tubeGlow)"/>
+    <rect x="131" y="4" width="90" height="2.4" rx="1.2" fill="#f4fff9"/>
+    <rect x="128" y="0" width="96" height="10" fill="#e9fff6" opacity="0.12"/>
+  </g>
+  <g id="part-mirror">
+    <!-- Two-way mirror (Human dept): somebody is always watching, and taking notes -->
+    <rect x="136" y="14" width="44" height="32" fill="#14171a"/>
+    <rect x="138" y="16" width="40" height="28" fill="url(#mirrorGlass)"/>
+    <path d="M142 42 L 160 18 M150 42 L 168 18 M162 42 L 176 24" stroke="#8fa6bc" stroke-width="0.8" opacity="0.35"/>
+    <g fill="#0e1216" opacity="0.7">
+      <circle cx="150" cy="28" r="3.4"/><rect x="146" y="31" width="8" height="13" rx="2"/>
+      <circle cx="166" cy="29" r="3.2"/><rect x="162.4" y="32" width="7.2" height="12" rx="2"/>
+    </g>
+    <rect x="168" y="34" width="4" height="5" fill="#2a3036" opacity="0.8"/>
+    <rect x="138" y="44" width="40" height="2.2" fill="#2a2f34"/>
+    <text x="158" y="45.8" font-family="Arial, sans-serif" font-size="1.8" font-weight="bold" text-anchor="middle" fill="#c9ced6">OBSERVATION. ACT NATURAL.</text>
+  </g>
+  <g id="part-signature">
+    <!-- Signature experiment in progress: the room strobes in the department colour (tinted by the game) -->
+    <rect x="0" y="0" width="330" height="115" fill="url(#sigGlow)"/>
+    <g fill="#ffffff"><circle cx="20" cy="6" r="3"/><circle cx="310" cy="6" r="3"/></g>
+    <rect x="0" y="0" width="330" height="3" fill="#ffffff" opacity="0.7"/>
+  </g>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 210" width="440" height="420" data-canvas-width="220" data-densities="2 4">
+  <!--
+    Research Outpost: prefab huts, a satellite dish, twelve scientists and one cook (humans, penguins).
+    Hunting region backdrop, drawn at canvas (x0, 100), 220x210; ground at local y 200.
+  -->
+  <defs>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f5a3a"/><stop offset="1" stop-color="#1c3a26"/></linearGradient>
+    <linearGradient id="hillFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#243a46"/><stop offset="1" stop-color="#1a2a36"/></linearGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8a3a"/><stop offset="1" stop-color="#2f5a26"/></linearGradient>
+    <linearGradient id="walk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8c92"/><stop offset="1" stop-color="#5a5c62"/></linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6a3c"/><stop offset="1" stop-color="#5e3a1c"/></linearGradient>
+    <linearGradient id="barn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a1e16"/><stop offset="0.5" stop-color="#a8302a"/><stop offset="1" stop-color="#6a1810"/></linearGradient>
+    <linearGradient id="bldgR" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2a3048"/><stop offset="0.5" stop-color="#3a4262"/><stop offset="1" stop-color="#232838"/></linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fb3d6"/><stop offset="1" stop-color="#2f6a8a"/></linearGradient>
+    <radialGradient id="glowY" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#ffe08a" stop-opacity="0.8"/><stop offset="1" stop-color="#ffe08a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="cone" cx="0" cy="0.5" r="1"><stop offset="0" stop-color="#fff6c4" stop-opacity="0.75"/><stop offset="1" stop-color="#fff6c4" stop-opacity="0"/></radialGradient>
+    <filter id="tex" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" seed="3"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0.05  0 0 0 0 0  1.4 0 0 0 -0.75"/>
+    </filter>
+  </defs>
+  <g id="part-back">
+
+    <path d="M0 184 C 60 180, 140 186, 220 184 L 220 200 L 0 200 Z" fill="#dff0ff"/>
+    <g stroke="#14161a" stroke-width="0.6">
+      <rect x="10" y="172" width="40" height="28" fill="#c8241c"/><path d="M8 172 C 20 160, 40 160, 52 172 Z" fill="#f4faff"/>
+      <rect x="60" y="176" width="36" height="24" fill="#e2b923"/><path d="M58 176 C 70 166, 86 166, 98 176 Z" fill="#f4faff"/>
+      <rect x="20" y="182" width="8" height="6" fill="#ffe08a"/><rect x="70" y="184" width="8" height="6" fill="#ffe08a"/>
+      <path d="M150 200 V 168" stroke="#8a9098" stroke-width="2"/>
+      <rect x="104" y="186" width="34" height="14" fill="#e9e1c6"/>
+    </g>
+    <text x="121" y="192" font-family="Arial, sans-serif" font-size="2.6" font-weight="bold" text-anchor="middle" fill="#14161a">12 SCIENTISTS</text>
+    <text x="121" y="197" font-family="Arial, sans-serif" font-size="2.6" font-weight="bold" text-anchor="middle" fill="#14161a">1 COOK (TIRED)</text>
+    <path d="M190 200 V 150 M184 152 h 12" stroke="#8a9098" stroke-width="1.4"/>
+    <rect x="0" y="200" width="220" height="10" fill="#f4faff"/><path d="M0 200 H 220" stroke="#b8d4e8" stroke-width="0.8"/>
+  </g>
+  <g id="part-dish" stroke="#14161a" stroke-width="0.6">
+    <!-- Satellite dish, turns about (150, 168) -->
+    <path d="M136 160 C 140 174, 160 174, 164 160 Z" fill="#d8dde2"/>
+    <path d="M150 170 L 150 156" stroke="#8a9098" stroke-width="0.8"/>
+    <circle cx="150" cy="156" r="1.4" fill="#c8241c"/>
+  </g>
+</svg>

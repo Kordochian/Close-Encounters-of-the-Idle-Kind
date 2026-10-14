@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 24" width="240" height="192" data-canvas-width="30" data-densities="4 8">
+  <!--
+    Escaped experiments. Each part is its own creature, feet at y 24, facing left.
+      part-squirrel  a three-eyed squirrel
+      part-cow       a glowing cow
+      part-glow      the cow's glow (pulses)
+  -->
+  <g id="part-squirrel" stroke="#2a1810" stroke-width="0.6" stroke-linejoin="round">
+    <path d="M18 23 C 26 22, 27 14, 24 10 C 22 8, 19 9, 20 12 C 22 14, 20 18, 18 23 Z" fill="#7a5aa6"/>
+    <ellipse cx="14" cy="19" rx="5" ry="4.6" fill="#8a6ab6"/>
+    <circle cx="10" cy="13" r="4" fill="#8a6ab6"/>
+    <g fill="#ffffff"><circle cx="8" cy="12" r="1.2"/><circle cx="10.4" cy="11" r="1.2"/><circle cx="12.4" cy="12.4" r="1.2"/></g>
+    <g fill="#111" stroke="none"><circle cx="8" cy="12" r="0.5"/><circle cx="10.4" cy="11" r="0.5"/><circle cx="12.4" cy="12.4" r="0.5"/></g>
+    <path d="M10 23 h 3 M15 23 h 3" stroke-width="1.2"/>
+  </g>
+  <g id="part-glow" stroke="none">
+    <ellipse cx="15" cy="16" rx="15" ry="9" fill="#9dff7a" opacity="0.35"/>
+  </g>
+  <g id="part-cow" stroke="#14261a" stroke-width="0.6" stroke-linejoin="round">
+    <rect x="9" y="10" width="18" height="9" rx="4" fill="#d8ffd0"/>
+    <path d="M12 10 c 3 0, 4 3, 2 5 c -2 1, -4 0, -4 -3 Z M20 13 c 3 -1, 5 1, 4 3 c -2 1, -4 0, -4 -3 Z" fill="#6fdf6a" stroke="none"/>
+    <rect x="3" y="7" width="7" height="7" rx="2" fill="#d8ffd0"/>
+    <rect x="2" y="11" width="5" height="3" rx="1" fill="#9dffb0"/>
+    <circle cx="5.6" cy="9.4" r="0.8" fill="#9dff7a"/>
+    <path d="M12 19 v 5 M15 19 v 5 M22 19 v 5 M25 19 v 5" stroke-width="1.6"/>
+  </g>
+</svg>

@@ -1,0 +1,610 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="240 -300 1460 1160" width="2190" height="1740" data-canvas-width="1460" data-densities="1.5 2.5">
+  <!--
+    The mountain, 1460x1000. Coordinates here are BASE-LOCAL: the game draws the mountain, the base
+    rooms, hallways, cabin and props with a +400 x shift (so local x 240 lands at canvas 640, right
+    after the hunting grounds, and the map is 2100 wide). The base (local 660..1283) sits at the
+    mountain's horizontal center: the left foot is at local 260, the right foot at 1684.
+    A long gentle slope climbs from the meadow to the landing apron at the hangar mouth
+    (780, 107..213), the cabin plateau (790..915, y 92) sits above it, the peak is at (1105, -236), and
+    the right flank comes down past a disguised antenna on its shoulder (1440, 30).
+    Underground: a fossilised cow on the left, a buried 1947 saucer on the right.
+    The game draws on top (spread out like a bunker, 2026-10-14): hangar (777..1083, 107..213), containment (1107..1418, 327..433),
+    lab (517..853, 477..598), generator (1167..1428, 477..598), break room (687..1298, 677..798),
+    plus cabin.svg (780, 40), hallfx.svg (660, 297) and the prop sprites.
+  -->
+  <defs>
+    <linearGradient id="rock" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a7e8c"/><stop offset="0.25" stop-color="#5d616d"/><stop offset="1" stop-color="#3a3c44"/>
+    </linearGradient>
+    <radialGradient id="moonRim" cx="1700" cy="-300" r="1100" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c9d6f0" stop-opacity="0.35"/><stop offset="1" stop-color="#c9d6f0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="snow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4f7fc"/><stop offset="1" stop-color="#b9c4d8"/>
+    </linearGradient>
+    <linearGradient id="wallH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2e3239"/><stop offset="0.25" stop-color="#3b4049"/><stop offset="1" stop-color="#434852"/>
+    </linearGradient>
+    <linearGradient id="pipeH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a9b0b7"/><stop offset="0.4" stop-color="#737a82"/><stop offset="1" stop-color="#3d4248"/>
+    </linearGradient>
+    <linearGradient id="pipeCu" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e3a066"/><stop offset="0.5" stop-color="#a5602e"/><stop offset="1" stop-color="#5e3215"/>
+    </linearGradient>
+    <linearGradient id="log" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9a6a3c"/><stop offset="0.5" stop-color="#7a4e28"/><stop offset="1" stop-color="#4f3016"/>
+    </linearGradient>
+    <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a3a2a"/><stop offset="1" stop-color="#3a2418"/>
+    </linearGradient>
+    <linearGradient id="tank" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#25553a"/><stop offset="0.35" stop-color="#4fa06c"/><stop offset="1" stop-color="#1d4430"/>
+    </linearGradient>
+    <linearGradient id="crate" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a8844f"/><stop offset="1" stop-color="#6e5330"/>
+    </linearGradient>
+    <radialGradient id="lampCone" cx="0.5" cy="0" r="1">
+      <stop offset="0" stop-color="#ffe9b0" stop-opacity="0.55"/><stop offset="1" stop-color="#ffe9b0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tvGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#bfe0ff" stop-opacity="0.9"/><stop offset="1" stop-color="#6fa8ff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="rockTex" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035 0.06" numOctaves="5" seed="17"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.12  1.6 0 0 0 -0.65"/>
+    </filter>
+    <filter id="rockSpeck" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="4"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.85  0 0 0 0 0.86  0 0 0 0 0.9  2.2 0 0 0 -1.45"/>
+    </filter>
+    <filter id="concrete" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.4" numOctaves="3" seed="23"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.12  0 0 0 0 0.12  0 0 0 0 0.13  1.4 0 0 0 -0.7"/>
+    </filter>
+    <clipPath id="mtn">
+      <path d="M240 860 L 240 302 L 260 300 L 300 297 L 360 292 L 420 286 L 480 279 L 540 271 L 600 262 L 650 252 L 690 242 L 720 232 L 745 224 L 762 218 L 780 213 L 780 107 L 776 102 L 786 94 L 790 92 L 915 92 L 935 74 L 960 46 L 985 14 L 1010 -25 L 1035 -70 L 1060 -130 L 1080 -185 L 1095 -222 L 1105 -236 L 1120 -222 L 1150 -190 L 1185 -160 L 1215 -150 L 1250 -120 L 1290 -80 L 1330 -55 L 1370 -20 L 1400 0 L 1440 30 L 1475 66 L 1515 120 L 1555 172 L 1595 220 L 1635 258 L 1670 288 L 1684 298 L 1700 300 L 1700 860 Z"/>
+    </clipPath>
+    <pattern id="grate" width="3" height="3" patternUnits="userSpaceOnUse">
+      <rect width="3" height="3" fill="#24272c"/><path d="M0 0 L 3 3" stroke="#3a3f47" stroke-width="0.5"/>
+    </pattern>
+    <pattern id="hazardM" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="2" height="4" fill="#e0b31f"/><rect x="2" width="2" height="4" fill="#1f1d1a"/>
+    </pattern>
+    <pattern id="rungs" width="14" height="5" patternUnits="userSpaceOnUse" x="1008" y="403">
+      <rect width="14" height="5" fill="none"/><path d="M2 2.5 H 12" stroke="#8a9098" stroke-width="0.8"/>
+    </pattern>
+  </defs>
+  <g id="part-back">
+    <!-- ===================== Rock ===================== -->
+    <g clip-path="url(#mtn)">
+      <rect x="240" y="-300" width="1460" height="1160" fill="url(#rock)"/>
+      <rect x="240" y="-300" width="1460" height="1160" filter="url(#rockTex)" opacity="0.85"/>
+      <rect x="240" y="-300" width="1460" height="1160" filter="url(#rockSpeck)" opacity="0.35"/>
+      <!-- Strata, following the slopes -->
+      <g fill="none" stroke="#454854" stroke-width="1.2" opacity="0.8">
+        <path d="M300 300 C 500 270, 700 240, 900 160 C 1050 90, 1200 60, 1400 80 C 1520 100, 1620 200, 1700 280"/>
+        <path d="M260 340 C 500 320, 760 300, 1000 230 C 1150 190, 1300 170, 1450 190 C 1560 210, 1650 270, 1700 320"/>
+        <path d="M960 60 C 1020 0, 1080 -60, 1140 -100 C 1220 -120, 1300 -90, 1380 -30 C 1440 10, 1500 80, 1560 150"/>
+        <path d="M1010 -10 C 1060 -80, 1100 -150, 1130 -190 C 1200 -170, 1280 -110, 1340 -60"/>
+        <path d="M900 120 C 980 80, 1060 20, 1150 -20 C 1260 -30, 1360 10, 1460 70 C 1540 130, 1600 200, 1660 260"/>
+      </g>
+      <g fill="none" stroke="#8d93a3" stroke-width="0.5" opacity="0.6">
+        <path d="M300 299 C 500 269, 700 239, 900 159 C 1050 89, 1200 59, 1400 79"/>
+        <path d="M960 59 C 1020 -1, 1080 -61, 1140 -101 C 1220 -121, 1300 -91, 1380 -31"/>
+      </g>
+      <!-- Boulders and scree along the slopes -->
+      <g fill="#5d616d" stroke="#1d1f25" stroke-width="0.6">
+        <path d="M556 270 c 2 -5, 9 -6, 12 -2 c 2 3, -1 6, -6 6 c -4 0, -7 -1, -6 -4 Z"/>
+        <path d="M640 256 c 1 -4, 7 -5, 9 -2 c 1 3, -2 5, -5 5 c -3 0, -5 -1, -4 -3 Z"/>
+        <path d="M700 243 c 1 -3, 5 -4, 7 -1 c 1 2, -1 4, -4 4 c -2 0, -4 -1, -3 -3 Z"/>
+        <path d="M1500 104 c 2 -5, 10 -6, 13 -2 c 2 3, -1 7, -7 7 c -4 0, -7 -2, -6 -5 Z"/>
+        <path d="M1606 232 c 1 -4, 7 -5, 9 -2 c 1 3, -2 5, -5 5 c -3 0, -5 -1, -4 -3 Z"/>
+      </g>
+      <g fill="#9aa1ae"><circle cx="600" cy="266" r="1"/><circle cx="606" cy="263" r="0.7"/><circle cx="680" cy="250" r="0.8"/><circle cx="730" cy="236" r="0.7"/><circle cx="470" cy="284" r="0.6"/>
+        <circle cx="1530" cy="146" r="0.9"/><circle cx="1576" cy="196" r="0.7"/><circle cx="1650" cy="276" r="0.8"/></g>
+      <!-- Landing apron in front of the hangar mouth, hazard-striped -->
+      <path d="M762 214 L 780 213 L 780 216 L 764 217 Z" fill="#3a3c44"/>
+      <rect x="764" y="213.4" width="16" height="1.6" fill="url(#hazardM)"/>
+      <!-- Moonlight on the right-hand slopes -->
+      <rect x="240" y="-300" width="1460" height="1160" fill="url(#moonRim)"/>
+      <!-- Cracks -->
+      <g fill="none" stroke="#24262c" stroke-width="0.8" stroke-linecap="round">
+        <path d="M960 40 l -4 10 l 6 9 M1080 -150 l 4 14 l -5 10 l 3 12 M1300 -60 l -6 12 l 4 10 M1060 -40 l 5 12 l -3 9 M1180 20 l -6 11 l 4 9 M1460 70 l -5 12 l 4 8 M1560 180 l 6 10"/>
+        <path d="M500 420 l 5 8 l -3 10 M420 600 l 6 6 l -2 12 M1400 330 l -6 10 l 4 12 M1600 600 l -5 8 M1010 240 l 5 9 l -4 7"/>
+      </g>
+      <!-- Ore vein, glinting -->
+      <path d="M1180 200 C 1200 210, 1230 205, 1260 222" fill="none" stroke="#6fb3a4" stroke-width="1" opacity="0.5"/>
+      <g fill="#bff3e6"><circle cx="1195" cy="207" r="0.6"/><circle cx="1228" cy="206" r="0.5"/><circle cx="1252" cy="218" r="0.6"/></g>
+      <!-- Snow cap -->
+      <path d="M1052 -118 L 1060 -130 L 1080 -185 L 1095 -222 L 1105 -236 L 1120 -222 L 1150 -190 L 1185 -160 L 1215 -150 L 1222 -140 L 1204 -138 L 1190 -150 L 1172 -136 L 1158 -158 L 1140 -146 L 1126 -170 L 1110 -150 L 1098 -176 L 1086 -144 L 1074 -160 L 1064 -128 Z" fill="url(#snow)"/>
+      <path d="M1105 -236 L 1110 -150 M1105 -236 L 1126 -170 M1095 -222 L 1086 -144" stroke="#a9b4c9" stroke-width="0.6" fill="none"/>
+      <!-- Snow dusting on the plateau and the shoulder -->
+      <path d="M790 92 h 125 l -2 1.4 h -121 Z M1215 -150 l 35 30 l -1 1.4 l -34.4 -29.4 Z" fill="#dfe6f2" opacity="0.8"/>
+      <!-- Overhang lip above the hangar mouth, with icicles -->
+      <path d="M780 107 L 776 102 L 786 94 L 796 98 L 786 106 Z" fill="#4a4d57"/>
+      <path d="M779 106 l 1 4 l 1 -4 M784 103 l 0.8 5 l 0.8 -5 M790 99 l 0.6 3 l 0.6 -3" fill="#dfe8f6"/>
+      <!-- Ridge trail from the cabin toward the summit -->
+      <path d="M916 95 L 944 76 L 930 70 L 968 50 L 958 42 L 988 14 L 978 6 L 1008 -22 L 1000 -30 L 1030 -64" fill="none" stroke="#8a7a5e" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M916 95 L 944 76 L 930 70 L 968 50 L 958 42 L 988 14 L 978 6 L 1008 -22 L 1000 -30 L 1030 -64" fill="none" stroke="#b39c74" stroke-width="0.6" stroke-dasharray="1.5 2"/>
+      <!-- Footpath from the meadow up the long slope to the apron -->
+      <path d="M300 297 L 460 281 L 440 276 L 600 260 L 580 255 L 700 240 L 690 236 L 762 216" fill="none" stroke="#8a7a5e" stroke-width="1.6" stroke-linejoin="round"/>
+      <g transform="translate(-110 170)">
+      <!-- Underground, left: a fossilised cow, very old, still staring -->
+      <g fill="none" stroke="#9a9484" stroke-width="1.2" stroke-linecap="round" opacity="0.55">
+        <path d="M420 470 C 440 462, 480 462, 500 470"/>
+        <path d="M430 471 v 10 M440 468 v 12 M452 466 v 13 M464 466 v 13 M476 467 v 12 M488 469 v 11"/>
+        <path d="M434 478 l -4 22 M446 480 l 2 22 M484 478 l -3 22 M494 476 l 3 22"/>
+        <path d="M500 470 C 506 466, 510 470, 504 478 C 500 482, 508 488, 514 486 C 520 484, 520 476, 514 472 Z"/>
+        <path d="M420 470 C 414 476, 410 484, 408 492"/>
+      </g>
+      <circle cx="511" cy="476" r="1.6" fill="#c9c2b2" opacity="0.6"/>
+      </g>
+      <g transform="translate(20 230)">
+      <!-- Underground, right: the 1947 crash, buried, with its pilot still at the controls -->
+      <g stroke="#1d1f25" stroke-width="0.8">
+        <path d="M1450 520 C 1460 500, 1500 490, 1540 488 C 1580 490, 1610 500, 1620 520 C 1600 532, 1480 534, 1450 520 Z" fill="#5f6a5f" transform="rotate(-12 1535 510)"/>
+        <path d="M1505 494 C 1508 480, 1530 474, 1545 476 C 1560 478, 1568 488, 1566 494 Z" fill="#7aa6a0" opacity="0.6" transform="rotate(-12 1535 510)"/>
+      </g>
+      <g transform="rotate(-12 1535 510)" stroke="#d8d2c0" stroke-width="0.8" fill="none" opacity="0.8">
+        <circle cx="1536" cy="484" r="3.4"/><path d="M1536 488 v 6 M1532 491 h 8"/>
+      </g>
+      <path d="M1470 524 l 8 -2 M1590 515 l 9 4" stroke="#8a8f96" stroke-width="0.6"/>
+      <text x="1540" y="528" font-family="Arial Black, Arial, sans-serif" font-size="7" font-weight="bold" text-anchor="middle" fill="#c9c2b2" opacity="0.5" transform="rotate(-12 1535 510)">1947</text>
+      </g>
+      <!-- Roots and a worm near the surface -->
+      <path d="M380 292 C 382 302, 378 312, 384 322 M520 274 C 516 286, 524 296, 518 310 C 516 318, 522 324, 520 330 M1640 268 C 1636 280, 1644 290, 1640 304" fill="none" stroke="#4a3a2a" stroke-width="0.9"/>
+      <path d="M460 330 c 2 -2, 4 2, 6 0 c 2 -2, 4 2, 6 0" fill="none" stroke="#c9827a" stroke-width="1.1" stroke-linecap="round"/>
+    </g>
+    <!-- Silhouette outline -->
+    <path d="M240 860 L 240 302 L 260 300 L 300 297 L 360 292 L 420 286 L 480 279 L 540 271 L 600 262 L 650 252 L 690 242 L 720 232 L 745 224 L 762 218 L 780 213 L 780 107 L 776 102 L 786 94 L 790 92 L 915 92 L 935 74 L 960 46 L 985 14 L 1010 -25 L 1035 -70 L 1060 -130 L 1080 -185 L 1095 -222 L 1105 -236 L 1120 -222 L 1150 -190 L 1185 -160 L 1215 -150 L 1250 -120 L 1290 -80 L 1330 -55 L 1370 -20 L 1400 0 L 1440 30 L 1475 66 L 1515 120 L 1555 172 L 1595 220 L 1635 258 L 1670 288 L 1684 298 L 1700 300" fill="none" stroke="#1d1f25" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M1105 -234.5 L 1120 -220.5 L 1150 -188.5 L 1185 -158.5 L 1215 -148.5 L 1250 -118.5 L 1290 -78.5 L 1330 -53.5 L 1370 -18.5 L 1400 1.5 L 1440 31.5 L 1475 67.5 L 1515 121.5 L 1555 173.5 L 1595 221.5" fill="none" stroke="#dfe8ff" stroke-width="0.6" opacity="0.6"/>
+
+    <!-- Pines on the slopes, dusted with snow -->
+    <g stroke="#0f1a14" stroke-width="0.5">
+      <g transform="translate(380 292)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#1f4a32"/><path d="M0 -16 L 2 -12.4 L -2 -12.4 Z" fill="#e6edf7"/></g>
+      <g transform="translate(520 274) scale(0.8)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#245238"/><path d="M0 -16 L 2 -12.4 L -2 -12.4 Z" fill="#e6edf7"/></g>
+      <g transform="translate(958 48) scale(1.1)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#1f4a32"/><path d="M0 -16 L 2 -12.4 L -2 -12.4 Z" fill="#e6edf7"/></g>
+      <g transform="translate(650 254) scale(0.9)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#245238"/><path d="M0 -16 L 2 -12.4 L -2 -12.4 Z" fill="#e6edf7"/></g>
+      <g transform="translate(1330 -53)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#1f4a32"/><path d="M0 -16 L 2 -12.4 L -2 -12.4 Z" fill="#e6edf7"/></g>
+      <g transform="translate(1400 2) scale(0.8)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#245238"/><path d="M0 -16 L 2 -12.4 L -2 -12.4 Z" fill="#e6edf7"/></g>
+    </g>
+
+    <g stroke="#0f1a14" stroke-width="0.5">
+      <g transform="translate(1470 64) scale(0.9)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#1f4a32"/><path d="M0 -16 L 2 -12.4 L -2 -12.4 Z" fill="#e6edf7"/></g>
+      <g transform="translate(1530 142)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#245238"/></g>
+      <g transform="translate(1562 182) scale(1.2)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#1f4a32"/></g>
+      <g transform="translate(1610 236) scale(0.85)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#245238"/></g>
+      <g transform="translate(1655 278) scale(1.1)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#1f4a32"/></g>
+      <g transform="translate(300 299) scale(0.9)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#245238"/></g>
+      <g transform="translate(450 283) scale(1.15)"><rect x="-0.8" y="-3" width="1.6" height="3" fill="#3b2a1a"/><path d="M0 -16 L 5 -7 L 2.5 -7 L 6.5 -2.5 L -6.5 -2.5 L -2.5 -7 L -5 -7 Z" fill="#1f4a32"/></g>
+    </g>
+    <!-- An antenna on the right shoulder, in disguise -->
+    <g stroke="#1d1f25" stroke-linecap="round">
+      <path d="M1432 34 L 1440 -14 L 1448 34 M1434 22 h 12 M1436 10 h 8 M1438 -2 h 4 M1434 22 L 1444 10 M1446 22 L 1436 10" fill="none" stroke="#9aa1a8" stroke-width="0.8"/>
+      <path d="M1440 -14 v -6" stroke="#9aa1a8" stroke-width="0.8"/>
+      <circle cx="1440" cy="-21" r="1.2" fill="#e8463a" stroke-width="0.3"/>
+      <path d="M1436 -10 l -6 -4 M1444 -10 l 6 -4" stroke="#2f7a3f" stroke-width="1.6"/>
+      <path d="M1437 -4 l -7 -3 M1443 -4 l 7 -3" stroke="#2f7a3f" stroke-width="1.6"/>
+      <rect x="1449" y="14" width="22" height="7" fill="#e9e1c6" stroke-width="0.3"/>
+      <text x="1460" y="17.2" font-family="Arial, sans-serif" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#1d1a20" stroke="none">DEFINITELY A</text>
+      <text x="1460" y="19.8" font-family="Arial, sans-serif" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#1d1a20" stroke="none">CELL TOWER</text>
+    </g>
+    <!-- Meadow at the right foot -->
+    <rect x="1660" y="299" width="40" height="5" fill="#2f5c2c"/>
+
+    <!-- ===================== Bunker (base-local; rooms are drawn by the game on top) ===================== -->
+    <rect x="780" y="101" width="309" height="118" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="780" y="101" width="309" height="118" filter="url(#concrete)" opacity="0.6"/>
+    <rect x="1101" y="321" width="323" height="118" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="1101" y="321" width="323" height="118" filter="url(#concrete)" opacity="0.6"/>
+    <rect x="511" y="471" width="348" height="133" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="511" y="471" width="348" height="133" filter="url(#concrete)" opacity="0.6"/>
+    <rect x="1161" y="471" width="273" height="133" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="1161" y="471" width="273" height="133" filter="url(#concrete)" opacity="0.6"/>
+    <rect x="681" y="671" width="623" height="133" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="681" y="671" width="623" height="133" filter="url(#concrete)" opacity="0.6"/>
+    <rect x="551" y="311" width="306" height="124" fill="#4d5058" stroke="#2a2c31" stroke-width="0.8"/>
+    <rect x="551" y="311" width="306" height="124" filter="url(#concrete)" opacity="0.6"/>
+    <!-- Cargo lift from the hangar floor down to level 1 -->
+    <rect x="924" y="213" width="42" height="194" fill="#4d5058"/>
+    <rect x="930" y="213" width="30" height="194" fill="#25282e"/>
+    <path d="M932 213 V 407 M958 213 V 407" stroke="#8a9098" stroke-width="1"/>
+    <path d="M938 213 V 300 M952 213 V 300" stroke="#14161a" stroke-width="0.6"/>
+    <rect x="931" y="300" width="28" height="3" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="931" y="300" width="28" height="1" fill="url(#hazardM)"/>
+    <g stroke="#2a1d0e" stroke-width="0.3"><rect x="935" y="292" width="9" height="8" fill="url(#crate)"/><rect x="945" y="294" width="7" height="6" fill="url(#crate)"/></g>
+    <path d="M936 292 l 8 8 M944 292 l -8 8" stroke="#5a4326" stroke-width="0.3"/>
+    <text x="945" y="226" font-family="Arial, sans-serif" font-size="2.4" font-weight="bold" text-anchor="middle" fill="#e2b923">CARGO LIFT</text>
+    <text x="945" y="229" font-family="Arial, sans-serif" font-size="1.6" text-anchor="middle" fill="#c9ced6">max 1 cow</text>
+    <!-- Pipe bundle from the hangar down to level 1 -->
+    <rect x="1058" y="213" width="16" height="194" fill="#4d5058"/>
+    <rect x="1061" y="213" width="4" height="194" fill="url(#pipeV)"/><rect x="1066" y="213" width="3" height="194" fill="url(#pipeCu)"/><rect x="1070" y="213" width="2" height="194" fill="#2b5a8a"/>
+    <!-- Power conduit from the generator up to containment -->
+    <rect x="1296" y="433" width="16" height="44" fill="#4d5058"/>
+    <rect x="1299" y="433" width="4" height="44" fill="url(#pipeV)"/><rect x="1305" y="433" width="4" height="44" fill="#c9a224"/>
+    <path d="M1299 445 h 10 M1299 465 h 10" stroke="#14161a" stroke-width="0.6"/>
+    <!-- Stairwell (west): flights between the three levels -->
+    <rect x="464" y="398" width="42" height="400" fill="#4d5058"/>
+    <rect x="470" y="404" width="30" height="391" fill="url(#wallH)"/>
+    <rect x="470" y="404" width="30" height="391" filter="url(#concrete)" opacity="0.5"/>
+    <g fill="none" stroke="#8a9098" stroke-width="1.2">
+      <path d="M472 426 L 498 470 L 472 510 L 498 552 L 472 595"/>
+      <path d="M472 595 L 498 640 L 472 685 L 498 735 L 472 795"/>
+    </g>
+    <g fill="none" stroke="#5a606a" stroke-width="0.4">
+      <path d="M472 420 L 498 464 L 472 504 L 498 546 L 472 589 L 498 634 L 472 679 L 498 729 L 472 789"/>
+    </g>
+    <g fill="#5a606a"><rect x="470" y="424" width="30" height="2"/><rect x="470" y="593" width="30" height="2"/><rect x="470" y="793" width="30" height="2"/></g>
+    <text x="485" y="418" font-family="Arial Black, Arial, sans-serif" font-size="7" font-weight="bold" text-anchor="middle" fill="#e2b923" opacity="0.5">B1</text>
+    <text x="485" y="588" font-family="Arial Black, Arial, sans-serif" font-size="7" font-weight="bold" text-anchor="middle" fill="#e2b923" opacity="0.5">B2</text>
+    <text x="485" y="788" font-family="Arial Black, Arial, sans-serif" font-size="7" font-weight="bold" text-anchor="middle" fill="#e2b923" opacity="0.5">B3</text>
+    <!-- Elevator shaft (centre): from level 1 down to the break room, car stuck halfway -->
+    <rect x="984" y="426" width="36" height="254" fill="#4d5058"/>
+    <rect x="990" y="426" width="24" height="254" fill="#22252a"/>
+    <path d="M992 426 V 680 M1012 426 V 680" stroke="#8a9098" stroke-width="0.9"/>
+    <path d="M1000 426 V 612 M1004 426 V 612" stroke="#14161a" stroke-width="0.5"/>
+    <rect x="991" y="612" width="22" height="26" fill="#5a6068" stroke="#14161a" stroke-width="0.5"/>
+    <path d="M1002 612 v 26" stroke="#14161a" stroke-width="0.5"/>
+    <rect x="993" y="620" width="18" height="5" fill="#e9e1c6" transform="rotate(-6 1002 622.5)"/>
+    <text x="1002" y="623.6" font-family="Arial, sans-serif" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#b0261e" transform="rotate(-6 1002 622.5)">OUT OF ORDER</text>
+    <text x="1002" y="634" font-family="Arial, sans-serif" font-size="1.4" text-anchor="middle" fill="#c9ced6">since 1987</text>
+    <!-- Ladder shaft (east): containment, generator and the break room level -->
+    <rect x="1434" y="402" width="28" height="396" fill="#4d5058"/>
+    <rect x="1440" y="408" width="16" height="387" fill="#22252a"/>
+    <path d="M1442 408 V 795 M1454 408 V 795" stroke="#8a9098" stroke-width="0.8"/>
+    <path d="M1442 412 H 1454 M1442 417 H 1454 M1442 422 H 1454 M1442 427 H 1454 M1442 432 H 1454 M1442 437 H 1454 M1442 442 H 1454 M1442 447 H 1454 M1442 452 H 1454 M1442 457 H 1454 M1442 462 H 1454 M1442 467 H 1454 M1442 472 H 1454 M1442 477 H 1454 M1442 482 H 1454 M1442 487 H 1454 M1442 492 H 1454 M1442 497 H 1454 M1442 502 H 1454 M1442 507 H 1454 M1442 512 H 1454 M1442 517 H 1454 M1442 522 H 1454 M1442 527 H 1454 M1442 532 H 1454 M1442 537 H 1454 M1442 542 H 1454 M1442 547 H 1454 M1442 552 H 1454 M1442 557 H 1454 M1442 562 H 1454 M1442 567 H 1454 M1442 572 H 1454 M1442 577 H 1454 M1442 582 H 1454 M1442 587 H 1454 M1442 592 H 1454 M1442 597 H 1454 M1442 602 H 1454 M1442 607 H 1454 M1442 612 H 1454 M1442 617 H 1454 M1442 622 H 1454 M1442 627 H 1454 M1442 632 H 1454 M1442 637 H 1454 M1442 642 H 1454 M1442 647 H 1454 M1442 652 H 1454 M1442 657 H 1454 M1442 662 H 1454 M1442 667 H 1454 M1442 672 H 1454 M1442 677 H 1454 M1442 682 H 1454 M1442 687 H 1454 M1442 692 H 1454 M1442 697 H 1454 M1442 702 H 1454 M1442 707 H 1454 M1442 712 H 1454 M1442 717 H 1454 M1442 722 H 1454 M1442 727 H 1454 M1442 732 H 1454 M1442 737 H 1454 M1442 742 H 1454 M1442 747 H 1454 M1442 752 H 1454 M1442 757 H 1454 M1442 762 H 1454 M1442 767 H 1454 M1442 772 H 1454 M1442 777 H 1454 M1442 782 H 1454 M1442 787 H 1454 M1442 792 H 1454" stroke="#8a9098" stroke-width="0.6"/>
+    <path d="M1440 440 C 1440 434, 1456 434, 1456 440 M1440 470 C 1440 464, 1456 464, 1456 470 M1440 500 C 1440 494, 1456 494, 1456 500 M1440 530 C 1440 524, 1456 524, 1456 530 M1440 560 C 1440 554, 1456 554, 1456 560 M1440 590 C 1440 584, 1456 584, 1456 590 M1440 620 C 1440 614, 1456 614, 1456 620 M1440 650 C 1440 644, 1456 644, 1456 650 M1440 680 C 1440 674, 1456 674, 1456 680 M1440 710 C 1440 704, 1456 704, 1456 710 M1440 740 C 1440 734, 1456 734, 1456 740 M1440 770 C 1440 764, 1456 764, 1456 770" fill="none" stroke="#5a606a" stroke-width="0.5"/>
+    <!-- Tunnel T1 -->
+    <rect x="848" y="404" width="259" height="25" fill="#4d5058"/>
+    <rect x="848" y="407" width="259" height="19" fill="url(#wallH)"/>
+    <rect x="848" y="407" width="259" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <path d="M872 407 V 423 M920 407 V 423 M968 407 V 423 M1016 407 V 423 M1064 407 V 423" stroke="#30343b" stroke-width="0.4"/>
+    <rect x="848" y="407.5" width="259" height="2.6" fill="url(#pipeH)"/>
+    <rect x="848" y="410.6" width="259" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="848" y="423.4" width="259" height="2.6" fill="url(#grate)"/>
+    <path d="M848 423.4 H 1107" stroke="#5a606a" stroke-width="0.4"/>
+    <path d="M876 408 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <path d="M1036 408 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <!-- Tunnel T1W -->
+    <rect x="500" y="404" width="57" height="25" fill="#4d5058"/>
+    <rect x="500" y="407" width="57" height="19" fill="url(#wallH)"/>
+    <rect x="500" y="407" width="57" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <path d="M524 407 V 423" stroke="#30343b" stroke-width="0.4"/>
+    <rect x="500" y="407.5" width="57" height="2.6" fill="url(#pipeH)"/>
+    <rect x="500" y="410.6" width="57" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="500" y="423.4" width="57" height="2.6" fill="url(#grate)"/>
+    <path d="M500 423.4 H 557" stroke="#5a606a" stroke-width="0.4"/>
+    <path d="M524 408 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <!-- Tunnel T1E -->
+    <rect x="1418" y="408" width="22" height="25" fill="#4d5058"/>
+    <rect x="1418" y="411" width="22" height="19" fill="url(#wallH)"/>
+    <rect x="1418" y="411" width="22" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <rect x="1418" y="411.5" width="22" height="2.6" fill="url(#pipeH)"/>
+    <rect x="1418" y="414.6" width="22" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="1418" y="427.4" width="22" height="2.6" fill="url(#grate)"/>
+    <path d="M1418 427.4 H 1440" stroke="#5a606a" stroke-width="0.4"/>
+    <!-- Tunnel T2 -->
+    <rect x="853" y="573" width="314" height="25" fill="#4d5058"/>
+    <rect x="853" y="576" width="314" height="19" fill="url(#wallH)"/>
+    <rect x="853" y="576" width="314" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <path d="M877 576 V 592 M925 576 V 592 M973 576 V 592 M1021 576 V 592 M1069 576 V 592 M1117 576 V 592 M1165 576 V 592" stroke="#30343b" stroke-width="0.4"/>
+    <rect x="853" y="576.5" width="314" height="2.6" fill="url(#pipeH)"/>
+    <rect x="853" y="579.6" width="314" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="853" y="592.4" width="314" height="2.6" fill="url(#grate)"/>
+    <path d="M853 592.4 H 1167" stroke="#5a606a" stroke-width="0.4"/>
+    <path d="M896 577 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <path d="M1056 577 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <path d="M1131 577 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <!-- Tunnel T2W -->
+    <rect x="500" y="573" width="17" height="25" fill="#4d5058"/>
+    <rect x="500" y="576" width="17" height="19" fill="url(#wallH)"/>
+    <rect x="500" y="576" width="17" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <rect x="500" y="576.5" width="17" height="2.6" fill="url(#pipeH)"/>
+    <rect x="500" y="579.6" width="17" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="500" y="592.4" width="17" height="2.6" fill="url(#grate)"/>
+    <path d="M500 592.4 H 517" stroke="#5a606a" stroke-width="0.4"/>
+    <!-- Tunnel T2E -->
+    <rect x="1428" y="573" width="12" height="25" fill="#4d5058"/>
+    <rect x="1428" y="576" width="12" height="19" fill="url(#wallH)"/>
+    <rect x="1428" y="576" width="12" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <rect x="1428" y="576.5" width="12" height="2.6" fill="url(#pipeH)"/>
+    <rect x="1428" y="579.6" width="12" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="1428" y="592.4" width="12" height="2.6" fill="url(#grate)"/>
+    <path d="M1428 592.4 H 1440" stroke="#5a606a" stroke-width="0.4"/>
+    <!-- Tunnel T3W -->
+    <rect x="500" y="773" width="187" height="25" fill="#4d5058"/>
+    <rect x="500" y="776" width="187" height="19" fill="url(#wallH)"/>
+    <rect x="500" y="776" width="187" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <path d="M524 776 V 792 M572 776 V 792 M620 776 V 792 M668 776 V 792" stroke="#30343b" stroke-width="0.4"/>
+    <rect x="500" y="776.5" width="187" height="2.6" fill="url(#pipeH)"/>
+    <rect x="500" y="779.6" width="187" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="500" y="792.4" width="187" height="2.6" fill="url(#grate)"/>
+    <path d="M500 792.4 H 687" stroke="#5a606a" stroke-width="0.4"/>
+    <path d="M536 777 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <path d="M636 777 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <!-- Tunnel T3E -->
+    <rect x="1298" y="773" width="142" height="25" fill="#4d5058"/>
+    <rect x="1298" y="776" width="142" height="19" fill="url(#wallH)"/>
+    <rect x="1298" y="776" width="142" height="19" filter="url(#concrete)" opacity="0.5"/>
+    <path d="M1322 776 V 792 M1370 776 V 792 M1418 776 V 792" stroke="#30343b" stroke-width="0.4"/>
+    <rect x="1298" y="776.5" width="142" height="2.6" fill="url(#pipeH)"/>
+    <rect x="1298" y="779.6" width="142" height="1.4" fill="url(#pipeCu)"/>
+    <rect x="1298" y="792.4" width="142" height="2.6" fill="url(#grate)"/>
+    <path d="M1298 792.4 H 1440" stroke="#5a606a" stroke-width="0.4"/>
+    <path d="M1366 777 h 8 l -1 2 h -6 Z" fill="#2a2e34" stroke="#14161a" stroke-width="0.3"/>
+    <g transform="translate(-112 23)">
+    <!-- Storage hall under the hangar -->
+    <rect x="672" y="297" width="288" height="106" fill="url(#wallH)"/>
+    <rect x="672" y="297" width="288" height="106" filter="url(#concrete)" opacity="0.5"/>
+    <g stroke="#30343b" stroke-width="0.5"><path d="M720 297 V 400 M768 297 V 400 M816 297 V 400 M864 297 V 400 M912 297 V 400 M672 350 H 960"/></g>
+    <rect x="672" y="297.5" width="288" height="3" fill="url(#pipeH)"/>
+    <rect x="672" y="301" width="288" height="1.6" fill="url(#pipeCu)"/>
+    <rect x="672" y="398.4" width="288" height="4.6" fill="url(#grate)"/>
+    <path d="M672 398.4 H 960" stroke="#5a606a" stroke-width="0.4"/>
+    <text x="700" y="318" font-family="Arial Black, Arial, sans-serif" font-size="8" font-weight="bold" fill="#c9ced6" opacity="0.14" letter-spacing="1">OVERFLOW STORAGE</text>
+    <!-- Shelving racks -->
+    <g stroke="#14161a" stroke-width="0.5">
+      <path d="M682 330 V 398 M736 330 V 398 M682 352 H 736 M682 375 H 736 M682 397 H 736" stroke="#c96a2a" stroke-width="1.2"/>
+      <path d="M748 330 V 398 M802 330 V 398 M748 352 H 802 M748 375 H 802 M748 397 H 802" stroke="#c96a2a" stroke-width="1.2"/>
+    </g>
+    <g stroke="#2a1d0e" stroke-width="0.35">
+      <rect x="686" y="340" width="14" height="12" fill="url(#crate)"/><rect x="702" y="344" width="10" height="8" fill="url(#crate)"/><rect x="716" y="338" width="16" height="14" fill="url(#crate)"/>
+      <rect x="686" y="366" width="10" height="9" fill="url(#crate)"/><rect x="752" y="341" width="12" height="11" fill="url(#crate)"/><rect x="766" y="345" width="10" height="7" fill="url(#crate)"/>
+      <rect x="780" y="364" width="18" height="11" fill="url(#crate)"/><rect x="752" y="387" width="14" height="10" fill="url(#crate)"/>
+    </g>
+    <g stroke="#14161a" stroke-width="0.3">
+      <rect x="700" y="364" width="5" height="11" rx="0.6" fill="url(#tank)"/><rect x="706" y="364" width="5" height="11" rx="0.6" fill="url(#tank)"/><rect x="712" y="366" width="5" height="9" rx="0.6" fill="url(#tank)"/>
+      <rect x="720" y="386" width="6" height="11" rx="0.6" fill="#c9a224"/><rect x="727" y="386" width="6" height="11" rx="0.6" fill="#c9a224"/>
+      <rect x="690" y="386" width="22" height="11" rx="1" fill="#e7eef2"/>
+    </g>
+    <text x="701" y="393" font-family="Arial, sans-serif" font-size="1.8" font-weight="bold" text-anchor="middle" fill="#1d1a20">LOST &amp; FOUND</text>
+    <path d="M697 386 c 0 -2, 3 -3, 4 -1 l -1 1.6 Z" fill="#c9a24a" stroke="#1d1a20" stroke-width="0.25"/>
+    <text x="725" y="347.6" font-family="Arial, sans-serif" font-size="1.6" font-weight="bold" text-anchor="middle" fill="#2a1d0e">SPARE PROBES</text>
+    <text x="789" y="370.6" font-family="Arial, sans-serif" font-size="1.6" font-weight="bold" text-anchor="middle" fill="#2a1d0e">HUMAN DISGUISES</text>
+    <text x="789" y="372.8" font-family="Arial, sans-serif" font-size="1.2" text-anchor="middle" fill="#2a1d0e">(one size)</text>
+    <!-- The previous ship, under a tarp, retired with honours -->
+    <path d="M818 398 C 818 380, 830 368, 862 366 C 894 368, 906 380, 906 398 Z" fill="#4a5a6a" stroke="#14161a" stroke-width="0.6"/>
+    <path d="M826 396 C 830 384, 846 374, 862 373 M898 396 C 894 384, 878 374, 862 373 M840 398 C 842 388, 852 380, 862 379" fill="none" stroke="#33404d" stroke-width="0.6"/>
+    <path d="M818 398 c 2 -3, 4 -3, 6 0 c 2 -3, 4 -3, 6 0" fill="none" stroke="#33404d" stroke-width="0.5"/>
+    <rect x="852" y="384" width="20" height="6" fill="#e9e1c6" stroke="#14161a" stroke-width="0.3" transform="rotate(-4 862 387)"/>
+    <text x="862" y="388.2" font-family="Arial, sans-serif" font-size="2" font-weight="bold" text-anchor="middle" fill="#2a1d0e" transform="rotate(-4 862 387)">OLD OLD RELIABLE</text>
+    <!-- Hover forklift, parked crooked -->
+    <g stroke="#14161a" stroke-width="0.4">
+      <rect x="908" y="380" width="14" height="10" rx="1" fill="#e2b923"/>
+      <path d="M908 376 h 4 v 4" fill="none" stroke="#14161a" stroke-width="0.8"/>
+      <path d="M906 372 V 394 M904 394 h -8" stroke="#5a6068" stroke-width="1"/>
+      <ellipse cx="915" cy="393" rx="7" ry="1.4" fill="#6fdf9a" opacity="0.5" stroke="none"/>
+    </g>
+    <!-- Lamps -->
+    <g fill="#2a2e34" stroke="#14161a" stroke-width="0.3">
+      <path d="M706 303 h 8 l -1 2 h -6 Z"/><path d="M796 303 h 8 l -1 2 h -6 Z"/><path d="M886 303 h 8 l -1 2 h -6 Z"/>
+    </g>
+    </g>
+    <rect x="846" y="403" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="846" y="403" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="848" cy="415" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="1105" y="403" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="1105" y="403" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="1107" cy="415" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="555" y="403" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="555" y="403" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="557" cy="415" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="1416" y="407" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="1416" y="407" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="1418" cy="419" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="851" y="572" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="851" y="572" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="853" cy="584" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="1165" y="572" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="1165" y="572" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="1167" cy="584" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="515" y="572" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="515" y="572" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="517" cy="584" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="1426" y="572" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="1426" y="572" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="1428" cy="584" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="685" y="772" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="685" y="772" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="687" cy="784" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="1296" y="772" width="4" height="23" fill="#5a6068" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="1296" y="772" width="4" height="23" fill="url(#hazardM)" opacity="0.55"/>
+    <circle cx="1298" cy="784" r="1.2" fill="#2a2e34" stroke="#8a9098" stroke-width="0.4"/>
+    <rect x="930" y="403" width="30" height="2.6" fill="url(#hazardM)"/>
+    <rect x="990" y="423.4" width="24" height="2.6" fill="url(#hazardM)"/>
+    <rect x="990" y="592.4" width="24" height="2.6" fill="url(#hazardM)"/>
+    <g transform="translate(120 4)">
+    <!-- electrical panel with hanging wires -->
+    <rect x="740" y="408" width="15" height="10.6" fill="#7a8088" stroke="#1d1f23" stroke-width="0.4"/>
+    <rect x="741" y="409" width="13" height="8.6" fill="#2a2e34"/>
+    <g fill="#14161a"><circle cx="743" cy="410.6" r="0.6"/><circle cx="746" cy="410.6" r="0.6"/><circle cx="749" cy="410.6" r="0.6"/><circle cx="752" cy="410.6" r="0.6"/></g>
+    <path d="M742 413 h 11 M742 415 h 11" stroke="#555b63" stroke-width="0.3"/>
+    <path d="M755 410 l 3 -1.4 l 0 -0.4 M744 417.6 C 744 420, 748 421, 750 419.4 M751 417.6 C 752 419.6, 754 419.6, 756 418" fill="none" stroke="#d6a02a" stroke-width="0.4"/>
+    <rect x="740" y="406.6" width="15" height="1.4" fill="url(#hazardM)"/>
+    </g>
+    <g transform="translate(181 4)">
+    <!-- poster -->
+    <rect x="704" y="408.6" width="9" height="9" fill="#e8dcc0" stroke="#1d1a20" stroke-width="0.3"/>
+    <circle cx="708.5" cy="412" r="1.6" fill="#7fc25b"/><path d="M706.8 412 h 3.4" stroke="#111" stroke-width="0.5"/>
+    <text x="708.5" y="415.6" font-family="Arial, sans-serif" font-size="1.1" font-weight="bold" text-anchor="middle" fill="#1d1a20">SMILE!</text>
+    <text x="708.5" y="416.9" font-family="Arial, sans-serif" font-size="0.8" text-anchor="middle" fill="#1d1a20">you're undercover</text>
+    </g>
+    <g transform="translate(29 4)">
+    <!-- gas cylinders -->
+    <g stroke="#0f1a14" stroke-width="0.3">
+      <rect x="876" y="409" width="3.4" height="10.4" rx="1.2" fill="url(#tank)"/><rect x="880" y="408" width="3.4" height="11.4" rx="1.2" fill="url(#tank)"/><rect x="884" y="410" width="3.4" height="9.4" rx="1.2" fill="url(#tank)"/>
+    </g>
+    <path d="M875.6 413 h 12.2" stroke="#2a2a2e" stroke-width="0.5"/>
+    </g>
+    <g transform="translate(52 4)">
+    <!-- fire extinguisher, alien edition -->
+    <rect x="918" y="411" width="2.6" height="7" rx="1" fill="#7fc25b" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M919.3 411 v -1 h 1.6" fill="none" stroke="#1d1a20" stroke-width="0.4"/>
+    </g>
+    <g transform="translate(194 4)">
+    <!-- poster -->
+    <rect x="826" y="408.4" width="13" height="9.4" fill="#1e2a40" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M832.5 410 l 4 3 h -8 Z" fill="#a9b1ba"/>
+    <text x="832.5" y="415.2" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#f3e7b5">LOOSE LIPS</text>
+    <text x="832.5" y="416.6" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#f3e7b5">SINK MOTHERSHIPS</text>
+    </g>
+    <g transform="translate(66 4)">
+    <!-- vending machine, one snack stuck forever -->
+    <rect x="984" y="406" width="10" height="13.4" fill="#2b5a8a" stroke="#14161a" stroke-width="0.4"/>
+    <rect x="985" y="407" width="6" height="9" fill="#9fd0e8" opacity="0.6"/>
+    <g fill="#e2b923"><rect x="985.6" y="408" width="1.4" height="1"/><rect x="988" y="408" width="1.4" height="1"/><rect x="985.6" y="410.6" width="1.4" height="1"/><rect x="988.6" y="411.4" width="1.4" height="1" transform="rotate(30 989.3 411.9)"/></g>
+    <rect x="991.6" y="408" width="1.8" height="3" fill="#14161a"/>
+    </g>
+    <g transform="translate(146 4)">
+    <!-- poster -->
+    <rect x="934" y="408.6" width="12" height="9" fill="#efe6d0" stroke="#1d1a20" stroke-width="0.3"/>
+    <text x="940" y="411" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#7d5aa6">HAVE YOU</text>
+    <text x="940" y="412.4" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#7d5aa6">WIPED A</text>
+    <text x="940" y="413.8" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#7d5aa6">MEMORY</text>
+    <text x="940" y="415.2" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#7d5aa6">TODAY?</text>
+    </g>
+    <g transform="translate(-166 4)">
+    <!-- crates, one upside-down "THIS SIDE UP" -->
+    <g stroke="#2a1d0e" stroke-width="0.3">
+      <rect x="676" y="413" width="9" height="6.4" fill="url(#crate)"/><path d="M676 413 l 9 6.4 M685 413 l -9 6.4" stroke="#5a4326" stroke-width="0.3"/>
+      <rect x="686" y="411" width="11" height="8.4" fill="url(#crate)"/><rect x="678" y="408" width="6" height="5" fill="url(#crate)"/>
+    </g>
+    <text x="691.5" y="415.6" font-family="Arial, sans-serif" font-size="1.4" font-weight="bold" text-anchor="middle" fill="#2a1d0e" transform="rotate(180 691.5 415.2)">THIS SIDE UP</text>
+    </g>
+    <g transform="translate(648 8)">
+    <!-- drooping wire bundle -->
+    <path d="M772 408 C 776 418, 784 418, 790 408 M774 408 C 778 416, 784 416, 788 408" fill="none" stroke="#14161a" stroke-width="0.7"/>
+    </g>
+    <g transform="translate(66 173)">
+    <!-- mop bucket and a wet-floor sign -->
+    <path d="M804 415 h 6 l -0.6 4.4 h -4.8 Z" fill="#d6b33a" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M808 415 l 3 -8" stroke="#8a6a3e" stroke-width="0.6"/>
+    <path d="M814 419.4 l 2.4 -7 l 2.4 7" fill="#e2b923" stroke="#1d1a20" stroke-width="0.3"/>
+    <text x="816.4" y="417.6" font-family="Arial, sans-serif" font-size="0.9" font-weight="bold" text-anchor="middle" fill="#1d1a20">WET</text>
+    </g>
+    <g transform="translate(-159 173)">
+    <!-- poster: employee of the month (nobody) -->
+    <rect x="1054" y="408.4" width="10" height="10" fill="#efe6d0" stroke="#1d1a20" stroke-width="0.3"/>
+    <rect x="1056" y="410.4" width="6" height="5" fill="#c9c2b2"/>
+    <text x="1059" y="409.8" font-family="Arial, sans-serif" font-size="0.8" font-weight="bold" text-anchor="middle" fill="#1d1a20">EMPLOYEE OF</text>
+    <text x="1059" y="417.6" font-family="Arial, sans-serif" font-size="0.8" font-weight="bold" text-anchor="middle" fill="#1d1a20">THE MONTH</text>
+    <text x="1059" y="413.6" font-family="Arial, sans-serif" font-size="1.4" font-weight="bold" text-anchor="middle" fill="#8a8f96">?</text>
+    </g>
+    <g transform="translate(-165 173)">
+    <!-- vertical pipes with a valve -->
+    <rect x="1090" y="403" width="3" height="16.4" fill="url(#pipeH)"/><rect x="1094" y="403" width="2" height="16.4" fill="url(#pipeCu)"/>
+    <circle cx="1091.5" cy="412" r="2" fill="none" stroke="#c23a2e" stroke-width="0.7"/>
+    </g>
+    <g transform="translate(-178 173)">
+    <!-- second panel -->
+    <rect x="1118" y="408" width="15" height="10.6" fill="#7a8088" stroke="#1d1f23" stroke-width="0.4"/>
+    <rect x="1119" y="409" width="13" height="8.6" fill="#2a2e34"/>
+    <g fill="#14161a"><circle cx="1121" cy="410.6" r="0.6"/><circle cx="1124" cy="410.6" r="0.6"/><circle cx="1127" cy="410.6" r="0.6"/><circle cx="1130" cy="410.6" r="0.6"/></g>
+    <path d="M1120 413.4 h 11 M1120 415.4 h 7" stroke="#555b63" stroke-width="0.3"/>
+    <text x="1125.5" y="417.4" font-family="Arial, sans-serif" font-size="0.9" font-weight="bold" text-anchor="middle" fill="#e2b923">DO NOT</text>
+    </g>
+    <g transform="translate(-118 173)">
+    <!-- crates of unused probes -->
+    <g stroke="#2a1d0e" stroke-width="0.3"><rect x="1148" y="411" width="14" height="8.4" fill="url(#crate)"/><rect x="1151" y="406.6" width="8" height="4.4" fill="url(#crate)"/></g>
+    <text x="1155" y="415.8" font-family="Arial, sans-serif" font-size="1.3" font-weight="bold" text-anchor="middle" fill="#2a1d0e">PROBES</text>
+    <text x="1155" y="417.6" font-family="Arial, sans-serif" font-size="0.9" text-anchor="middle" fill="#2a1d0e">(unused)</text>
+    </g>
+    <g transform="translate(-132 173)">
+    <!-- the last intern, still waiting for his performance review -->
+    <g stroke="#3a3830" stroke-width="0.3">
+      <circle cx="1212" cy="411.4" r="1.6" fill="#e9e3cf"/>
+      <path d="M1211.2 411.4 h 0.4 M1212.6 411.4 h 0.4" stroke="#1d1a20" stroke-width="0.5"/>
+      <path d="M1210 413.6 h 4.2 l -0.6 4 h -3 Z" fill="#eef1f2"/>
+      <path d="M1212 414 v 3 M1210.6 414.6 h 2.8 M1210.6 415.8 h 2.8" stroke="#c9c2b2" stroke-width="0.25"/>
+      <path d="M1211 417.6 l -3 1.6 M1213.4 417.6 l -2 2" stroke="#e9e3cf" stroke-width="0.6"/>
+      <rect x="1213" y="414" width="1.4" height="0.9" fill="#f6e27a" stroke="none"/>
+    </g>
+    <text x="1212" y="408.6" font-family="Arial, sans-serif" font-size="0.9" text-anchor="middle" fill="#8a8f96">REVIEW PENDING</text>
+    </g>
+    <g transform="translate(44 33)">
+    <!-- poster -->
+    <rect x="1066" y="548.6" width="12" height="9" fill="#efe6d0" stroke="#1d1a20" stroke-width="0.3"/>
+    <text x="1072" y="551.4" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#1d1a20">REPORT</text>
+    <text x="1072" y="552.8" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#1d1a20">HUMAN-LIKE</text>
+    <text x="1072" y="554.2" font-family="Arial, sans-serif" font-size="0.95" font-weight="bold" text-anchor="middle" fill="#1d1a20">BEHAVIOUR</text>
+    <text x="1072" y="556.2" font-family="Arial, sans-serif" font-size="0.8" text-anchor="middle" fill="#7d5aa6">in your coworkers</text>
+    </g>
+    <g transform="translate(30 33)">
+    <!-- barrels of something glowing -->
+    <g stroke="#14161a" stroke-width="0.3"><rect x="1110" y="551" width="5" height="8.4" rx="0.6" fill="#c9a224"/><rect x="1116" y="552" width="5" height="7.4" rx="0.6" fill="#c9a224"/></g>
+    <path d="M1110 553 h 5 M1116 554 h 5" stroke="#14161a" stroke-width="0.4"/>
+    <ellipse cx="1112.5" cy="551" rx="2.2" ry="0.6" fill="#9dff7a"/>
+    </g>
+    <g transform="translate(-179 33)">
+    <!-- water cooler, empty -->
+    <rect x="684" y="552" width="6" height="7.4" fill="#d8dde2" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M685 552 c 0 -4, 4 -4, 4 0" fill="#bfe3f0" opacity="0.5" stroke="#1d1a20" stroke-width="0.3"/>
+    </g>
+    <g transform="translate(-180 233)">
+    <!-- poster -->
+    <rect x="700" y="548.6" width="12" height="9" fill="#f1d7a8" stroke="#1d1a20" stroke-width="0.3"/>
+    <text x="706" y="551.6" font-family="Arial, sans-serif" font-size="1.05" font-weight="bold" text-anchor="middle" fill="#b0261e">MANDATORY</text>
+    <text x="706" y="553.4" font-family="Arial, sans-serif" font-size="1.05" font-weight="bold" text-anchor="middle" fill="#b0261e">FUN</text>
+    <text x="706" y="555.6" font-family="Arial, sans-serif" font-size="0.9" text-anchor="middle" fill="#1d1a20">TUESDAYS 3AM</text>
+    </g>
+    <g transform="translate(-182 233)">
+    <!-- coat rack with spare lab coats -->
+    <path d="M730 559.4 v -12 M727 547.4 h 6" stroke="#4f3016" stroke-width="0.6"/>
+    <path d="M727.4 548 l -1.4 6 h 3 Z M732.6 548 l -1.4 6 h 3 Z" fill="#eef1f2" stroke="#1d1a20" stroke-width="0.25"/>
+    </g>
+    <g transform="translate(-188 233)">
+    <!-- stretcher with straps -->
+    <rect x="748" y="554" width="22" height="2" fill="#c9ced2" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M750 556 v 3.4 M768 556 v 3.4" stroke="#5a6068" stroke-width="0.6"/>
+    <path d="M754 553.4 v 3.2 M760 553.4 v 3.2 M766 553.4 v 3.2" stroke="#2a2e34" stroke-width="0.8"/>
+    </g>
+    <g transform="translate(-191 233)">
+    <!-- suggestion box, padlocked, overflowing -->
+    <rect x="786" y="550" width="8" height="6" fill="#7a2a24" stroke="#1d1a20" stroke-width="0.3"/>
+    <path d="M788 550 l 1 -1.4 l 1.4 0.6 M791 550 l 0.6 -1.6" stroke="#efe6d0" stroke-width="0.5"/>
+    <rect x="789.2" y="553.4" width="1.6" height="1.6" fill="#c9a24a"/>
+    <text x="790" y="557.6" font-family="Arial, sans-serif" font-size="0.8" text-anchor="middle" fill="#efe6d0">IDEAS</text>
+    </g>
+    <g transform="translate(-197 233)">
+    <!-- specimen cooler -->
+    <rect x="812" y="552.6" width="10" height="6.8" rx="0.8" fill="#e7eef2" stroke="#1d1a20" stroke-width="0.3"/>
+    <rect x="812" y="552.6" width="10" height="2" fill="#c8241c"/>
+    <text x="817" y="557.8" font-family="Arial, sans-serif" font-size="1" font-weight="bold" text-anchor="middle" fill="#1d1a20">DO NOT EAT</text>
+    </g>
+    <g transform="translate(-206 233)">
+    <!-- tubes: a manifold of glass tubes with green fluid -->
+    <g stroke="#1d2226" stroke-width="0.3">
+      <rect x="846" y="547" width="1.8" height="12" fill="#cfe9f0" opacity="0.6"/><rect x="849" y="547" width="1.8" height="12" fill="#cfe9f0" opacity="0.6"/><rect x="852" y="547" width="1.8" height="12" fill="#cfe9f0" opacity="0.6"/>
+      <rect x="846" y="551" width="1.8" height="8" fill="#6fdf6a" opacity="0.8"/><rect x="849" y="554" width="1.8" height="5" fill="#6fdf6a" opacity="0.8"/><rect x="852" y="549" width="1.8" height="10" fill="#6fdf6a" opacity="0.8"/>
+    </g>
+    <path d="M846 547 C 846 545, 854 545, 854 547" fill="none" stroke="#8a9098" stroke-width="0.5"/>
+    </g>
+    <g transform="translate(-220 233)">
+    <!-- poster -->
+    <rect x="880" y="548.6" width="12" height="9" fill="#1e2340" stroke="#1d1a20" stroke-width="0.3"/>
+    <circle cx="886" cy="552" r="2.2" fill="#3e6aa8"/><path d="M884.6 551 c 0.6 0.6, 1.6 0.6, 2.6 -0.4 M884.8 553 c 0.8 0.4, 1.8 0.2, 2.4 -0.4" fill="none" stroke="#5aa06a" stroke-width="0.4"/>
+    <text x="886" y="556.4" font-family="Arial, sans-serif" font-size="0.9" font-weight="bold" text-anchor="middle" fill="#f3e7b5">NOT FOREVER</text>
+    </g>
+    <g transform="translate(352 233)">
+    <!-- fuse box with a loose wire (the spark is its own part) -->
+    <rect x="958" y="547" width="13" height="11" fill="#7a8088" stroke="#1d1f23" stroke-width="0.4"/>
+    <rect x="959" y="548" width="11" height="9" fill="#2a2e34"/>
+    <g fill="#14161a"><circle cx="961" cy="549.6" r="0.6"/><circle cx="964" cy="549.6" r="0.6"/><circle cx="967" cy="549.6" r="0.6"/></g>
+    <path d="M960 552 h 9 M960 554 h 9" stroke="#555b63" stroke-width="0.3"/>
+    <path d="M971 551 C 974 552, 973 555, 972 556" fill="none" stroke="#14161a" stroke-width="0.6"/>
+    <path d="M971 551 C 974 552, 973 555, 972 556" fill="none" stroke="#c13b3b" stroke-width="0.3"/>
+    <text x="964.5" y="556.6" font-family="Arial, sans-serif" font-size="0.9" font-weight="bold" text-anchor="middle" fill="#e2b923">FUSES</text>
+    </g>
+    <g transform="translate(295 233)">
+    <!-- stacked chairs -->
+    <g fill="none" stroke="#5a6068" stroke-width="0.5"><path d="M1040 559.4 v -6 h 6 v 6 M1040 553.4 v -4 M1041 552 v -4 h 6 v 7"/></g>
+    </g>
+    <g transform="translate(188 233)">
+    <!-- poster -->
+    <rect x="1236" y="548.6" width="12" height="9" fill="#2b5a3a" stroke="#1d1a20" stroke-width="0.3"/>
+    <text x="1242" y="552" font-family="Arial, sans-serif" font-size="1" font-weight="bold" text-anchor="middle" fill="#eaffef">MIND THE</text>
+    <text x="1242" y="553.6" font-family="Arial, sans-serif" font-size="1" font-weight="bold" text-anchor="middle" fill="#eaffef">PROBE</text>
+    </g>
+
+  </g>
+</svg>
