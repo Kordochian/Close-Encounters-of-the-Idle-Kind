@@ -2,6 +2,8 @@
 
 > Status: draft v0.1 · Owner: George · Last updated: 2026-10-14
 >
+> Engine: Unreal Engine 5.8.3
+>
 > Items marked **[Gap fill]** are reasonable defaults added to complete the design. Items under
 > [Open questions](#13-open-questions) need a decision before production.
 
@@ -318,8 +320,8 @@ bureaucratic, and completely wrong about Earth.
 
 ## 13. Open questions
 
-1. **Platform and tech stack.** Web (TypeScript + a canvas/DOM UI), Unity, or Godot? Mobile
-   targeted?
+1. **Target platforms.** The engine is decided (Unreal Engine 5.8.3). PC only, or also mobile or
+   console? This affects UI layout and offline-progress handling.
 2. **Monetization.** Premium, ad-supported, or none? This affects offline caps and speed-up design.
 3. **Art direction.** Pixel art, flat vector, or hand-drawn cartoon?
 4. **Base view.** Side-on cutaway (ant-farm style) or top-down? The "discoveries change the base"
