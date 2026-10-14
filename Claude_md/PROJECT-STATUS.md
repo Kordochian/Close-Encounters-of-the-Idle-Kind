@@ -26,6 +26,7 @@ second run with a meaningful new choice.
 | 5e | "Build Your Next Headquarters" (George): Oceanic (hull pressure) then Antarctic (heat distribution), achievements unlock them, location theses and keep-forever perks, cross-base upgrades | Done 2026-10-14; Oceanic and Antarctic art done by the sprites thread |
 | 5f | "The Specimens Remember" (George): 5 recurring case-file subjects, 3 relationship types, Peer Review, case discoveries kept through prestige | Done 2026-10-14 (see case-files.md) |
 | 5g | Optional interactions (George): Probe Calibration timing challenge + Calibration Desk technicians; Tractor Beam Assist and Management Intervention later | Probe Calibration done 2026-10-14 (see probe-calibration.md) |
+| 5h | Console tabs (George): Operations / Contracts / Thesis / Collaborations, select a UFO or station (also by clicking the base), contract claims, tab badges | Done 2026-10-14 (63/63 tests, screenshots), PR branch claude/project-thread-gtnfyj on top of PR #2; see console-ui.md |
 | 6 | Test second run for real choices | Bot check done (PrestigeCycle); needs a human playtest |
 | 7 | Personality pass (reports, incidents, reviews) | Not started (a few log lines exist) |
 | 8 | Saving, offline progress, polish | Saving + offline progress done 2026-10-14; polish not started |
@@ -43,6 +44,7 @@ second run with a meaningful new choice.
 ## Decisions
 
 - Engine UE 5.8.3, PC (Windows) first; UI must stay gamepad-navigable for a later console port.
+- Console (George, 2026-10-14): four tabs, day-to-day controls together in Operations (select, status, crew, dispatch, upgrades); badges only when an action waits; contract rewards are claimed by hand unless auto-accept is on.
 - Presentation: 2D side-on cutaway mountain base drawn in Slate from C++. Art (George, 2026-10-14):
   cartoon sci-fi dark-comedy sprites, SVG sources in `art/sprites` split into parts and animated in
   code as cut-out puppets (PNGs in `Content/Sprites`). Done: 3 UFOs, squirrel, cow, lab alien, 5 rooms, mountain with hallways and the old man's cabin.
@@ -104,5 +106,6 @@ second run with a meaningful new choice.
 
 - [prototype-build.md](prototype-build.md) — how the UE prototype is structured, built, tested, run
 - [case-files.md](case-files.md) — recurring human subjects, relationships, case studies, scanning for them
+- [console-ui.md](console-ui.md) — right-hand console: the four tabs, Operations selection, badges, contract claims, base click-to-select
 - [probe-calibration.md](probe-calibration.md) — optional interactions: Probe Calibration challenge, Calibration Desk, the two not-yet-built interactions
 - [art-sprites.md](art-sprites.md) — animated sprites (UFOs, squirrel, cow, alien, rooms, mountain): sources, parts, code, re-rendering

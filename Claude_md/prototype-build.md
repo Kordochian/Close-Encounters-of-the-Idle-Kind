@@ -1,6 +1,6 @@
 # Prototype Build (UE 5.8.3)
 
-Last updated: 2026-10-14 (Probe Calibration)
+Last updated: 2026-10-14 (console tabs)
 
 ## Where in the source
 
@@ -84,13 +84,10 @@ All under `F:\Alien_Idle\AlienIdle\Source\AlienIdle\`:
   Dev console commands: `AlienLaunch [ufo]`, `AlienAddResearch <n>`, `AlienUnlockAll`, `AlienAway [minutes]`, `AlienDemo`
   (jumps to a 3-UFO mid-game base, unlocks automation and turns on auto-launch so ships keep flying; good for screenshots).
 - `AlienIdleGameMode.h/.cpp` — sets the controller, no pawn. Set as GlobalDefaultGameMode in `Config/DefaultEngine.ini`; map is `/Engine/Maps/Entry`.
-- `UI/SAlienIdleRoot` — layout: cutaway left, scrollable 460 px console right, and a 150 px
-  "EXPERIMENT RESULTS" box across the bottom (newest first, from `FAlienIdleSim::GetResults()`, which
-  holds experiment and discovery reports only). "ALIEN RESOURCES" section: recruit button, auto-assign
-  toggle, per-station staffing lines, and one row per alien (assignment stepper + Train button). Fleet section shows one
-  selected UFO (< > steppers for UFO and target), launch, auto-launch, trait targeting, 5 ship
-  upgrades, refit; then base, regions, log. All buttons stay enabled (gamepad focus) and say why
-  an action is unavailable.
+- `UI/SAlienIdleRoot` — layout: cutaway left, 460 px console right (header + four tabs: Operations,
+  Contracts, Thesis, Collaborations; see console-ui.md), and a 150 px "EXPERIMENT RESULTS" box across the
+  bottom (newest first, from `FAlienIdleSim::GetResults()`, which holds experiment and discovery reports only).
+  All buttons stay enabled (gamepad focus) and say why an action is unavailable.
 - `UI/SAlienBaseView` — `OnPaint` draws the cutaway in a virtual canvas x 0..2100, y -300..860
   (`CanvasMin`/`CanvasMax`, widened and raised 2026-10-14). Zoom 1 shows `ViewWidth` 1300 units across
   and starts at the bottom around x 1100; drag to scroll sideways and up. Hunting grounds use canvas
