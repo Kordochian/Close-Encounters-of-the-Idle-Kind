@@ -2707,7 +2707,7 @@ bool FAlienIdleCalibrationBoostTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Window closed"), Sim.GetCalibrationChamber(), int32(INDEX_NONE));
 	TestFalse(TEXT("No second calibration on the same window"), Sim.Calibrate(ECalibrationGrade::Precise));
 
-	// Shared cooldown: no new window for a minute, whatever the chambers are doing.
+	// Shared cooldown: no new window until it ends, whatever the chambers are doing.
 	TestFalse(TEXT("Cooldown holds"), RunUntil(Sim, [&] { return Sim.GetCalibrationChamber() != INDEX_NONE; }, CalibrationCooldownSeconds - 1.0f));
 	AddInfo(Sim.GetCalibrationStatusText());
 	return true;

@@ -19,7 +19,7 @@ productive unattended. Three were proposed; **Probe Calibration** is built, the 
 - Clicking opens a 5-second challenge: stop the sweeping cursor in the green band. Precise (bright core)
   skips 25% of the remaining time, steady (band) 15%, a miss or running out of time 8%.
 - Accessibility: "Standard calibration (no timing)" gives 15%, the same as a steady stop.
-- Shared cooldown: 60 s after any calibration, 30 s after an ignored window, so cycling labs gives nothing.
+- Shared cooldown: 30 s after any calibration (George chose "more often" over the first 60 s), 30 s after an ignored window, so cycling labs gives nothing.
 - Calibration Desk (base upgrade, 150 research; appears after 3 manual calibrations or 40 experiments):
   an optional technician post. The technician takes any window left alone for 15 s, for 6% (+2% per point of
   station bonus, max 12%), also offline. Manual calibration always does more. The desk never counts as a

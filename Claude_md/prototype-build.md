@@ -144,6 +144,8 @@ locals in SAlienBaseView.cpp), all 63 tests pass. CalibrationBalance, 20 min Bal
 9345 research, missing every one 9746, steady/standard 8846, precise 9523; 16 windows, 93 s of lab work skipped.
 The boost is small next to run-to-run divergence (a skipped second reshuffles later random rolls), so research
 totals are noise here; seconds skipped is the real measure. Technician (specialist, untrained): 7%.
+With 30 s cooldown (George chose "more often"): ignoring 9345, missing 9122, steady/standard 9431 (x1.009),
+precise 9558 (x1.023); 27 windows, 166 s of lab work skipped. 63/63 pass.
 
 ## State after "The Specimens Remember"
 

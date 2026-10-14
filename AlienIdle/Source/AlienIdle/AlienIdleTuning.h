@@ -1124,7 +1124,7 @@ namespace AlienIdleTuning
 	// timing challenge. Any attempt skips part of the remaining time; ignoring it costs nothing. One window
 	// at a time across all chambers, with a shared cooldown, so cycling labs gives no constant bonus.
 	inline constexpr float CalibrationFirstSeconds = 45.0f;    // first window of a run
-	inline constexpr float CalibrationCooldownSeconds = 60.0f; // after any calibration, manual or automatic
+	inline constexpr float CalibrationCooldownSeconds = 30.0f; // after any calibration, manual or automatic
 	inline constexpr float CalibrationRetrySeconds = 30.0f;    // after a window is ignored and lapses
 	inline constexpr float CalibrationOfferSeconds = 30.0f;    // how long a window stays open
 	inline constexpr float CalibrationMinRemaining = 12.0f;    // experiment seconds left before a window is worth offering

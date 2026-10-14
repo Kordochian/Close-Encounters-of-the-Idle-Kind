@@ -413,7 +413,7 @@ or without calibration windows).
 | Rule | Number |
 |---|---|
 | Window | One at a time across all chambers, on the running experiment with the most time left (at least 12 s of work). First after 45 s; lasts 30 s, then lapses with no effect |
-| Shared cooldown | 60 s after any calibration (manual or technician); 30 s after an ignored window |
+| Shared cooldown | 30 s after any calibration (manual or technician; George chose "more often" over 60 s); 30 s after an ignored window |
 | Challenge | 5 s; cursor sweeps the 0..1 gauge every 0.9 s; band half-width 0.09, precise core 0.03, band centre random in 0.2..0.8 (own seed, never the main random stream) |
 | Precise (core) | skips 25% of the experiment's remaining time |
 | Steady (band) | 15% |
