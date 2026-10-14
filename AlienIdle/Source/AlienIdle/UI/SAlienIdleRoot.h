@@ -40,6 +40,10 @@ public:
 	void OpenPromotion();
 	/** Opens the five-second Probe Calibration challenge for the open calibration window, if any. */
 	void OpenCalibration();
+	/** Shows a console tab (EConsoleTab order). */
+	void SetTab(int32 Tab);
+	/** Selects a UFO or station; bShowOperations also switches to the Operations tab. */
+	void SelectStation(const FAssignment& Station, bool bShowOperations);
 
 	virtual void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) override;
 	/** Gamepad shoulder buttons switch tabs (keys bubble up here from the focused control). */
@@ -58,10 +62,8 @@ private:
 		TFunction<FString()> Blocker, TFunction<bool()> CanBuy, TFunction<void()> OnClick) const;
 
 	// Tabs and the Operations selection
-	void SetTab(int32 Tab);
 	/** Short badge text when the tab has an action waiting (finished contract, ready promotion, race offer); empty otherwise. */
 	FString GetTabBadge(int32 Tab) const;
-	void SelectStation(const FAssignment& Station, bool bShowOperations);
 	void StepSelection(int32 Direction);
 	/** Falls back to the first UFO when the selected station no longer exists (promotion, fewer chambers). */
 	void ValidateSelection();

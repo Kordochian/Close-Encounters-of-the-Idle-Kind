@@ -507,6 +507,8 @@ public:
 	const FRivalState& GetRival() const { return Rival; }
 	bool IsRivalActive(ERival Type) const { return Rival.Active[int32(Type)]; }
 	void DevSetRivals(bool bBureau, bool bCelebrity, bool bExperimental) { Rival.Active[0] = bBureau; Rival.Active[1] = bCelebrity; Rival.Active[2] = bExperimental; }
+	/** Offers the next race now (needs an active rival and no race offered or running). */
+	void DevOfferRace() { if (!Rival.bRaceOffered && !Rival.bRaceActive && (Rival.Active[0] || Rival.Active[1] || Rival.Active[2])) { OfferRace(); } }
 	FString GetRivalEventText(ERival Type) const;
 	bool IsCelebrityStunt(int32 Region) const { return Rival.Celebrity.bActive && Rival.Celebrity.Region == Region; }
 	bool IsBreach(int32 Region) const { return Rival.Breach.bActive && Rival.Breach.Region == Region; }

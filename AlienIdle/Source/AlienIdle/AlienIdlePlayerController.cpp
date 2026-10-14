@@ -208,6 +208,40 @@ void AAlienIdlePlayerController::AlienCalibrate()
 	}
 }
 
+void AAlienIdlePlayerController::AlienTab(int32 Tab)
+{
+	if (RootWidget.IsValid())
+	{
+		RootWidget->SetTab(Tab);
+	}
+}
+
+void AAlienIdlePlayerController::AlienSelect(int32 Station, int32 Index)
+{
+	if (RootWidget.IsValid() && Station > int32(EStation::None) && Station <= int32(EStation::Calibration))
+	{
+		RootWidget->SelectStation({ EStation(Station), Index }, true);
+	}
+}
+
+void AAlienIdlePlayerController::AlienBadges()
+{
+	if (!Sim.IsValid())
+	{
+		return;
+	}
+	Sim->DevCompleteThesis();
+	FContract Contract;
+	Contract.Title = TEXT("Sample: 1 cow");
+	Contract.Reward = 45.0;
+	FContractNeed Need;
+	Need.Type = ESpecimen::Cow;
+	Need.Count = 1;
+	Contract.Needs.Add(Need);
+	Sim->DevSetActiveContract(Contract);
+	Sim->DevOfferRace();
+}
+
 void AAlienIdlePlayerController::AlienAddResearch(float Amount)
 {
 	if (Sim.IsValid())

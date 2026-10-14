@@ -1280,6 +1280,7 @@ int32 SAlienBaseView::OnPaint(const FPaintArgs& Args, const FGeometry& AllottedG
 		if (Selected.Station == EStation::Ufo && UfoBounds.IsValidIndex(Selected.Index))
 		{
 			Bounds = UfoBounds[Selected.Index].ShiftBy(-BaseOrigin); // P.Shift is BaseOrigin here
+			Bounds.Min.Y += 19.0f; // the click box includes the name label; keep the bracket clear of it and the hangar title
 			bFound = true;
 		}
 		else if (Selected.Station != EStation::Ufo)

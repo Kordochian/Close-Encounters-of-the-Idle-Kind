@@ -69,6 +69,7 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 	AddHeader(SNew(STextBlock).Font(Font(16, TEXT("Bold"))).ColorAndOpacity(HeadingColor)
 		.Text_Lambda([this] { return Str(FString(AlienIdleTuning::LocationNames[int32(Sim->GetLocation())]).ToUpper()); }));
 	AddHeader(SNew(STextBlock).Font(Font(10)).ColorAndOpacity(MutedColor)
+		.AutoWrapText(true)
 		.Text_Lambda([this]
 		{
 			return Str(FString::Printf(TEXT("Research Officer Console, %s grade. Run %d, Research Grants %d."),
@@ -1008,6 +1009,8 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 	TabSwitcher = SNew(SWidgetSwitcher);
 	const TSharedRef<SVerticalBox> TabPanels[] = { Operations, Contracts, Thesis, Collaborations };
 	static const TCHAR* TabNames[] = { TEXT("Operations"), TEXT("Contracts"), TEXT("Thesis"), TEXT("Collaborations") };
+	// Widths follow the label (plus room for a badge) so "Collaborations !" fits in the narrow console.
+	static const float TabWidths[] = { 13.0f, 12.0f, 9.0f, 17.0f };
 	for (int32 t = 0; t < int32(EConsoleTab::Count); ++t)
 	{
 		TabSwitcher->AddSlot()
@@ -1019,7 +1022,7 @@ void SAlienIdleRoot::Construct(const FArguments& InArgs)
 				TabPanels[t]
 			]
 		];
-		TabBar->AddSlot().FillWidth(1.0f).Padding(t == 0 ? 0.0f : 2.0f, 0, 0, 0)
+		TabBar->AddSlot().FillWidth(TabWidths[t]).Padding(t == 0 ? 0.0f : 2.0f, 0, 0, 0)
 		[
 			SAssignNew(TabButtons[t], SButton)
 			.ContentPadding(FMargin(4, 5))
