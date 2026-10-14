@@ -25,6 +25,7 @@ second run with a meaningful new choice.
 | 5d | "Every Build Has a Purpose" (George): 3 approaches (bulk/precision/covert) each with thesis, rival, permanent pick; bottleneck fixes; presets; "why these numbers"; auto-accept contracts; behaviour memos; per-approach prestige + offline tests | Done 2026-10-14; needs a human playtest per approach |
 | 5e | "Build Your Next Headquarters" (George): Oceanic (hull pressure) then Antarctic (heat distribution), achievements unlock them, location theses and keep-forever perks, cross-base upgrades | Done 2026-10-14; Oceanic and Antarctic art done by the sprites thread |
 | 5f | "The Specimens Remember" (George): 5 recurring case-file subjects, 3 relationship types, Peer Review, case discoveries kept through prestige | Done 2026-10-14 (see case-files.md) |
+| 5g | Optional interactions (George): Probe Calibration timing challenge + Calibration Desk technicians; Tractor Beam Assist and Management Intervention later | Probe Calibration done 2026-10-14 (see probe-calibration.md) |
 | 6 | Test second run for real choices | Bot check done (PrestigeCycle); needs a human playtest |
 | 7 | Personality pass (reports, incidents, reviews) | Not started (a few log lines exist) |
 | 8 | Saving, offline progress, polish | Saving + offline progress done 2026-10-14; polish not started |
@@ -49,7 +50,8 @@ second run with a meaningful new choice.
 - Game rules live in a plain C++ sim (`FAlienIdleSim`) separate from UI; deterministic fixed steps.
 - Numbers live in `AlienIdleTuning.h` and must match `docs/prototype-spec.md`.
 - Save compatibility (George, 2026-10-14): old saves breaking is fine while the game is in development; just bump SaveVersion, no need to mention it.
-- Keep everything in `F:\Alien_Idle`; do not push to GitHub unless George says so. Not a git repo yet.
+- Keep everything in `F:\Alien_Idle`. It is a git repo tracking `main` of Kordochian/Close-Encounters-of-the-Idle-Kind;
+  threads push their work to a `claude/...` branch for a PR, never straight to main.
 - Fleet roles (George, 2026-10-14): ships have 6 upgrade slots; tractor, cargo, stealth, scanner
   built first (heavy lifter / bulk collector / discreet abductor / rare-specimen hunter). Each
   upgrade has a tradeoff and a dark-office-humor line per level. Refit = strip for 50% refund.
@@ -79,6 +81,9 @@ second run with a meaningful new choice.
 - Locations (George, 2026-10-14): each posting must change opening purchases, crew posts and research
   priorities, or it needs a stronger mechanic (tests OceanicChangesTheOpening, AntarcticChangesTheOpening).
   Humour request: overheating and alert excuses where humans blame cow farts.
+- Optional interactions (George, 2026-10-14): they boost existing production only; ignoring them must cost nothing
+  (unattended runs identical), a shared cooldown stops lab-cycling, every timing challenge has a one-click
+  alternative, and automatic helpers (technicians) are always weaker than doing it by hand.
 - Goal check before prestige: two strategies must both work in one run (bulk animals vs selective humans).
 
 ## Open items
@@ -99,4 +104,5 @@ second run with a meaningful new choice.
 
 - [prototype-build.md](prototype-build.md) — how the UE prototype is structured, built, tested, run
 - [case-files.md](case-files.md) — recurring human subjects, relationships, case studies, scanning for them
+- [probe-calibration.md](probe-calibration.md) — optional interactions: Probe Calibration challenge, Calibration Desk, the two not-yet-built interactions
 - [art-sprites.md](art-sprites.md) — animated sprites (UFOs, squirrel, cow, alien, rooms, mountain): sources, parts, code, re-rendering

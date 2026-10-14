@@ -27,6 +27,10 @@ public:
 	bool IsShowingAwayReport() const { return bShowingReport; }
 	/** Opens the Academy thesis review (only meaningful once the thesis can be submitted). */
 	void OpenPromotion();
+	/** Opens the five-second Probe Calibration challenge for the open calibration window, if any. */
+	void OpenCalibration();
+
+	virtual void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) override;
 
 	/** Called when the player acknowledges the memo. */
 	TFunction<void()> OnAwayReportDismissed;
@@ -46,6 +50,11 @@ private:
 	FText GetAwayReportText() const;
 	TSharedRef<SWidget> MakeAwayReportPanel();
 	TSharedRef<SWidget> MakePromotionPanel();
+	TSharedRef<SWidget> MakeCalibrationPanel();
+	/** Where the challenge cursor is now (or where it stopped): 0..1, sweeping back and forth. */
+	float GetCalibrationCursor() const;
+	void SubmitCalibration(ECalibrationGrade Grade);
+	void CloseCalibration();
 	int32 GetPlannedGrantSpend() const;
 
 	TSharedPtr<FAlienIdleSim> Sim;
@@ -69,5 +78,16 @@ private:
 	EEarthCondition SelectedCondition = EEarthCondition::DocumentaryCraze;
 	FString PromotionError;
 	TSharedPtr<SButton> PromotionConfirmButton;
+
+	// Probe Calibration challenge state
+	bool bShowingCalibration = false;
+	bool bCalibrationResolved = false;
+	double CalibrationStartTime = 0.0;
+	double CalibrationResolvedTime = 0.0;
+	float CalibrationStoppedAt = 0.0f;
+	int32 CalibrationChamberShown = INDEX_NONE;
+	FString CalibrationResult;
+	TSharedPtr<SButton> CalibrationStopButton;
+	TSharedPtr<SButton> CalibrationCloseButton;
 	TSharedPtr<SButton> DismissButton;
 };

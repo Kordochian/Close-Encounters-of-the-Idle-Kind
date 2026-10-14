@@ -404,6 +404,32 @@ Measured (same bot, 20-minute opening after a first thesis):
   responses than Business as Usual).
 - Alert excuse added everywhere: "A local scientist blames rising temperatures on cow farts."
 
+## Probe Calibration (2026-10-14)
+
+George's first "optional short interaction": it boosts existing production, and the base stays fully
+productive when nobody plays it (test CalibrationIgnoredCostsNothing: an unattended run is identical with
+or without calibration windows).
+
+| Rule | Number |
+|---|---|
+| Window | One at a time across all chambers, on the running experiment with the most time left (at least 12 s of work). First after 45 s; lasts 30 s, then lapses with no effect |
+| Shared cooldown | 30 s after any calibration (manual or technician; George chose "more often" over 60 s); 30 s after an ignored window |
+| Challenge | 5 s; cursor sweeps the 0..1 gauge every 0.9 s; band half-width 0.09, precise core 0.03, band centre random in 0.2..0.8 (own seed, never the main random stream) |
+| Precise (core) | skips 25% of the experiment's remaining time |
+| Steady (band) | 15% |
+| Missed / out of time | 8% (any attempt helps) |
+| Standard calibration (accessibility: one click, no timing) | 15%, same as a steady stop |
+| Calibration Desk (base upgrade, 150 research, unlocks after 3 manual calibrations or 40 experiments) | Optional technician post. Takes any window left alone for 15 s: 6% + 2% per point of station bonus, at most 12%. Works offline |
+
+Opened from the pulsing CALIBRATION AVAILABLE tag on the lab chamber, or the console button under the
+chamber line. Results go to the experiment results box, for example *"Calibration successful. Previous
+results have been retroactively declared accurate."* and *"Acceptable precision. Subject disagreement has
+been excluded from the dataset."* Dev command `AlienCalibrate` opens a window and the challenge.
+
+Later candidates from the same request (not built): **Tractor Beam Assist** (keep a moving target in a
+capture zone for a few seconds: finish part of the current expedition early) and **Management
+Intervention** (click a distracted crew member: brief station productivity boost).
+
 ## Ship upgrades (per UFO; cost = base × growth^level)
 
 Each UFO has **6 upgrade slots**, so no ship maxes everything. That gives four fleet roles: heavy

@@ -1,6 +1,6 @@
 # Prototype Build (UE 5.8.3)
 
-Last updated: 2026-10-14 (case files verified)
+Last updated: 2026-10-14 (Probe Calibration)
 
 ## Where in the source
 
@@ -69,6 +69,8 @@ All under `F:\Alien_Idle\AlienIdle\Source\AlienIdle\`:
   `GetHeatText`), `StepOverheat`. Preserved samples: `FSpecimen::Held`, freezer mode in `PickNextSpecimen`.
   Location perks: `FCareer::LocationPerk`, `FPermanentOption::Perk`. Tests: Oceanic*/Antarctic* and helper
   `StartAt`/`PlayOpening` in AlienIdleSimTests.cpp. Save version 9.
+- Probe Calibration: `AlienIdleCalibration.cpp`, `UI/SCalibrationGauge.h`, Calibration Desk post; see
+  probe-calibration.md "Where in the source". Save version 11.
 - `AlienIdleSave.cpp` — `Serialize` writes every FAlienIdleSim field in declaration order (bump
   `AlienIdleTuning::SaveVersion` when fields change; mismatched saves are rejected), `SaveToBytes`/
   `LoadFromBytes` (in place), `SaveToFile`/`LoadFromFile` (file = UTC ticks + payload),
@@ -108,7 +110,7 @@ All under `F:\Alien_Idle\AlienIdle\Source\AlienIdle\`:
   to its bounds so zoomed art never covers the console.
   Colors authored as sRGB via `Srgb()`; rounded shapes use per-radius `FSlateRoundedBoxBrush`es.
 - `UI/AlienSprites` — animated cut-out sprites (Old Reliable, squirrel) used by the base view; see art-sprites.md.
-- `Tests/AlienIdleSimTests.cpp` — 58 automation tests under `AlienIdle.Sim.*` (see file); `RunBot`
+- `Tests/AlienIdleSimTests.cpp` — 63 automation tests under `AlienIdle.Sim.*` (see file); `RunBot`
   plays Balanced / BulkAnimals / SelectiveHumans strategies and prints unlock times, research,
   contracts, incidents via AddInfo (PacingBot, StrategyComparison).
 
@@ -133,6 +135,17 @@ PrintWindow capture works; SendKeys into the window is unreliable.
 - Module root is not an include path by default: `PrivateIncludePaths.Add(ModuleDirectory)` in Build.cs.
 - Slate in the game viewport treats `FLinearColor` as linear: dark colors look washed out unless converted from sRGB.
 - `FSlateRoundedBoxBrush` with a radius larger than the shape draws nothing; pick radius ≤ half the short side.
+
+## State after Probe Calibration
+
+Code written 2026-10-14 (5 new tests: CalibrationGradesAndBoost, CalibrationIgnoredCostsNothing,
+CalibrationBalance, CalibrationTechnicians, CalibrationSaves). Verified: build clean (after renaming shadowing
+locals in SAlienBaseView.cpp), all 63 tests pass. CalibrationBalance, 20 min Balanced/Biology: ignoring windows
+9345 research, missing every one 9746, steady/standard 8846, precise 9523; 16 windows, 93 s of lab work skipped.
+The boost is small next to run-to-run divergence (a skipped second reshuffles later random rolls), so research
+totals are noise here; seconds skipped is the real measure. Technician (specialist, untrained): 7%.
+With 30 s cooldown (George chose "more often"): ignoring 9345, missing 9122, steady/standard 9431 (x1.009),
+precise 9558 (x1.023); 27 windows, 166 s of lab work skipped. 63/63 pass.
 
 ## State after "The Specimens Remember"
 

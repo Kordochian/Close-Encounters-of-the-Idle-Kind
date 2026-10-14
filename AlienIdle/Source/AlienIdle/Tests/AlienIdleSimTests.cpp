@@ -459,6 +459,8 @@ namespace
 	TArray<FString>* GBotPurchases = nullptr;
 	/** Optional: the bot never staffs Pressure Control (plays the undersea base like the mountain). */
 	bool GBotIgnoresHull = false;
+	/** Optional: the bot takes every calibration window a few seconds after it opens, with this ECalibrationGrade (-1 = ignores them). */
+	int32 GBotCalibrateGrade = -1;
 
 	/** A simple greedy player. Not optimal; a real player should be at least this quick. */
 	FBotResult RunBotOn(FAlienIdleSim& Sim, EBotStrategy Strategy, double Minutes, EDepartment Department = EDepartment::None)
@@ -493,6 +495,11 @@ namespace
 		while (Sim.GetElapsedSeconds() - Start < Minutes * 60.0)
 		{
 			Sim.Tick(0.5f);
+			if (GBotCalibrateGrade >= 0 && Sim.GetCalibrationChamber() != INDEX_NONE
+				&& Sim.GetCalibrationOfferRemaining() <= AlienIdleTuning::CalibrationOfferSeconds - 3.0f && Sim.BeginCalibration())
+			{
+				Sim.Calibrate(ECalibrationGrade(GBotCalibrateGrade));
+			}
 			for (int32 t = 1; t < int32(ESpecimen::Count); ++t)
 			{
 				if (Result.Unlock[t] == 0.0 && Sim.IsSpecimenUnlocked(ESpecimen(t)))
@@ -2623,6 +2630,215 @@ bool FAlienIdleCaseFilesPrestigeTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Saved history"), Loaded.GetCaseFile(CaseDelgado).History.Num(), Sim.GetCaseFile(CaseDelgado).History.Num());
 	TestTrue(TEXT("Saved discovery"), Loaded.HasCaseDiscovery(CaseDelgado));
 	TestTrue(TEXT("Pell still in containment after load"), Loaded.IsCaseInContainment(CasePell));
+	return true;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Probe Calibration
+
+namespace
+{
+	/** One elephant on an extended study (about 90 s) in chamber 1, so a calibration window has room. */
+	bool StartLongExperiment(FAlienIdleSim& Sim)
+	{
+		BuyBase(Sim, EBaseUpgrade::Power, 4);
+		Sim.DevAddEnergy(1000.0);
+		Sim.DevUnlockSpecimen(ESpecimen::Elephant);
+		FExperimentChoice Extended;
+		Extended.Kind = EExperimentKind::Extended;
+		Sim.SetExperimentChoice(ESpecimen::Elephant, Extended);
+		FSpecimen Elephant;
+		Elephant.Type = ESpecimen::Elephant;
+		Sim.DevAddToContainment(Elephant);
+		return RunUntil(Sim, [&] { return Sim.GetChambers()[0].bRunning; }, 2.0f);
+	}
+
+	/** Research earned in a Balanced bot run that answers every window with this grade (-1 = ignores them). */
+	double CalibratingRun(int32 Grade, double Minutes, int32* OutManual = nullptr, float* OutSaved = nullptr)
+	{
+		GBotCalibrateGrade = Grade;
+		FAlienIdleSim Sim;
+		const FBotResult Result = RunBotOn(Sim, EBotStrategy::Balanced, Minutes, EDepartment::Biological);
+		GBotCalibrateGrade = -1;
+		if (OutManual)
+		{
+			*OutManual = Sim.GetManualCalibrations();
+		}
+		if (OutSaved)
+		{
+			*OutSaved = Sim.GetCalibrationSecondsSaved();
+		}
+		return Result.ResearchEarned;
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAlienIdleCalibrationBoostTest, "AlienIdle.Sim.CalibrationGradesAndBoost", SimTestFlags)
+bool FAlienIdleCalibrationBoostTest::RunTest(const FString& Parameters)
+{
+	using namespace AlienIdleTuning;
+	FQuietSim Sim;
+	TestTrue(TEXT("Extended elephant study running"), StartLongExperiment(Sim));
+	TestEqual(TEXT("No window before the first delay"), Sim.GetCalibrationChamber(), int32(INDEX_NONE));
+	TestTrue(TEXT("Window opens"), Sim.DevOfferCalibration(0));
+	const float Band = Sim.GetCalibrationBand();
+	TestTrue(TEXT("Band inside the gauge"), Band >= CalibrationBandMin && Band <= 1.0f - CalibrationBandMin);
+	TestEqual(TEXT("Centre is precise"), Sim.GradeCalibration(Band), ECalibrationGrade::Precise);
+	TestEqual(TEXT("Edge of the band is steady"), Sim.GradeCalibration(Band + (CalibrationCoreHalfWidth + CalibrationBandHalfWidth) * 0.5f), ECalibrationGrade::Steady);
+	TestEqual(TEXT("Outside the band is a miss"), Sim.GradeCalibration(Band - 0.19f), ECalibrationGrade::Missed);
+	TestTrue(TEXT("Accuracy pays: precise > steady > missed > technician"),
+		FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Precise) > FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Steady)
+		&& FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Steady) > FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Missed)
+		&& FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Missed) > FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Technician));
+	TestEqual(TEXT("Standard (no timing) calibration matches a steady stop"),
+		FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Quick), FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Steady));
+	TestTrue(TEXT("Successful calibrations sit in the 15-25% target"),
+		FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Steady) >= 0.15f && FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Precise) <= 0.25f);
+
+	// A precise stop skips a quarter of what is left.
+	TestTrue(TEXT("Challenge opens"), Sim.BeginCalibration());
+	Sim.Tick(1.0f); // the experiment keeps running while the player aims
+	const FLabChamber Before = Sim.GetChambers()[0];
+	FString Result;
+	TestTrue(TEXT("Calibrated"), Sim.Calibrate(ECalibrationGrade::Precise, &Result));
+	const float Expected = Before.Time + (Before.Duration - Before.Time) * FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Precise);
+	TestTrue(TEXT("A quarter of the remaining time skipped"), FMath::IsNearlyEqual(Sim.GetChambers()[0].Time, Expected, 0.01f));
+	TestTrue(TEXT("Dark-humour result line"), Result.Contains(TEXT("retroactively declared accurate")));
+	TestTrue(TEXT("Shown in the results box"), ResultsContain(Sim, TEXT("Probe calibration, chamber 1 (precise)")));
+	TestEqual(TEXT("Window closed"), Sim.GetCalibrationChamber(), int32(INDEX_NONE));
+	TestFalse(TEXT("No second calibration on the same window"), Sim.Calibrate(ECalibrationGrade::Precise));
+
+	// Shared cooldown: no new window until it ends, whatever the chambers are doing.
+	TestFalse(TEXT("Cooldown holds"), RunUntil(Sim, [&] { return Sim.GetCalibrationChamber() != INDEX_NONE; }, CalibrationCooldownSeconds - 1.0f));
+	AddInfo(Sim.GetCalibrationStatusText());
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAlienIdleCalibrationIgnoredTest, "AlienIdle.Sim.CalibrationIgnoredCostsNothing", SimTestFlags)
+bool FAlienIdleCalibrationIgnoredTest::RunTest(const FString& Parameters)
+{
+	using namespace AlienIdleTuning;
+	// A window that is ignored lapses and changes nothing.
+	FQuietSim Sim;
+	TestTrue(TEXT("Extended elephant study running"), StartLongExperiment(Sim));
+	FQuietSim Twin;
+	Twin.DevSetCalibrationEnabled(false);
+	StartLongExperiment(Twin);
+	// Lockstep, so both sims take identical steps.
+	bool bOpened = false;
+	for (float T = 0.0f; T < CalibrationFirstSeconds + 1.0f && !bOpened; T += 0.05f)
+	{
+		Sim.Tick(0.05f);
+		Twin.Tick(0.05f);
+		bOpened = Sim.GetCalibrationChamber() == 0;
+	}
+	TestTrue(TEXT("Window opens on its own"), bOpened);
+	TestTrue(TEXT("Window opens after the first delay"), Sim.GetElapsedSeconds() >= CalibrationFirstSeconds - 0.1);
+	for (float T = 0.0f; T < CalibrationOfferSeconds + 0.5f; T += 0.05f)
+	{
+		Sim.Tick(0.05f);
+		Twin.Tick(0.05f);
+	}
+	TestEqual(TEXT("Window lapsed"), Sim.GetCalibrationChamber(), int32(INDEX_NONE));
+	TestTrue(TEXT("Research carried on exactly as without calibration"), Sim.GetChambers()[0].Time == Twin.GetChambers()[0].Time && Sim.GetResearch() == Twin.GetResearch());
+	TestEqual(TEXT("Nothing skipped"), Sim.GetCalibrationSecondsSaved(), 0.0f);
+
+	// A whole unattended run is identical with or without windows.
+	FAlienIdleSim Ignoring;
+	FAlienIdleSim Without;
+	Without.DevSetCalibrationEnabled(false);
+	const FBotResult A = RunBotOn(Ignoring, EBotStrategy::Balanced, 15.0);
+	const FBotResult B = RunBotOn(Without, EBotStrategy::Balanced, 15.0);
+	TestEqual(TEXT("Same research after 15 unattended minutes"), A.ResearchEarned, B.ResearchEarned);
+	TestEqual(TEXT("Same discoveries"), A.Discoveries, B.Discoveries);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAlienIdleCalibrationBalanceTest, "AlienIdle.Sim.CalibrationBalance", SimTestFlags)
+bool FAlienIdleCalibrationBalanceTest::RunTest(const FString& Parameters)
+{
+	const double Minutes = 20.0;
+	const double Idle = CalibratingRun(-1, Minutes);
+	int32 Windows = 0;
+	float Saved = 0.0f;
+	const double Precise = CalibratingRun(int32(ECalibrationGrade::Precise), Minutes, &Windows, &Saved);
+	const double Steady = CalibratingRun(int32(ECalibrationGrade::Steady), Minutes);
+	const double Quick = CalibratingRun(int32(ECalibrationGrade::Quick), Minutes);
+	const double Missed = CalibratingRun(int32(ECalibrationGrade::Missed), Minutes);
+	AddInfo(FString::Printf(TEXT("%.0f min Balanced/Biology: research ignoring windows %.0f, missing every one %.0f (x%.3f), steady %.0f (x%.3f), standard %.0f, precise %.0f (x%.3f); %d windows, %.0f s of lab work skipped"),
+		Minutes, Idle, Missed, Missed / Idle, Steady, Steady / Idle, Quick, Precise, Precise / Idle, Windows, Saved));
+	TestTrue(TEXT("Windows come up regularly"), Windows >= 5);
+	TestTrue(TEXT("Shared cooldown limits windows"), Windows <= int32(Minutes * 60.0 / AlienIdleTuning::CalibrationCooldownSeconds) + 1);
+	TestEqual(TEXT("The no-timing option is as good as a steady stop"), Quick, Steady);
+	TestTrue(TEXT("Calibrating helps"), Precise > Idle);
+	TestTrue(TEXT("Unattended play stays close (calibrating every window gains under 25%)"), Precise < Idle * 1.25);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAlienIdleCalibrationTechnicianTest, "AlienIdle.Sim.CalibrationTechnicians", SimTestFlags)
+bool FAlienIdleCalibrationTechnicianTest::RunTest(const FString& Parameters)
+{
+	using namespace AlienIdleTuning;
+	FQuietSim Sim;
+	TestFalse(TEXT("Desk locked at the start"), Sim.IsBaseUpgradeAvailable(EBaseUpgrade::CalibrationDesk));
+	Sim.DevAddExperiments(ESpecimen::Squirrel, CalibrationDeskExperiments);
+	Sim.Tick(0.1f);
+	TestTrue(TEXT("Desk approved after enough experiments"), Sim.IsBaseUpgradeAvailable(EBaseUpgrade::CalibrationDesk));
+	BuyBase(Sim, EBaseUpgrade::CalibrationDesk, 1);
+	const FAssignment Desk{ EStation::Calibration, 0 };
+	TestTrue(TEXT("Desk is a post"), Sim.GetAllStations().Contains(Desk));
+	Sim.Tick(1.0f);
+	TestFalse(TEXT("An empty desk is never reported as a crew bottleneck"), Sim.GetBottleneckText().Contains(TEXT("Calibration Desk")));
+	TestEqual(TEXT("No technician, no automatic calibration"), Sim.GetTechnicianFraction(), 0.0f);
+
+	Sim.SetAutoAssign(false);
+	Sim.DevAddResearch(Sim.GetRecruitCost());
+	TestTrue(TEXT("Recruit"), Sim.Recruit());
+	TestTrue(TEXT("Assigned to the desk"), Sim.Assign(Sim.GetCrew().Num() - 1, Desk));
+	const float Fraction = Sim.GetTechnicianFraction();
+	AddInfo(FString::Printf(TEXT("Technician calibration: %.0f%% (%s)"), 100.0f * Fraction, FAlienIdleSim::GetSpecialtyName(Sim.GetCrew().Last().Specialty)));
+	TestTrue(TEXT("Technicians calibrate"), Fraction > 0.0f);
+	TestTrue(TEXT("Weaker than any manual success"), Fraction < FAlienIdleSim::GetCalibrationFraction(ECalibrationGrade::Quick));
+
+	TestTrue(TEXT("Extended elephant study running"), StartLongExperiment(Sim));
+	TestTrue(TEXT("Window opens"), Sim.DevOfferCalibration(0));
+	Sim.Tick(CalibrationTechnicianDelay - 1.0f);
+	TestEqual(TEXT("The window waits for the player first"), Sim.GetTechnicianCalibrations(), 0);
+	const FLabChamber Before = Sim.GetChambers()[0];
+	Sim.Tick(1.5f);
+	TestEqual(TEXT("Then the technician takes it"), Sim.GetTechnicianCalibrations(), 1);
+	TestEqual(TEXT("Window closed"), Sim.GetCalibrationChamber(), int32(INDEX_NONE));
+	TestTrue(TEXT("Some time skipped"), Sim.GetCalibrationSecondsSaved() > 0.0f);
+	TestTrue(TEXT("Technician result line"), ResultsContain(Sim, TEXT("Probe calibration, chamber 1 (technician)")));
+
+	// And it works while nobody is watching: an unattended stretch gets automatic calibrations.
+	FQuietSim Away;
+	Away.DevAddExperiments(ESpecimen::Squirrel, CalibrationDeskExperiments);
+	BuyBase(Away, EBaseUpgrade::CalibrationDesk, 1);
+	Away.SetAutoAssign(false);
+	Away.DevAddResearch(Away.GetRecruitCost());
+	Away.Recruit();
+	Away.Assign(Away.GetCrew().Num() - 1, Desk);
+	StartLongExperiment(Away);
+	Away.CatchUp(70.0);
+	TestTrue(TEXT("Calibrated during catch-up"), Away.GetTechnicianCalibrations() >= 1);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FAlienIdleCalibrationSaveTest, "AlienIdle.Sim.CalibrationSaves", SimTestFlags)
+bool FAlienIdleCalibrationSaveTest::RunTest(const FString& Parameters)
+{
+	FQuietSim Sim;
+	StartLongExperiment(Sim);
+	Sim.DevOfferCalibration(0);
+	Sim.BeginCalibration(); // saved mid-challenge
+	TArray<uint8> Bytes;
+	Sim.SaveToBytes(Bytes);
+	FAlienIdleSim Loaded;
+	TestTrue(TEXT("Load"), Loaded.LoadFromBytes(Bytes));
+	TestEqual(TEXT("Window survives"), Loaded.GetCalibrationChamber(), 0);
+	TestEqual(TEXT("Same band"), Loaded.GetCalibrationBand(), Sim.GetCalibrationBand());
+	TestFalse(TEXT("The challenge screen does not"), Loaded.IsCalibrationOpen());
+	TestTrue(TEXT("It can be opened again"), Loaded.BeginCalibration());
 	return true;
 }
 

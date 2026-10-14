@@ -17,6 +17,8 @@ class SAlienBaseView : public SLeafWidget
 public:
 	SLATE_BEGIN_ARGS(SAlienBaseView) {}
 		SLATE_ARGUMENT(TSharedPtr<FAlienIdleSim>, Sim)
+		/** Clicking the "CALIBRATION AVAILABLE" tag on a lab chamber. */
+		SLATE_ARGUMENT(TFunction<void()>, OnCalibrationClicked)
 	SLATE_END_ARGS()
 
 	void Construct(const FArguments& InArgs);
@@ -44,6 +46,10 @@ private:
 	FVector2f ViewCenter = FVector2f(1260.0f, 860.0f);
 	bool bDragging = false;
 	FVector2f LastDragPosition = FVector2f::ZeroVector;
+	/** A press that never moved far is a click (calibration tags), not a drag. */
+	FVector2f PressPosition = FVector2f::ZeroVector;
+	bool bPressMoved = false;
+	TFunction<void()> OnCalibrationClicked;
 
 	TSharedPtr<FAlienIdleSim> Sim;
 	/** Rounded brushes indexed by corner radius - 1; shapes pick the one matching half their short side. */

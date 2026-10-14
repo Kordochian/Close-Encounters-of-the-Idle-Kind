@@ -287,6 +287,16 @@ void FAlienIdleSim::Serialize(FArchive& Ar)
 	Ar << bCaseStudies << bCaseAppearances << bPeerReviewDone;
 	SerializeFixed(Ar, CaseTrouble);
 	Ar << RunCaseDiscoveries;
+
+	int32 CalibrationSeed = CalibrationRng.GetCurrentSeed();
+	Ar << CalibrationSeed;
+	if (Ar.IsLoading())
+	{
+		CalibrationRng.Initialize(CalibrationSeed);
+		bCalibrationOpen = false; // the challenge screen does not survive a reload
+	}
+	Ar << CalibrationChamber << CalibrationTimer << CalibrationOfferAge << CalibrationBand << bCalibrationEnabled;
+	Ar << bAnnouncedCalibration << bAnnouncedDesk << ManualCalibrations << TechnicianCalibrations << CalibrationSecondsSaved;
 }
 
 void FAlienIdleSim::SaveToBytes(TArray<uint8>& OutBytes) const

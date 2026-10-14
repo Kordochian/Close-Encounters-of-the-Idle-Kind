@@ -200,6 +200,14 @@ void AAlienIdlePlayerController::AlienUnlockAll()
 	}
 }
 
+void AAlienIdlePlayerController::AlienCalibrate()
+{
+	if (Sim.IsValid() && RootWidget.IsValid() && Sim->DevOfferCalibration())
+	{
+		RootWidget->OpenCalibration();
+	}
+}
+
 void AAlienIdlePlayerController::AlienAddResearch(float Amount)
 {
 	if (Sim.IsValid())
